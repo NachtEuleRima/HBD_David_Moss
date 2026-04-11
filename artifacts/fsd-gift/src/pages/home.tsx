@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,64 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Gift, Route, Calendar, Heart, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
+import carPhoto from "@assets/G9emjJyWcAA2uhm_1775877269348.jpeg";
+import davidPhoto from "@assets/IMG_4594_1775877101729.jpeg";
+
+const LIDAR_COLORS = [
+  "#00ffff", "#00e5ff", "#40c4ff", "#00b0ff",
+  "#00e676", "#76ff03", "#c6ff00",
+  "#ffea00", "#ffd740", "#ffab40",
+  "#ff6d00", "#ff3d00",
+  "#e040fb", "#ea80fc",
+  "#ffffff", "#b0bec5",
+];
+
+function LidarPhoto() {
+  const dots = useMemo(() => {
+    return Array.from({ length: 320 }, (_, i) => ({
+      id: i,
+      cx: Math.random() * 100,
+      cy: Math.random() * 100,
+      r: Math.random() * 1.8 + 0.4,
+      color: LIDAR_COLORS[Math.floor(Math.random() * LIDAR_COLORS.length)],
+      opacity: Math.random() * 0.55 + 0.45,
+    }));
+  }, []);
+
+  return (
+    <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-primary/20 aspect-[3/4]">
+      <img
+        src={davidPhoto}
+        alt="David Moss"
+        className="w-full h-full object-cover object-top"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60" />
+      <svg
+        className="absolute inset-0 w-full h-full mix-blend-screen"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="xMidYMid slice"
+        aria-hidden="true"
+      >
+        {dots.map((dot) => (
+          <circle
+            key={dot.id}
+            cx={dot.cx}
+            cy={dot.cy}
+            r={dot.r}
+            fill={dot.color}
+            opacity={dot.opacity}
+          />
+        ))}
+      </svg>
+      <div className="absolute bottom-3 left-3 right-3">
+        <span className="text-xs font-mono text-cyan-400 bg-black/60 px-2 py-1 rounded tracking-widest">
+          LIDAR SCAN — POINT CLOUD
+        </span>
+      </div>
+    </div>
+  );
+}
 
 const formSchema = z.object({
   name: z.string().min(1, "Please enter your name"),
@@ -69,9 +127,9 @@ export default function Home() {
       <section className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden border-b border-border">
         <div className="absolute inset-0 z-0">
           <img 
-            src="/hero-bg.png" 
-            alt="Tesla on highway at sunset" 
-            className="w-full h-full object-cover object-center opacity-40"
+            src={carPhoto}
+            alt="David Moss with his Tesla at a Supercharger" 
+            className="w-full h-full object-cover object-center opacity-50"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.5)_100%)] pointer-events-none mix-blend-multiply" />
@@ -115,13 +173,18 @@ export default function Home() {
                 <Route className="w-8 h-8 text-primary" />
                 The Milestone
               </h2>
-              <div className="prose prose-invert prose-lg text-muted-foreground font-sans">
-                <p>
-                  Driving coast-to-coast is an achievement. Doing it entirely on Tesla's Full Self-Driving is a milestone in the history of transportation. David Moss did exactly that, proving what's possible when technology meets determination.
-                </p>
-                <p>
-                  As a core member of the Tesla community, David is always sharing insights and pushing the boundaries. For his birthday on April 26th, we're coming together to get him something that pairs perfectly with his road warrior lifestyle: <strong>a Starlink Mini</strong>.
-                </p>
+              <div className="flex flex-col sm:flex-row gap-6 items-start">
+                <div className="w-full sm:w-48 flex-shrink-0">
+                  <LidarPhoto />
+                </div>
+                <div className="prose prose-invert prose-lg text-muted-foreground font-sans">
+                  <p>
+                    Driving coast-to-coast is an achievement. Doing it entirely on Tesla's Full Self-Driving is a milestone in the history of transportation. David Moss did exactly that, proving what's possible when technology meets determination.
+                  </p>
+                  <p>
+                    As a core member of the Tesla community, David is always sharing insights and pushing the boundaries. For his birthday on April 26th, we're coming together to get him something that pairs perfectly with his road warrior lifestyle: <strong>a Starlink Mini</strong>.
+                  </p>
+                </div>
               </div>
             </motion.section>
 
