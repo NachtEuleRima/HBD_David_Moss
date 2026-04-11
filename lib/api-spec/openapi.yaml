@@ -1,6 +1,5 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
   description: API specification
@@ -10,6 +9,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: pledges
+    description: Pledge operations
 paths:
   /healthz:
     get:
@@ -24,6 +25,44 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /pledges:
+    post:
+      operationId: createPledge
+      tags: [pledges]
+      summary: Create a pledge
+      description: Submit a new pledge with name and amount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePledgeBody"
+      responses:
+        "201":
+          description: Pledge created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pledge"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /pledges/summary:
+    get:
+      operationId: getPledgeSummary
+      tags: [pledges]
+      summary: Get pledge summary
+      description: Returns total raised, pledge count, and list of pledges
+      responses:
+        "200":
+          description: Pledge summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PledgeSummary"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +72,62 @@ components:
           type: string
       required:
         - status
-
+    CreatePledgeBody:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        amount:
+          type: number
+          minimum: 1
+          maximum: 300
+      required:
+        - name
+        - amount
+    Pledge:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        amount:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - amount
+        - createdAt
+    PledgeSummary:
+      type: object
+      properties:
+        total:
+          type: number
+        count:
+          type: integer
+        goalAmount:
+          type: number
+        goalReached:
+          type: boolean
+        pledges:
+          type: array
+          items:
+            $ref: "#/components/schemas/Pledge"
+      required:
+        - total
+        - count
+        - goalAmount
+        - goalReached
+        - pledges
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error

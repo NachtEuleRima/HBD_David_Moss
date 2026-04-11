@@ -14,3 +14,35 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * Submit a new pledge with name and amount
+ * @summary Create a pledge
+ */
+export const createPledgeBodyNameMax = 100;
+
+export const createPledgeBodyAmountMax = 300;
+
+export const CreatePledgeBody = zod.object({
+  name: zod.string().min(1).max(createPledgeBodyNameMax),
+  amount: zod.number().min(1).max(createPledgeBodyAmountMax),
+});
+
+/**
+ * Returns total raised, pledge count, and list of pledges
+ * @summary Get pledge summary
+ */
+export const GetPledgeSummaryResponse = zod.object({
+  total: zod.number(),
+  count: zod.number(),
+  goalAmount: zod.number(),
+  goalReached: zod.boolean(),
+  pledges: zod.array(
+    zod.object({
+      id: zod.number(),
+      name: zod.string(),
+      amount: zod.number(),
+      createdAt: zod.coerce.date(),
+    }),
+  ),
+});

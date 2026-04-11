@@ -8,3 +8,35 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface CreatePledgeBody {
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  name: string;
+  /**
+   * @minimum 1
+   * @maximum 300
+   */
+  amount: number;
+}
+
+export interface Pledge {
+  id: number;
+  name: string;
+  amount: number;
+  createdAt: string;
+}
+
+export interface PledgeSummary {
+  total: number;
+  count: number;
+  goalAmount: number;
+  goalReached: boolean;
+  pledges: Pledge[];
+}
+
+export interface ErrorResponse {
+  error: string;
+}

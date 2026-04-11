@@ -1,0 +1,8 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "3FbPaoH01aqm6Bayp2Isq"
+uri = "file://artifacts/fsd-gift/public/hero-bg.png"
+type = "image"
+title = "Tesla on highway at sunset"

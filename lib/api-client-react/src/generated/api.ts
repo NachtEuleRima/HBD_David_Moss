@@ -5,18 +5,27 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
+  MutationFunction,
   QueryFunction,
   QueryKey,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { HealthStatus } from "./api.schemas";
+import type {
+  CreatePledgeBody,
+  ErrorResponse,
+  HealthStatus,
+  Pledge,
+  PledgeSummary,
+} from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
-import type { ErrorType } from "../custom-fetch";
+import type { ErrorType, BodyType } from "../custom-fetch";
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 
@@ -92,6 +101,169 @@ export function useHealthCheck<
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getHealthCheckQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Submit a new pledge with name and amount
+ * @summary Create a pledge
+ */
+export const getCreatePledgeUrl = () => {
+  return `/api/pledges`;
+};
+
+export const createPledge = async (
+  createPledgeBody: CreatePledgeBody,
+  options?: RequestInit,
+): Promise<Pledge> => {
+  return customFetch<Pledge>(getCreatePledgeUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(createPledgeBody),
+  });
+};
+
+export const getCreatePledgeMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createPledge>>,
+    TError,
+    { data: BodyType<CreatePledgeBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createPledge>>,
+  TError,
+  { data: BodyType<CreatePledgeBody> },
+  TContext
+> => {
+  const mutationKey = ["createPledge"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createPledge>>,
+    { data: BodyType<CreatePledgeBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createPledge(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreatePledgeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createPledge>>
+>;
+export type CreatePledgeMutationBody = BodyType<CreatePledgeBody>;
+export type CreatePledgeMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Create a pledge
+ */
+export const useCreatePledge = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createPledge>>,
+    TError,
+    { data: BodyType<CreatePledgeBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createPledge>>,
+  TError,
+  { data: BodyType<CreatePledgeBody> },
+  TContext
+> => {
+  return useMutation(getCreatePledgeMutationOptions(options));
+};
+
+/**
+ * Returns total raised, pledge count, and list of pledges
+ * @summary Get pledge summary
+ */
+export const getGetPledgeSummaryUrl = () => {
+  return `/api/pledges/summary`;
+};
+
+export const getPledgeSummary = async (
+  options?: RequestInit,
+): Promise<PledgeSummary> => {
+  return customFetch<PledgeSummary>(getGetPledgeSummaryUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetPledgeSummaryQueryKey = () => {
+  return [`/api/pledges/summary`] as const;
+};
+
+export const getGetPledgeSummaryQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPledgeSummary>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getPledgeSummary>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetPledgeSummaryQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getPledgeSummary>>
+  > = ({ signal }) => getPledgeSummary({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPledgeSummary>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetPledgeSummaryQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPledgeSummary>>
+>;
+export type GetPledgeSummaryQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get pledge summary
+ */
+
+export function useGetPledgeSummary<
+  TData = Awaited<ReturnType<typeof getPledgeSummary>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getPledgeSummary>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetPledgeSummaryQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
