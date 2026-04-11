@@ -33,7 +33,7 @@ function LidarPhoto() {
       id: i,
       cx: Math.random() * 100,
       cy: Math.random() * 100,
-      r: Math.random() * 1.8 + 0.4,
+      r: Math.random() * 0.7 + 0.2,
       color: LIDAR_COLORS[Math.floor(Math.random() * LIDAR_COLORS.length)],
       opacity: Math.random() * 0.55 + 0.45,
     }));
