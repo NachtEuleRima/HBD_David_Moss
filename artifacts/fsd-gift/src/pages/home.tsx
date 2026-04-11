@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Gift, Route, Calendar, Heart, CheckCircle2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 
 import carPhoto from "@assets/G9emjJyWcAA2uhm_1775877269348.jpeg";
@@ -82,6 +83,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function Home() {
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [isAnonymous, setIsAnonymous] = useState(false);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -98,7 +100,7 @@ export default function Home() {
 
   const onSubmit = (values: FormValues) => {
     createPledge.mutate(
-      { data: values },
+      { data: { ...values, name: isAnonymous ? "Anonymous" : values.name } },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: getGetPledgeSummaryQueryKey() });
@@ -424,12 +426,28 @@ export default function Home() {
                               name="name"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel className="text-foreground font-mono uppercase tracking-wider text-xs">Your Name</FormLabel>
+                                  <div className="flex items-center justify-between mb-1">
+                                    <FormLabel className="text-foreground font-mono uppercase tracking-wider text-xs">Your Name</FormLabel>
+                                    <label className="flex items-center gap-2 cursor-pointer select-none text-xs text-muted-foreground font-mono">
+                                      <Checkbox
+                                        checked={isAnonymous}
+                                        onCheckedChange={(checked) => {
+                                          setIsAnonymous(!!checked);
+                                          if (checked) form.setValue("name", "Anonymous", { shouldValidate: true });
+                                          else form.setValue("name", "", { shouldValidate: false });
+                                        }}
+                                        className="rounded"
+                                        data-testid="checkbox-anonymous"
+                                      />
+                                      Go anonymous
+                                    </label>
+                                  </div>
                                   <FormControl>
                                     <Input 
-                                      {...field} 
-                                      placeholder="How David knows you" 
-                                      className="h-14 rounded-xl text-base bg-secondary/50 border-card-border focus-visible:ring-primary focus-visible:border-primary"
+                                      {...field}
+                                      disabled={isAnonymous}
+                                      placeholder={isAnonymous ? "Anonymous" : "How David knows you"}
+                                      className="h-14 rounded-xl text-base bg-secondary/50 border-card-border focus-visible:ring-primary focus-visible:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                                       data-testid="input-name"
                                     />
                                   </FormControl>
