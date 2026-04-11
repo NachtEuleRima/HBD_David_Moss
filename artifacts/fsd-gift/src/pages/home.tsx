@@ -337,17 +337,24 @@ export default function Home() {
                     
                     <div className="bg-secondary rounded-2xl p-6 space-y-4 border border-card-border">
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground mb-1 font-mono uppercase tracking-wider">Venmo Handle</p>
-                        <p className="text-xl font-semibold text-foreground font-sans select-all">@Rima-Sukhadia</p>
-                      </div>
-                      <div className="h-px w-full bg-card-border" />
-                      <div>
                         <p className="text-sm font-medium text-muted-foreground mb-1 font-mono uppercase tracking-wider">Required Note</p>
                         <p className="text-lg text-primary font-medium font-sans bg-primary/10 inline-block px-3 py-1 rounded-lg select-all">
                           Happy Birthday David
                         </p>
                       </div>
                     </div>
+
+                    <a
+                      href="https://venmo.com/u/Rima-Sukhadia"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-3 w-full h-14 rounded-xl bg-[#008CFF] hover:bg-[#007AE0] text-white font-semibold text-lg transition-all shadow-[0_0_20px_rgba(0,140,255,0.3)] hover:shadow-[0_0_30px_rgba(0,140,255,0.5)]"
+                    >
+                      <svg viewBox="0 0 24 24" className="w-6 h-6 fill-white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.166 1C20.912 3.667 21.7 6.417 21.7 9.917c0 6.917-5.917 15.75-10.75 21.083H2.3L0 2.417 8.167 1.5l1.25 10.083c1.167-1.917 2.583-5 2.583-7.083 0-1.25-.25-2.083-.583-2.75L19.166 1z"/>
+                      </svg>
+                      Pay via Venmo
+                    </a>
                     
                     <Button 
                       variant="outline" 
