@@ -74,28 +74,33 @@ router.get("/x/callback", async (req: Request, res: Response) => {
   }
 
   const callbackUrl = `${getBaseUrl(req)}/api/auth/x/callback`;
-  console.log("OAuth callback - callbackUrl:", callbackUrl, "clientId prefix:", process.env.X_CLIENT_ID?.slice(0, 8));
 
   try {
     const clientId = process.env.X_CLIENT_ID!;
-    const clientSecret = process.env.X_CLIENT_SECRET || "";
-    const basicCredentials = Buffer.from(
-      `${encodeURIComponent(clientId)}:${encodeURIComponent(clientSecret)}`
-    ).toString("base64");
+    const clientSecret = process.env.X_CLIENT_SECRET;
+
+    const tokenBody = new URLSearchParams({
+      grant_type: "authorization_code",
+      code: code as string,
+      redirect_uri: callbackUrl,
+      code_verifier: req.session.codeVerifier!,
+      client_id: clientId,
+    });
+
+    const headers: Record<string, string> = {
+      "Content-Type": "application/x-www-form-urlencoded",
+    };
+
+    if (clientSecret) {
+      headers.Authorization = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`;
+    }
+
+    console.log("Token exchange - clientId prefix:", clientId.slice(0, 8), "hasSecret:", !!clientSecret, "callbackUrl:", callbackUrl);
 
     const tokenRes = await fetch("https://api.twitter.com/2/oauth2/token", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${basicCredentials}`,
-      },
-      body: new URLSearchParams({
-        grant_type: "authorization_code",
-        code: code as string,
-        redirect_uri: callbackUrl,
-        code_verifier: req.session.codeVerifier!,
-        client_id: clientId,
-      }),
+      headers,
+      body: tokenBody,
     });
 
     if (!tokenRes.ok) {
