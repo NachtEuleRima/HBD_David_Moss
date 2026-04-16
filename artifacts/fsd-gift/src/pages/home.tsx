@@ -30,14 +30,22 @@ const LIDAR_COLORS = [
 
 function LidarPhoto() {
   const dots = useMemo(() => {
-    return Array.from({ length: 320 }, (_, i) => ({
-      id: i,
-      cx: Math.random() * 100,
-      cy: Math.random() * 100,
-      r: Math.random() * 0.7 + 0.2,
-      color: LIDAR_COLORS[Math.floor(Math.random() * LIDAR_COLORS.length)],
-      opacity: Math.random() * 0.55 + 0.45,
-    }));
+    const result = [];
+    while (result.length < 320) {
+      const cx = Math.random() * 100;
+      const cy = Math.random() * 100;
+      const onFace = cx > 30 && cx < 70 && cy > 8 && cy < 55;
+      if (onFace) continue;
+      result.push({
+        id: result.length,
+        cx,
+        cy,
+        r: Math.random() * 0.7 + 0.2,
+        color: LIDAR_COLORS[Math.floor(Math.random() * LIDAR_COLORS.length)],
+        opacity: Math.random() * 0.55 + 0.45,
+      });
+    }
+    return result;
   }, []);
 
   return (
