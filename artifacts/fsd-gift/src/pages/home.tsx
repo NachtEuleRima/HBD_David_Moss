@@ -17,7 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 
 import carPhoto from "@assets/G9emjJyWcAA2uhm_1775877269348.jpeg";
-import davidPhoto from "@assets/IMG_4594_nobg.png";
+import davidPhoto from "@assets/IMG_4594_1775877101729.jpeg";
 
 const LIDAR_COLORS = [
   "#00ffff", "#00e5ff", "#40c4ff", "#00b0ff",
@@ -30,25 +30,14 @@ const LIDAR_COLORS = [
 
 function LidarPhoto() {
   const dots = useMemo(() => {
-    const result = [];
-    let attempts = 0;
-    while (result.length < 180 && attempts < 2000) {
-      attempts++;
-      const cx = Math.random() * 100;
-      const cy = Math.random() * 100;
-      // Keep dots sparse over his face area (center-upper portion)
-      const isFace = cx > 22 && cx < 78 && cy > 5 && cy < 60;
-      if (isFace && Math.random() > 0.15) continue;
-      result.push({
-        id: result.length,
-        cx,
-        cy,
-        r: Math.random() * 0.7 + 0.2,
-        color: LIDAR_COLORS[Math.floor(Math.random() * LIDAR_COLORS.length)],
-        opacity: Math.random() * 0.45 + 0.3,
-      });
-    }
-    return result;
+    return Array.from({ length: 320 }, (_, i) => ({
+      id: i,
+      cx: Math.random() * 100,
+      cy: Math.random() * 100,
+      r: Math.random() * 0.7 + 0.2,
+      color: LIDAR_COLORS[Math.floor(Math.random() * LIDAR_COLORS.length)],
+      opacity: Math.random() * 0.55 + 0.45,
+    }));
   }, []);
 
   return (
