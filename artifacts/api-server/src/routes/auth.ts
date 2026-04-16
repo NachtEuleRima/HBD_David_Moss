@@ -69,19 +69,24 @@ router.get("/x/callback", async (req: Request, res: Response) => {
   const callbackUrl = `${getBaseUrl(req)}/api/auth/x/callback`;
 
   try {
+    const clientId = process.env.X_CLIENT_ID!;
+    const clientSecret = process.env.X_CLIENT_SECRET!;
+    const credentials = Buffer.from(
+      `${encodeURIComponent(clientId)}:${encodeURIComponent(clientSecret)}`
+    ).toString("base64");
+
     const tokenRes = await fetch("https://api.twitter.com/2/oauth2/token", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${Buffer.from(
-          `${process.env.X_CLIENT_ID}:${process.env.X_CLIENT_SECRET}`
-        ).toString("base64")}`,
+        Authorization: `Basic ${credentials}`,
       },
       body: new URLSearchParams({
         grant_type: "authorization_code",
         code: code as string,
         redirect_uri: callbackUrl,
         code_verifier: req.session.codeVerifier!,
+        client_id: clientId,
       }),
     });
 
