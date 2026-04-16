@@ -39,8 +39,9 @@ router.get("/x", async (req: Request, res: Response) => {
   const codeVerifier = generateCodeVerifier();
   const codeChallenge = generateCodeChallenge(codeVerifier);
   const state = base64URLEncode(randomBytes(16));
-  const callbackUrl = `${getBaseUrl(req)}/api/auth/x/callback`;
-  console.log("OAuth start — callbackUrl:", callbackUrl, "host header:", req.headers["x-forwarded-host"] || req.get("host"));
+  const baseUrl = process.env.CALLBACK_BASE_URL || getBaseUrl(req);
+  const callbackUrl = `${baseUrl}/api/auth/x/callback`;
+  console.log("OAuth start — callbackUrl:", callbackUrl);
 
   // Store state in DB so it survives across browser contexts (mobile OAuth)
   await db.insert(oauthStatesTable).values({ state, codeVerifier, callbackUrl });
