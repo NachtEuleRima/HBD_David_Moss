@@ -31,7 +31,7 @@ const LIDAR_COLORS = [
 function LidarPhoto() {
   const dots = useMemo(() => {
     const result = [];
-    while (result.length < 500) {
+    while (result.length < 320) {
       const cx = Math.random() * 100;
       const cy = Math.random() * 100;
       if (cx > 33 && cx < 67 && cy > 28 && cy < 52) continue;
