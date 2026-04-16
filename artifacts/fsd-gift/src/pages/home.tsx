@@ -123,18 +123,6 @@ export default function Home() {
       .catch(() => {})
       .finally(() => setXUserLoading(false));
 
-    const onMessage = (event: MessageEvent) => {
-      if (event.data?.type === "x_auth_success" && event.data.user) {
-        const user = event.data.user as { id: string; username: string; name: string };
-        setXUser(user);
-        form.setValue("name", user.name, { shouldValidate: false });
-        setXUserLoading(false);
-      } else if (event.data?.type === "x_auth_error") {
-        toast({ title: "Verification failed", description: "Could not verify your X identity. Please try again.", variant: "destructive" });
-      }
-    };
-    window.addEventListener("message", onMessage);
-    return () => window.removeEventListener("message", onMessage);
   }, []);
 
   const onSubmit = (values: FormValues) => {
@@ -530,9 +518,7 @@ export default function Home() {
                             </div>
                             <Button
                               className="w-full h-12 rounded-xl bg-[#000000] hover:bg-[#1a1a1a] text-white font-semibold flex items-center gap-2 justify-center"
-                              onClick={() => {
-                                window.open(`${baseUrl}/api/auth/x`, "x_auth", "width=600,height=700,noopener=no");
-                              }}
+                              onClick={() => { window.location.href = `${baseUrl}/api/auth/x`; }}
                             >
                               Authorize with
                               <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
