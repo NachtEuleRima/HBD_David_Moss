@@ -41,7 +41,7 @@ function LidarPhoto() {
   }, []);
 
   return (
-    <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-primary/20 aspect-[3/4]">
+    <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-primary/20 h-full min-h-[220px]">
       <img
         src={davidPhoto}
         alt="David Moss"
@@ -65,11 +65,6 @@ function LidarPhoto() {
           />
         ))}
       </svg>
-      <div className="absolute bottom-3 left-3 right-3">
-        <span className="text-xs font-mono text-cyan-400 bg-black/60 px-2 py-1 rounded tracking-widest">
-          LIDAR SCAN — POINT CLOUD
-        </span>
-      </div>
     </div>
   );
 }
@@ -168,7 +163,7 @@ export default function Home() {
   return (
     <div className="min-h-[100dvh] w-full bg-background selection:bg-primary/30">
       {/* Hero Section */}
-      <section className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden border-b border-border">
+      <section className="relative w-full h-[60vh] min-h-[500px] flex items-end justify-center overflow-hidden border-b border-border">
         <div className="absolute inset-0 z-0">
           <img 
             src={carPhoto}
@@ -179,7 +174,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.5)_100%)] pointer-events-none mix-blend-multiply" />
         </div>
         
-        <div className="relative z-10 container px-4 md:px-6 mx-auto text-center flex flex-col items-center">
+        <div className="relative z-10 container px-4 md:px-6 mx-auto text-center flex flex-col items-center pb-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -217,8 +212,8 @@ export default function Home() {
                 <Route className="w-8 h-8 text-primary" />
                 The Milestone
               </h2>
-              <div className="flex flex-col sm:flex-row gap-6 items-start">
-                <div className="w-full sm:w-48 flex-shrink-0">
+              <div className="flex flex-col sm:flex-row gap-6 items-stretch">
+                <div className="w-full sm:w-48 flex-shrink-0 self-stretch">
                   <LidarPhoto />
                 </div>
                 <div className="prose prose-invert prose-lg text-muted-foreground font-sans">
