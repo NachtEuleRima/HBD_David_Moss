@@ -193,7 +193,7 @@ export default function Home() {
               For David Moss.
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed">
-              Celebrating a legendary solo coast-to-coast drive on Full Self-Driving. Let's surprise him with a Starlink Mini.
+              Celebrating a legendary solo coast-to-coast drive on Full Self-Driving. Let's surprise him with a custom-built NAS for his content creator journey.
             </p>
           </motion.div>
         </div>
@@ -226,7 +226,7 @@ export default function Home() {
                     Driving coast-to-coast is an achievement. Doing it entirely on Tesla's Full Self-Driving is a milestone in the history of transportation. David Moss did exactly that, proving what's possible when technology meets determination.
                   </p>
                   <p>
-                    As a core member of the Tesla community, David is always sharing insights and pushing the boundaries, whether it's jumping in front of unsupervised Tesla Robotaxis or v14.3 FSD. For his birthday on April 26th, we're coming together to get him something that pairs perfectly with his road warrior lifestyle: <strong>a Starlink Mini</strong>.
+                    As a core member of the Tesla community, David is always sharing insights and pushing the boundaries, whether it's jumping in front of unsupervised Tesla Robotaxis or v14.3 FSD. For his birthday on April 26th, we're coming together to get him something that powers his content creator journey: <strong>a custom-built NAS he can access from anywhere</strong>. The setup includes a UGreen 2-bay NAS ($400), two 22TB hard drives ($900), and a HexOS license ($200) — totaling $1,500 and giving him a pro-grade, remote-accessible storage system worthy of the FSD Knight.
                   </p>
                 </div>
               </div>
@@ -394,7 +394,7 @@ export default function Home() {
                     <div className="space-y-2">
                       <h3 className="text-3xl font-bold font-sans text-foreground" data-testid="text-goal-reached">Goal Reached!</h3>
                       <p className="text-muted-foreground">
-                        We did it! Thank you to everyone who chipped in for David's Starlink Mini. What an amazing community.
+                        We did it! Thank you to everyone who chipped in for David's custom NAS build. What an amazing community.
                       </p>
                     </div>
                   </motion.div>
