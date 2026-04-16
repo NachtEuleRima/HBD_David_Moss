@@ -108,7 +108,7 @@ export default function Home() {
     const params = new URLSearchParams(window.location.search);
     const authError = params.get("auth_error");
     if (authError) {
-      toast({ title: "Sign-in failed", description: "Could not connect to X. Please try again.", variant: "destructive" });
+      toast({ title: "Verification failed", description: "Could not verify your identity. Please try again.", variant: "destructive" });
       window.history.replaceState({}, "", window.location.pathname);
     }
 
@@ -512,15 +512,15 @@ export default function Home() {
                               <LogIn className="w-6 h-6 text-muted-foreground" />
                             </div>
                             <div>
-                              <p className="font-semibold text-foreground font-sans">Sign in to chip in</p>
-                              <p className="text-sm text-muted-foreground mt-1">Verify your X account to join the surprise</p>
+                              <p className="font-semibold text-foreground font-sans">Verify your identity to chip in</p>
+                              <p className="text-sm text-muted-foreground mt-1">One-time check — we won't post anything on your behalf</p>
                             </div>
                             <Button
                               className="w-full h-12 rounded-xl bg-[#000000] hover:bg-[#1a1a1a] text-white font-semibold flex items-center gap-2 justify-center"
                               onClick={() => { window.location.href = `${baseUrl}/api/auth/x`; }}
                             >
                               <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
-                              Sign in with X
+                              Verify with X
                             </Button>
                           </div>
                         ) : (
@@ -533,7 +533,7 @@ export default function Home() {
                                 onClick={() => fetch(`${baseUrl}/api/auth/logout`, { method: "POST", credentials: "include" }).then(() => { setXUser(null); form.setValue("name", ""); })}
                                 className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
                               >
-                                <LogOut size={12} /> Sign out
+                                <LogOut size={12} /> Disconnect
                               </button>
                             </div>
                             <Form {...form}>
