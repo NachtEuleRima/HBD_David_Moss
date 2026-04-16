@@ -61,7 +61,7 @@ router.get("/x", async (req: Request, res: Response) => {
     code_challenge_method: "S256",
   });
 
-  const authorizeUrl = `https://twitter.com/i/oauth2/authorize?${params}`;
+  const authorizeUrl = `https://x.com/i/oauth2/authorize?${params}`;
   // Use JS redirect instead of 302 to prevent iOS Universal Links from
   // intercepting and opening the X native app (which can't show the OAuth page)
   res.type("html").send(
