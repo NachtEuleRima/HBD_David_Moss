@@ -328,7 +328,7 @@ export default function Home() {
                 ) : (
                   <div className="flex items-center gap-2">
                     <Heart className="w-4 h-4 text-primary" />
-                    <span>{summary?.count || 0} supporters have chipped in</span>
+                    <span>{summary?.count || 0} {summary?.count === 1 ? "supporter has" : "supporters have"} chipped in</span>
                   </div>
                 )}
               </div>
@@ -498,7 +498,7 @@ export default function Home() {
                       <CardHeader className="pb-6 border-b border-card-border bg-secondary/30">
                         <CardTitle className="text-2xl font-sans font-bold text-foreground">Chip In</CardTitle>
                         <CardDescription className="text-base text-muted-foreground font-sans">
-                          Join the surprise. Every bit helps us reach the $1,500 goal.
+                          Join the mission. Every bit helps us reach the $1,500 goal.
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="pt-6">
@@ -513,7 +513,7 @@ export default function Home() {
                             </div>
                             <div>
                               <p className="font-semibold text-foreground font-sans">Verify your identity to chip in</p>
-                              <p className="text-sm text-muted-foreground mt-1">One-time check — we won't post anything on your behalf</p>
+
                             </div>
                             <Button
                               className="w-full h-12 rounded-xl bg-[#000000] hover:bg-[#1a1a1a] text-white font-semibold flex items-center gap-2 justify-center"
