@@ -17,7 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 
 import carPhoto from "@assets/G9emjJyWcAA2uhm_1775877269348.jpeg";
-import davidPhoto from "@assets/IMG_4594_1775877101729.jpeg";
+import davidPhoto from "@assets/IMG_6688_1776319275592.PNG";
 
 const LIDAR_COLORS = [
   "#00ffff", "#00e5ff", "#40c4ff", "#00b0ff",
@@ -45,7 +45,7 @@ function LidarPhoto() {
       <img
         src={davidPhoto}
         alt="David Moss"
-        className="w-full h-full object-cover object-top"
+        className="w-full h-full object-cover object-center"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60" />
       <svg
