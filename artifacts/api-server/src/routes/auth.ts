@@ -61,7 +61,9 @@ router.get("/x", async (req: Request, res: Response) => {
     code_challenge_method: "S256",
   });
 
-  const authorizeUrl = `https://x.com/i/oauth2/authorize?${params}`;
+  // The '#_' fragment bypasses iOS Universal Links (Apple docs: Universal Links
+  // don't trigger when the URL contains a fragment), keeping auth in Safari.
+  const authorizeUrl = `https://twitter.com/i/oauth2/authorize?${params}#_`;
   // Use JS redirect instead of 302 to prevent iOS Universal Links from
   // intercepting and opening the X native app (which can't show the OAuth page)
   res.type("html").send(
