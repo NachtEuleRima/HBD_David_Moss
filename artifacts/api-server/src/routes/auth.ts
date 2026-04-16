@@ -61,7 +61,7 @@ router.get("/x", async (req: Request, res: Response) => {
     code_challenge_method: "S256",
   });
 
-  res.redirect(`https://twitter.com/i/oauth2/authorize?${params}`);
+  res.redirect(`https://x.com/i/oauth2/authorize?${params}`);
 });
 
 router.get("/x/callback", async (req: Request, res: Response) => {
