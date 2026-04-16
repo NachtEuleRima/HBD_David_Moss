@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,6 +29,24 @@ const LIDAR_COLORS = [
 ];
 
 function LidarPhoto() {
+  const dots = useMemo(() => {
+    const result = [];
+    while (result.length < 320) {
+      const cx = Math.random() * 100;
+      const cy = Math.random() * 100;
+      if (cx > 30 && cx < 70 && cy > 8 && cy < 55) continue;
+      result.push({
+        id: result.length,
+        cx,
+        cy,
+        r: Math.random() * 0.7 + 0.2,
+        color: LIDAR_COLORS[Math.floor(Math.random() * LIDAR_COLORS.length)],
+        opacity: Math.random() * 0.55 + 0.45,
+      });
+    }
+    return result;
+  }, []);
+
   return (
     <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-primary/20 h-full min-h-[220px]">
       <img
@@ -37,6 +55,16 @@ function LidarPhoto() {
         className="w-full h-full object-cover object-top"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60" />
+      <svg
+        className="absolute inset-0 w-full h-full mix-blend-screen"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="xMidYMid slice"
+        aria-hidden="true"
+      >
+        {dots.map((dot) => (
+          <circle key={dot.id} cx={dot.cx} cy={dot.cy} r={dot.r} fill={dot.color} opacity={dot.opacity} />
+        ))}
+      </svg>
     </div>
   );
 }
