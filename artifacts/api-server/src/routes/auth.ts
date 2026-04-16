@@ -61,7 +61,16 @@ router.get("/x", async (req: Request, res: Response) => {
     code_challenge_method: "S256",
   });
 
-  res.redirect(`https://x.com/i/oauth2/authorize?${params}`);
+  const authorizeUrl = `https://twitter.com/i/oauth2/authorize?${params}`;
+  // Use JS redirect instead of 302 to prevent iOS Universal Links from
+  // intercepting and opening the X native app (which can't show the OAuth page)
+  res.type("html").send(
+    `<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1">` +
+    `<style>body{background:#000;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style>` +
+    `</head><body><p>Redirecting to X...</p>` +
+    `<script>window.location.href=${JSON.stringify(authorizeUrl)};</script>` +
+    `</body></html>`
+  );
 });
 
 router.get("/x/callback", async (req: Request, res: Response) => {
