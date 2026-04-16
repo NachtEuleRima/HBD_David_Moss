@@ -226,7 +226,7 @@ export default function Home() {
                     Driving coast-to-coast is an achievement. Doing it entirely on Tesla's Full Self-Driving is a milestone in the history of transportation. David Moss did exactly that, proving what's possible when technology meets determination.
                   </p>
                   <p>
-                    As a core member of the Tesla community, David is always sharing insights and pushing the boundaries, whether it's jumping in front of unsupervised Tesla Robotaxis or v14.3 FSD. For his birthday on April 26th, we're coming together to get him something that powers his content creator journey: <strong>a custom-built NAS he can access from anywhere</strong>. The setup includes a UGreen 2-bay NAS ($400), two 22TB hard drives ($900), and a HexOS license ($200) — totaling $1,500 and giving him a pro-grade, remote-accessible storage system worthy of the FSD Knight.
+                    As a core member of the Tesla community, David is always sharing insights and pushing the boundaries, whether it's jumping in front of unsupervised Tesla Robotaxis or v14.3 FSD. For his birthday on April 26th, we're coming together to get him something that powers his content creator journey: <strong>a custom-built NAS he can access from anywhere</strong> — a pro-grade, remote-accessible storage system worthy of the FSD Knight.
                   </p>
                 </div>
               </div>
