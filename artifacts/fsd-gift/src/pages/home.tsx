@@ -505,7 +505,7 @@ export default function Home() {
                             </div>
                             <Button
                               className="w-full h-12 rounded-xl bg-[#000000] hover:bg-[#1a1a1a] text-white font-semibold flex items-center gap-2 justify-center"
-                              onClick={() => { window.location.href = `${baseUrl}/api/auth/x`; }}
+                              onClick={() => { window.open(`${baseUrl}/api/auth/x`, "_top"); }}
                             >
                               <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
                               Sign in with X
