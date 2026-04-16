@@ -77,8 +77,6 @@ router.get("/x/callback", async (req: Request, res: Response) => {
   const clientId = process.env.X_CLIENT_ID!;
   const clientSecret = process.env.X_CLIENT_SECRET;
 
-  console.log("OAuth callback - callbackUrl:", callbackUrl, "clientId prefix:", clientId.slice(0, 8), "hasSecret:", !!clientSecret);
-
   try {
     let tokenBody: URLSearchParams;
     const headers: Record<string, string> = {
