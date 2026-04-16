@@ -74,28 +74,36 @@ router.get("/x/callback", async (req: Request, res: Response) => {
   }
 
   const callbackUrl = `${getBaseUrl(req)}/api/auth/x/callback`;
+  const clientId = process.env.X_CLIENT_ID!;
+  const clientSecret = process.env.X_CLIENT_SECRET;
+
+  console.log("OAuth callback - callbackUrl:", callbackUrl, "clientId prefix:", clientId.slice(0, 8), "hasSecret:", !!clientSecret);
 
   try {
-    const clientId = process.env.X_CLIENT_ID!;
-    const clientSecret = process.env.X_CLIENT_SECRET;
-
-    const tokenBody = new URLSearchParams({
-      grant_type: "authorization_code",
-      code: code as string,
-      redirect_uri: callbackUrl,
-      code_verifier: req.session.codeVerifier!,
-      client_id: clientId,
-    });
-
+    let tokenBody: URLSearchParams;
     const headers: Record<string, string> = {
       "Content-Type": "application/x-www-form-urlencoded",
     };
 
     if (clientSecret) {
+      // Confidential client (Web App): credentials in Basic Auth header, client_id NOT in body
       headers.Authorization = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`;
+      tokenBody = new URLSearchParams({
+        grant_type: "authorization_code",
+        code: code as string,
+        redirect_uri: callbackUrl,
+        code_verifier: req.session.codeVerifier!,
+      });
+    } else {
+      // Public client: client_id in body, no Authorization header
+      tokenBody = new URLSearchParams({
+        grant_type: "authorization_code",
+        code: code as string,
+        redirect_uri: callbackUrl,
+        code_verifier: req.session.codeVerifier!,
+        client_id: clientId,
+      });
     }
-
-    console.log("Token exchange - clientId prefix:", clientId.slice(0, 8), "hasSecret:", !!clientSecret, "callbackUrl:", callbackUrl);
 
     const tokenRes = await fetch("https://api.twitter.com/2/oauth2/token", {
       method: "POST",
@@ -117,6 +125,8 @@ router.get("/x/callback", async (req: Request, res: Response) => {
     });
 
     if (!userRes.ok) {
+      const userErr = await userRes.text();
+      console.error("User fetch failed:", userErr);
       res.redirect("/?auth_error=user");
       return;
     }
