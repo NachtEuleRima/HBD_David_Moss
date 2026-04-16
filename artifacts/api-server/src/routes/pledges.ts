@@ -2,7 +2,7 @@ import { Router } from "express";
 import { db, pledgesTable } from "@workspace/db";
 import { insertPledgeSchema } from "@workspace/db";
 import { CreatePledgeBody } from "@workspace/api-zod";
-import { sum, count } from "drizzle-orm";
+import { sum, count, eq } from "drizzle-orm";
 import { desc } from "drizzle-orm";
 
 const GOAL_AMOUNT = 300;
@@ -66,6 +66,32 @@ router.get("/summary", async (_req, res) => {
       createdAt: p.createdAt,
     })),
   });
+});
+
+router.delete("/:id", async (req, res) => {
+  const adminPassword = req.headers["x-admin-password"];
+  if (!adminPassword || adminPassword !== process.env.ADMIN_PASSWORD) {
+    res.status(401).json({ error: "Unauthorized" });
+    return;
+  }
+
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) {
+    res.status(400).json({ error: "Invalid id" });
+    return;
+  }
+
+  const deleted = await db
+    .delete(pledgesTable)
+    .where(eq(pledgesTable.id, id))
+    .returning();
+
+  if (deleted.length === 0) {
+    res.status(404).json({ error: "Pledge not found" });
+    return;
+  }
+
+  res.json({ success: true });
 });
 
 export default router;

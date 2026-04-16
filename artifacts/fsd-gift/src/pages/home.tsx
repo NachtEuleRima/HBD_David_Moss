@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Gift, Route, Calendar, Heart, CheckCircle2 } from "lucide-react";
+import { Gift, Route, Calendar, Heart, CheckCircle2, Lock, Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 
@@ -84,6 +84,11 @@ type FormValues = z.infer<typeof formSchema>;
 export default function Home() {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [adminInput, setAdminInput] = useState("");
+  const [adminError, setAdminError] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -119,6 +124,43 @@ export default function Home() {
 
   const handleQuickPick = (amount: number) => {
     form.setValue("amount", amount, { shouldValidate: true });
+  };
+
+  const handleAdminLogin = () => {
+    const baseUrl = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
+    fetch(`${baseUrl}/api/pledges/summary`)
+      .then(() => {
+        if (adminInput === "cyberowlcanaccess") {
+          setIsAdminMode(true);
+          setShowAdminLogin(false);
+          setAdminInput("");
+          setAdminError(false);
+        } else {
+          setAdminError(true);
+        }
+      })
+      .catch(() => setAdminError(true));
+  };
+
+  const handleDelete = async (id: number) => {
+    setDeletingId(id);
+    const baseUrl = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
+    try {
+      const res = await fetch(`${baseUrl}/api/pledges/${id}`, {
+        method: "DELETE",
+        headers: { "x-admin-password": "cyberowlcanaccess" },
+      });
+      if (res.ok) {
+        queryClient.invalidateQueries({ queryKey: getGetPledgeSummaryQueryKey() });
+        toast({ title: "Supporter removed" });
+      } else {
+        toast({ title: "Failed to remove", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "Error", variant: "destructive" });
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const progressPercentage = summary ? Math.min((summary.total / summary.goalAmount) * 100, 100) : 0;
@@ -261,7 +303,34 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.2 }}
               data-testid="section-pledgers"
             >
-              <h3 className="text-xl font-semibold mb-6 text-foreground font-sans">Recent Supporters</h3>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold text-foreground font-sans">Recent Supporters</h3>
+                <button
+                  onClick={() => { if (isAdminMode) { setIsAdminMode(false); } else { setShowAdminLogin((v) => !v); setAdminError(false); } }}
+                  className="text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors"
+                  title="Admin"
+                >
+                  <Lock size={14} />
+                </button>
+              </div>
+              {showAdminLogin && !isAdminMode && (
+                <div className="mb-4 flex gap-2 items-center">
+                  <input
+                    type="password"
+                    value={adminInput}
+                    onChange={(e) => { setAdminInput(e.target.value); setAdminError(false); }}
+                    onKeyDown={(e) => e.key === "Enter" && handleAdminLogin()}
+                    placeholder="Admin password"
+                    className={`flex-1 h-9 px-3 rounded-lg text-sm bg-secondary/50 border ${adminError ? "border-destructive" : "border-card-border"} text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary`}
+                  />
+                  <button
+                    onClick={handleAdminLogin}
+                    className="h-9 px-3 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+                  >
+                    Enter
+                  </button>
+                </div>
+              )}
               {isSummaryLoading ? (
                 <div className="space-y-4">
                   {[1, 2, 3].map((i) => (
@@ -278,15 +347,25 @@ export default function Home() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {summary.pledges.map((pledge) => (
                     <div key={pledge.id} className="flex items-center gap-4 p-3 rounded-2xl hover:bg-secondary/50 transition-colors border border-transparent hover:border-card-border">
-                      <Avatar className="h-12 w-12 border border-card-border shadow-sm">
+                      <Avatar className="h-12 w-12 border border-card-border shadow-sm flex-shrink-0">
                         <AvatarFallback className="bg-secondary text-secondary-foreground font-mono font-bold">
                           {pledge.name.substring(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <div>
-                        <p className="font-medium text-foreground font-sans">{pledge.name}</p>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-foreground font-sans truncate">{pledge.name}</p>
                         <p className="text-sm text-primary font-mono font-medium">${pledge.amount}</p>
                       </div>
+                      {isAdminMode && (
+                        <button
+                          onClick={() => handleDelete(pledge.id)}
+                          disabled={deletingId === pledge.id}
+                          className="ml-auto text-muted-foreground hover:text-destructive transition-colors disabled:opacity-40 flex-shrink-0"
+                          title="Remove supporter"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
