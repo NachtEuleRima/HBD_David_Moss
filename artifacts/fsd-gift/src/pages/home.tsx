@@ -34,6 +34,7 @@ function LidarPhoto() {
     while (result.length < 320) {
       const cx = Math.random() * 100;
       const cy = Math.random() * 100;
+      if (cx > 38 && cx < 62 && cy > 54 && cy < 66) continue;
       result.push({
         id: result.length,
         cx,
