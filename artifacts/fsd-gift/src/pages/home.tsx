@@ -83,10 +83,11 @@ export default function Home() {
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [adminInput, setAdminInput] = useState("");
   const [adminError, setAdminError] = useState(false);
+  const [adminPassword, setAdminPassword] = useState<string | null>(null);
+  const [adminPledges, setAdminPledges] = useState<Array<{ id: number; name: string; amount: number; xUsername?: string; createdAt: string }>>([]);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [xUser, setXUser] = useState<{ id: string; username: string; name: string } | null>(null);
   const [xUserLoading, setXUserLoading] = useState(true);
-  const [adminXUsernames, setAdminXUsernames] = useState<Record<number, string>>({});
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -146,6 +147,20 @@ export default function Home() {
     form.setValue("amount", amount, { shouldValidate: true });
   };
 
+  const fetchAdminPledges = (pwd: string) =>
+    fetch(`${baseUrl}/api/pledges/summary`, {
+      headers: { "x-admin-password": pwd },
+      credentials: "include",
+    })
+      .then((r) => r.json())
+      .then((data) => { setAdminPledges(data.pledges ?? []); });
+
+  useEffect(() => {
+    if (isAdminMode && adminPassword) {
+      fetchAdminPledges(adminPassword);
+    }
+  }, [summary, isAdminMode, adminPassword]);
+
   const handleAdminLogin = () => {
     if (adminInput !== "cyberowlcanaccess") {
       setAdminError(true);
@@ -157,15 +172,12 @@ export default function Home() {
     })
       .then((r) => r.json())
       .then((data) => {
+        setAdminPassword(adminInput);
+        setAdminPledges(data.pledges ?? []);
         setIsAdminMode(true);
         setShowAdminLogin(false);
         setAdminInput("");
         setAdminError(false);
-        const map: Record<number, string> = {};
-        data.pledges?.forEach((p: any) => {
-          if (p.xUsername) map[p.id] = p.xUsername;
-        });
-        setAdminXUsernames(map);
       })
       .catch(() => setAdminError(true));
   };
@@ -370,9 +382,9 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-              ) : summary?.pledges && summary.pledges.length > 0 ? (
+              ) : (isAdminMode ? adminPledges : summary?.pledges ?? []).length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {summary.pledges.map((pledge) => (
+                  {(isAdminMode ? adminPledges : summary?.pledges ?? []).map((pledge) => (
                     <div key={pledge.id} className="flex items-center gap-4 p-3 rounded-2xl hover:bg-secondary/50 transition-colors border border-transparent hover:border-card-border">
                       <Avatar className="h-12 w-12 border border-card-border shadow-sm flex-shrink-0">
                         <AvatarFallback className="bg-secondary text-secondary-foreground font-mono font-bold">
@@ -382,8 +394,8 @@ export default function Home() {
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-foreground font-sans truncate">{pledge.name}</p>
                         <p className="text-sm text-primary font-mono font-medium">${pledge.amount}</p>
-                        {isAdminMode && adminXUsernames[pledge.id] && (
-                          <p className="text-xs text-cyan-400 font-mono mt-0.5">@{adminXUsernames[pledge.id]}</p>
+                        {isAdminMode && (pledge as any).xUsername && (
+                          <p className="text-xs text-cyan-400 font-mono mt-0.5">@{(pledge as any).xUsername}</p>
                         )}
                       </div>
                       {isAdminMode && (
