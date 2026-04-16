@@ -78,9 +78,9 @@
   --popover-foreground: 0 0% 98%;
   --popover-border: 222 47% 16%;
 
-  --primary: 207 50% 62%;
+  --primary: 185 100% 48%;
   --primary-foreground: 224 71% 4%;
-  --primary-border: 207 50% 48%;
+  --primary-border: 185 100% 36%;
 
   --secondary: 222 47% 16%;
   --secondary-foreground: 0 0% 98%;
@@ -90,16 +90,16 @@
   --muted-foreground: 215 20.2% 65.1%;
   --muted-border: 222 47% 24%;
 
-  --accent: 207 50% 62%;
+  --accent: 185 100% 48%;
   --accent-foreground: 224 71% 4%;
-  --accent-border: 207 50% 48%;
+  --accent-border: 185 100% 36%;
 
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
 
   --border: 222 47% 16%;
   --input: 222 47% 16%;
-  --ring: 207 50% 62%;
+  --ring: 185 100% 48%;
 
   --button-outline: rgba(255,255,255, .10);
   --badge-outline: rgba(255,255,255, .05);
