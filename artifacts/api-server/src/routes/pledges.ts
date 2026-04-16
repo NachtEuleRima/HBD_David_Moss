@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { db, pledgesTable } from "@workspace/db";
-import { insertPledgeSchema } from "@workspace/db";
 import { CreatePledgeBody } from "@workspace/api-zod";
 import { sum, count, eq } from "drizzle-orm";
 import { desc } from "drizzle-orm";
@@ -10,6 +9,13 @@ const GOAL_AMOUNT = 1500;
 const router = Router();
 
 router.post("/", async (req, res) => {
+  const session = req.session as any;
+
+  if (!session.xUser) {
+    res.status(401).json({ error: "Please sign in with X to pledge" });
+    return;
+  }
+
   const parsed = CreatePledgeBody.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: "Invalid input" });
@@ -30,7 +36,7 @@ router.post("/", async (req, res) => {
 
   const [pledge] = await db
     .insert(pledgesTable)
-    .values({ name, amount: String(amount) })
+    .values({ name, amount: String(amount), xUsername: session.xUser.username })
     .returning();
 
   res.status(201).json({
@@ -41,7 +47,10 @@ router.post("/", async (req, res) => {
   });
 });
 
-router.get("/summary", async (_req, res) => {
+router.get("/summary", async (req, res) => {
+  const adminPassword = req.headers["x-admin-password"];
+  const isAdmin = adminPassword && adminPassword === process.env.ADMIN_PASSWORD;
+
   const pledges = await db
     .select()
     .from(pledgesTable)
@@ -64,6 +73,7 @@ router.get("/summary", async (_req, res) => {
       name: p.name,
       amount: parseFloat(p.amount),
       createdAt: p.createdAt,
+      ...(isAdmin ? { xUsername: p.xUsername } : {}),
     })),
   });
 });

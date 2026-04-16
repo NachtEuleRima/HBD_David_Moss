@@ -6,6 +6,7 @@ export const pledgesTable = pgTable("pledges", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
+  xUsername: text("x_username"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

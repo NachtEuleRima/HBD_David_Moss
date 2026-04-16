@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Gift, Route, Calendar, Heart, CheckCircle2, Lock, Trash2 } from "lucide-react";
+import { Gift, Route, Calendar, Heart, CheckCircle2, Lock, Trash2, LogIn, LogOut } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 
@@ -84,6 +84,9 @@ export default function Home() {
   const [adminInput, setAdminInput] = useState("");
   const [adminError, setAdminError] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [xUser, setXUser] = useState<{ id: string; username: string; name: string } | null>(null);
+  const [xUserLoading, setXUserLoading] = useState(true);
+  const [adminXUsernames, setAdminXUsernames] = useState<Record<number, string>>({});
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -97,6 +100,28 @@ export default function Home() {
       amount: 20,
     },
   });
+
+  const baseUrl = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const authError = params.get("auth_error");
+    if (authError) {
+      toast({ title: "Sign-in failed", description: "Could not connect to X. Please try again.", variant: "destructive" });
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+
+    fetch(`${baseUrl}/api/auth/me`, { credentials: "include" })
+      .then((r) => r.json())
+      .then(({ user }) => {
+        if (user) {
+          setXUser(user);
+          form.setValue("name", user.name, { shouldValidate: false });
+        }
+      })
+      .catch(() => {})
+      .finally(() => setXUserLoading(false));
+  }, []);
 
   const onSubmit = (values: FormValues) => {
     createPledge.mutate(
@@ -122,24 +147,31 @@ export default function Home() {
   };
 
   const handleAdminLogin = () => {
-    const baseUrl = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
-    fetch(`${baseUrl}/api/pledges/summary`)
-      .then(() => {
-        if (adminInput === "cyberowlcanaccess") {
-          setIsAdminMode(true);
-          setShowAdminLogin(false);
-          setAdminInput("");
-          setAdminError(false);
-        } else {
-          setAdminError(true);
-        }
+    if (adminInput !== "cyberowlcanaccess") {
+      setAdminError(true);
+      return;
+    }
+    fetch(`${baseUrl}/api/pledges/summary`, {
+      headers: { "x-admin-password": adminInput },
+      credentials: "include",
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        setIsAdminMode(true);
+        setShowAdminLogin(false);
+        setAdminInput("");
+        setAdminError(false);
+        const map: Record<number, string> = {};
+        data.pledges?.forEach((p: any) => {
+          if (p.xUsername) map[p.id] = p.xUsername;
+        });
+        setAdminXUsernames(map);
       })
       .catch(() => setAdminError(true));
   };
 
   const handleDelete = async (id: number) => {
     setDeletingId(id);
-    const baseUrl = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
     try {
       const res = await fetch(`${baseUrl}/api/pledges/${id}`, {
         method: "DELETE",
@@ -350,6 +382,9 @@ export default function Home() {
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-foreground font-sans truncate">{pledge.name}</p>
                         <p className="text-sm text-primary font-mono font-medium">${pledge.amount}</p>
+                        {isAdminMode && adminXUsernames[pledge.id] && (
+                          <p className="text-xs text-cyan-400 font-mono mt-0.5">@{adminXUsernames[pledge.id]}</p>
+                        )}
                       </div>
                       {isAdminMode && (
                         <button
@@ -455,95 +490,127 @@ export default function Home() {
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="pt-6">
-                        <Form {...form}>
-                          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                            
-                            <FormField
-                              control={form.control}
-                              name="amount"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-foreground font-mono uppercase tracking-wider text-xs">Pledge Amount</FormLabel>
-                                  <div className="grid grid-cols-3 gap-3 mb-4">
-                                    {[10, 20, 50].map((amount) => (
-                                      <Button
-                                        key={amount}
-                                        type="button"
-                                        variant={field.value === amount ? "default" : "outline"}
-                                        className="h-12 rounded-xl font-mono font-medium text-lg"
-                                        onClick={() => handleQuickPick(amount)}
-                                      >
-                                        ${amount}
-                                      </Button>
-                                    ))}
-                                  </div>
-                                  <FormControl>
-                                    <div className="relative">
-                                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <span className="text-muted-foreground font-mono text-xl">$</span>
-                                      </div>
-                                      <Input 
-                                        {...field} 
-                                        type="number" 
-                                        className="pl-8 h-14 rounded-xl text-lg font-mono bg-secondary/50 border-card-border focus-visible:ring-primary focus-visible:border-primary"
-                                        data-testid="input-amount"
-                                      />
-                                    </div>
-                                  </FormControl>
-                                  <FormMessage className="text-destructive font-medium" />
-                                </FormItem>
-                              )}
-                            />
-
-                            <FormField
-                              control={form.control}
-                              name="name"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <div className="flex items-center justify-between mb-1">
-                                    <FormLabel className="text-foreground font-mono uppercase tracking-wider text-xs">Your Name</FormLabel>
-                                    <label className="flex items-center gap-2 cursor-pointer select-none text-xs text-muted-foreground font-mono">
-                                      <Checkbox
-                                        checked={isAnonymous}
-                                        onCheckedChange={(checked) => {
-                                          setIsAnonymous(!!checked);
-                                          if (checked) form.setValue("name", "Anonymous", { shouldValidate: true });
-                                          else form.setValue("name", "", { shouldValidate: false });
-                                        }}
-                                        className="rounded"
-                                        data-testid="checkbox-anonymous"
-                                      />
-                                      Go anonymous
-                                    </label>
-                                  </div>
-                                  <FormControl>
-                                    <Input 
-                                      {...field}
-                                      disabled={isAnonymous}
-                                      placeholder={isAnonymous ? "Anonymous" : "How David knows you"}
-                                      className="h-14 rounded-xl text-base bg-secondary/50 border-card-border focus-visible:ring-primary focus-visible:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                                      data-testid="input-name"
-                                    />
-                                  </FormControl>
-                                  <FormMessage className="text-destructive font-medium" />
-                                </FormItem>
-                              )}
-                            />
-
-                            <Button 
-                              type="submit" 
-                              disabled={createPledge.isPending || isSummaryLoading}
-                              className="w-full h-14 text-lg font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-[0_0_20px_rgba(234,142,42,0.3)] hover:shadow-[0_0_30px_rgba(234,142,42,0.5)]"
-                              data-testid="button-submit"
+                        {xUserLoading ? (
+                          <div className="flex justify-center py-8">
+                            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                          </div>
+                        ) : !xUser ? (
+                          <div className="flex flex-col items-center gap-4 py-8 text-center">
+                            <div className="w-14 h-14 rounded-full bg-secondary flex items-center justify-center">
+                              <LogIn className="w-6 h-6 text-muted-foreground" />
+                            </div>
+                            <div>
+                              <p className="font-semibold text-foreground font-sans">Sign in to chip in</p>
+                              <p className="text-sm text-muted-foreground mt-1">Verify your X account to join the surprise</p>
+                            </div>
+                            <Button
+                              className="w-full h-12 rounded-xl bg-[#000000] hover:bg-[#1a1a1a] text-white font-semibold flex items-center gap-2 justify-center"
+                              onClick={() => { window.location.href = `${baseUrl}/api/auth/x`; }}
                             >
-                              {createPledge.isPending ? "Processing..." : "Pledge Now"}
+                              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+                              Sign in with X
                             </Button>
-                            
-                            <p className="text-xs text-center text-muted-foreground mt-4 font-mono">
-                              You will be given Venmo instructions after submitting.
-                            </p>
-                          </form>
-                        </Form>
+                          </div>
+                        ) : (
+                          <div>
+                            <div className="flex items-center justify-between mb-5 px-1">
+                              <span className="text-xs text-muted-foreground font-mono">
+                                Signed in as <span className="text-primary">@{xUser.username}</span>
+                              </span>
+                              <button
+                                onClick={() => fetch(`${baseUrl}/api/auth/logout`, { method: "POST", credentials: "include" }).then(() => { setXUser(null); form.setValue("name", ""); })}
+                                className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+                              >
+                                <LogOut size={12} /> Sign out
+                              </button>
+                            </div>
+                            <Form {...form}>
+                              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                                <FormField
+                                  control={form.control}
+                                  name="amount"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel className="text-foreground font-mono uppercase tracking-wider text-xs">Pledge Amount</FormLabel>
+                                      <div className="grid grid-cols-3 gap-3 mb-4">
+                                        {[10, 20, 50].map((amount) => (
+                                          <Button
+                                            key={amount}
+                                            type="button"
+                                            variant={field.value === amount ? "default" : "outline"}
+                                            className="h-12 rounded-xl font-mono font-medium text-lg"
+                                            onClick={() => handleQuickPick(amount)}
+                                          >
+                                            ${amount}
+                                          </Button>
+                                        ))}
+                                      </div>
+                                      <FormControl>
+                                        <div className="relative">
+                                          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <span className="text-muted-foreground font-mono text-xl">$</span>
+                                          </div>
+                                          <Input
+                                            {...field}
+                                            type="number"
+                                            className="pl-8 h-14 rounded-xl text-lg font-mono bg-secondary/50 border-card-border focus-visible:ring-primary focus-visible:border-primary"
+                                            data-testid="input-amount"
+                                          />
+                                        </div>
+                                      </FormControl>
+                                      <FormMessage className="text-destructive font-medium" />
+                                    </FormItem>
+                                  )}
+                                />
+                                <FormField
+                                  control={form.control}
+                                  name="name"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <div className="flex items-center justify-between mb-1">
+                                        <FormLabel className="text-foreground font-mono uppercase tracking-wider text-xs">Your Name</FormLabel>
+                                        <label className="flex items-center gap-2 cursor-pointer select-none text-xs text-muted-foreground font-mono">
+                                          <Checkbox
+                                            checked={isAnonymous}
+                                            onCheckedChange={(checked) => {
+                                              setIsAnonymous(!!checked);
+                                              if (checked) form.setValue("name", "Anonymous", { shouldValidate: true });
+                                              else form.setValue("name", xUser?.name || "", { shouldValidate: false });
+                                            }}
+                                            className="rounded"
+                                            data-testid="checkbox-anonymous"
+                                          />
+                                          Go anonymous
+                                        </label>
+                                      </div>
+                                      <FormControl>
+                                        <Input
+                                          {...field}
+                                          disabled={isAnonymous}
+                                          placeholder={isAnonymous ? "Anonymous" : "How David knows you"}
+                                          className="h-14 rounded-xl text-base bg-secondary/50 border-card-border focus-visible:ring-primary focus-visible:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                                          data-testid="input-name"
+                                        />
+                                      </FormControl>
+                                      <FormMessage className="text-destructive font-medium" />
+                                    </FormItem>
+                                  )}
+                                />
+                                <Button
+                                  type="submit"
+                                  disabled={createPledge.isPending || isSummaryLoading}
+                                  className="w-full h-14 text-lg font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-[0_0_20px_rgba(234,142,42,0.3)] hover:shadow-[0_0_30px_rgba(234,142,42,0.5)]"
+                                  data-testid="button-submit"
+                                >
+                                  {createPledge.isPending ? "Processing..." : "Pledge Now"}
+                                </Button>
+                                <p className="text-xs text-center text-muted-foreground mt-4 font-mono">
+                                  You will be given Venmo instructions after submitting.
+                                </p>
+                              </form>
+                            </Form>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   </motion.div>
