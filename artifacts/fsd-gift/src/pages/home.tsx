@@ -76,7 +76,7 @@ function LidarPhoto() {
 
 const formSchema = z.object({
   name: z.string().min(1, "Please enter your name"),
-  amount: z.coerce.number().min(1, "Minimum pledge is $1").max(300, "Maximum pledge is $300"),
+  amount: z.coerce.number().min(1, "Minimum pledge is $1").max(1500, "Maximum pledge is $1500"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -254,7 +254,7 @@ export default function Home() {
                         ${summary?.total || 0}
                       </span>
                       <span className="text-xl text-muted-foreground font-sans">
-                        / ${summary?.goalAmount || 300}
+                        / ${summary?.goalAmount || 1500}
                       </span>
                     </div>
                   )}
@@ -456,7 +456,7 @@ export default function Home() {
                       <CardHeader className="pb-6 border-b border-card-border bg-secondary/30">
                         <CardTitle className="text-2xl font-sans font-bold text-foreground">Chip In</CardTitle>
                         <CardDescription className="text-base text-muted-foreground font-sans">
-                          Join the surprise. Every bit helps us reach the $300 goal.
+                          Join the surprise. Every bit helps us reach the $1,500 goal.
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="pt-6">

@@ -5,7 +5,7 @@ import { CreatePledgeBody } from "@workspace/api-zod";
 import { sum, count, eq } from "drizzle-orm";
 import { desc } from "drizzle-orm";
 
-const GOAL_AMOUNT = 300;
+const GOAL_AMOUNT = 1500;
 
 const router = Router();
 
