@@ -59,27 +59,30 @@ router.get("/x", (req: Request, res: Response) => {
 });
 
 router.get("/x/callback", async (req: Request, res: Response) => {
-  const { code, state } = req.query;
+  const { code, state, error } = req.query;
+
+  if (error) {
+    console.error("X OAuth error from callback:", error, req.query.error_description);
+    res.redirect(`/?auth_error=${error}`);
+    return;
+  }
 
   if (!code || state !== req.session.oauthState) {
+    console.error("State mismatch:", { receivedState: state, sessionState: req.session.oauthState, hasCode: !!code });
     res.redirect("/?auth_error=state");
     return;
   }
 
   const callbackUrl = `${getBaseUrl(req)}/api/auth/x/callback`;
+  console.log("OAuth callback - callbackUrl:", callbackUrl, "clientId prefix:", process.env.X_CLIENT_ID?.slice(0, 8));
 
   try {
     const clientId = process.env.X_CLIENT_ID!;
-    const clientSecret = process.env.X_CLIENT_SECRET!;
-    const credentials = Buffer.from(
-      `${encodeURIComponent(clientId)}:${encodeURIComponent(clientSecret)}`
-    ).toString("base64");
 
     const tokenRes = await fetch("https://api.twitter.com/2/oauth2/token", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${credentials}`,
       },
       body: new URLSearchParams({
         grant_type: "authorization_code",
