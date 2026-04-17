@@ -547,13 +547,12 @@ export default function Home() {
                               <div className="w-full flex flex-col gap-3">
                                 <div className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground text-left">
                                   <span className="font-semibold text-foreground">Step 1</span> — Make sure you're logged in to X in your browser.{" "}
-                                  <button
-                                    type="button"
+                                  <a
+                                    href="https://x.com/login"
                                     className="underline text-foreground font-medium"
-                                    onClick={() => { window.open("https://x.com/login", "_blank"); }}
                                   >
                                     Log in to X →
-                                  </button>
+                                  </a>
                                 </div>
                                 <a
                                   href={`${baseUrl}/api/auth/x`}
