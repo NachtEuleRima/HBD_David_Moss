@@ -546,28 +546,18 @@ export default function Home() {
                               <p className="font-semibold text-foreground font-sans">Verify your identity to chip in</p>
 
                             </div>
-                            <Button
-                              className="w-full h-12 rounded-xl bg-[#000000] hover:bg-[#1a1a1a] text-white font-semibold flex items-center gap-2 justify-center"
-                              onClick={(e) => {
-                                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                                if (isMobile) {
-                                  e.preventDefault();
-                                  const form = document.createElement("form");
-                                  form.method = "GET";
-                                  form.action = `${baseUrl}/api/auth/x`;
-                                  form.target = "_blank";
-                                  document.body.appendChild(form);
-                                  form.submit();
-                                  document.body.removeChild(form);
-                                  startPolling();
-                                } else {
-                                  window.location.href = `${baseUrl}/api/auth/x`;
-                                }
+                            <a
+                              href={`${baseUrl}/api/auth/x`}
+                              target={/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ? "_blank" : "_self"}
+                              rel="noreferrer"
+                              onClick={() => {
+                                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) startPolling();
                               }}
+                              className="w-full h-12 rounded-xl bg-[#000000] hover:bg-[#1a1a1a] text-white font-semibold flex items-center gap-2 justify-center inline-flex"
                             >
                               Authorize with
                               <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
-                            </Button>
+                            </a>
                           </div>
                         ) : (
                           <div>
