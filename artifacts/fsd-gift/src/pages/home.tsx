@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -88,6 +88,7 @@ export default function Home() {
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [xUser, setXUser] = useState<{ id: string; username: string; name: string } | null>(null);
   const [xUserLoading, setXUserLoading] = useState(true);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -104,7 +105,33 @@ export default function Home() {
 
   const baseUrl = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
 
+  const startPolling = () => {
+    if (pollRef.current) clearInterval(pollRef.current);
+    pollRef.current = setInterval(async () => {
+      try {
+        const res = await fetch(`${baseUrl}/api/auth/me`, { credentials: "include" });
+        const { user } = await res.json();
+        if (user) {
+          clearInterval(pollRef.current!);
+          pollRef.current = null;
+          setXUser(user);
+          setXUserLoading(false);
+          form.setValue("name", user.name, { shouldValidate: false });
+        }
+      } catch {}
+    }, 1500);
+    setTimeout(() => {
+      if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
+    }, 180000);
+  };
+
   useEffect(() => {
+    // If this page loaded inside a popup (mobile auth completion), close it
+    if (window.opener && window.opener !== window) {
+      window.close();
+      return;
+    }
+
     const params = new URLSearchParams(window.location.search);
     const authError = params.get("auth_error");
     if (authError) {
@@ -123,6 +150,9 @@ export default function Home() {
       .catch(() => {})
       .finally(() => setXUserLoading(false));
 
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
   }, []);
 
   const onSubmit = (values: FormValues) => {
@@ -518,7 +548,15 @@ export default function Home() {
                             </div>
                             <Button
                               className="w-full h-12 rounded-xl bg-[#000000] hover:bg-[#1a1a1a] text-white font-semibold flex items-center gap-2 justify-center"
-                              onClick={() => { window.location.href = `${baseUrl}/api/auth/x`; }}
+                              onClick={() => {
+                                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                                if (isMobile) {
+                                  window.open(`${baseUrl}/api/auth/x`, "_blank");
+                                  startPolling();
+                                } else {
+                                  window.location.href = `${baseUrl}/api/auth/x`;
+                                }
+                              }}
                             >
                               Authorize with
                               <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
