@@ -88,6 +88,7 @@ export default function Home() {
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [xUser, setXUser] = useState<{ id: string; username: string; name: string } | null>(null);
   const [xUserLoading, setXUserLoading] = useState(true);
+  const [step1Done, setStep1Done] = useState(() => localStorage.getItem("xStep1Done") === "1");
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -127,6 +128,23 @@ export default function Home() {
       if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
     }, 180000);
   };
+
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted || document.visibilityState === "visible") {
+        if (localStorage.getItem("xLoginPending") === "1") {
+          localStorage.removeItem("xLoginPending");
+          localStorage.setItem("xStep1Done", "1");
+          setStep1Done(true);
+          setTimeout(() => {
+            document.getElementById("pledge-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 300);
+        }
+      }
+    };
+    window.addEventListener("pageshow", handlePageShow);
+    return () => window.removeEventListener("pageshow", handlePageShow);
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -545,20 +563,23 @@ export default function Home() {
                             </div>
                             {/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ? (
                               <div className="w-full flex flex-col gap-3">
-                                <div className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground text-left">
-                                  <span className="font-semibold text-foreground">Step 1</span> — Make sure you're logged in to X in your browser.{" "}
-                                  <a
-                                    href="https://x.com/login"
-                                    className="underline text-foreground font-medium"
-                                  >
-                                    Log in to X →
-                                  </a>
-                                </div>
+                                {!step1Done && (
+                                  <div className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground text-left">
+                                    <span className="font-semibold text-foreground">Step 1</span> — Log in to X in your browser first.{" "}
+                                    <a
+                                      href="https://x.com/login"
+                                      className="underline text-foreground font-medium"
+                                      onClick={() => localStorage.setItem("xLoginPending", "1")}
+                                    >
+                                      Log in to X →
+                                    </a>
+                                  </div>
+                                )}
                                 <a
                                   href={`${baseUrl}/api/auth/x`}
                                   className="w-full h-12 rounded-xl bg-[#000000] hover:bg-[#1a1a1a] text-white font-semibold flex items-center gap-2 justify-center"
                                 >
-                                  Step 2 — Authorize with
+                                  {step1Done ? "Authorize with" : "Step 2 — Authorize with"}
                                   <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
                                 </a>
                               </div>
