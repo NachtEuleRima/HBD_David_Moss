@@ -91,31 +91,19 @@ router.get("/x/callback", async (req: Request, res: Response) => {
   await db.delete(oauthStatesTable).where(eq(oauthStatesTable.state, state as string));
 
   const clientId = process.env.X_CLIENT_ID!;
-  const clientSecret = process.env.X_CLIENT_SECRET;
 
   try {
-    let tokenBody: URLSearchParams;
     const headers: Record<string, string> = {
       "Content-Type": "application/x-www-form-urlencoded",
     };
 
-    if (clientSecret) {
-      headers.Authorization = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`;
-      tokenBody = new URLSearchParams({
-        grant_type: "authorization_code",
-        code: code as string,
-        redirect_uri: oauthState.callbackUrl,
-        code_verifier: oauthState.codeVerifier,
-      });
-    } else {
-      tokenBody = new URLSearchParams({
-        grant_type: "authorization_code",
-        code: code as string,
-        redirect_uri: oauthState.callbackUrl,
-        code_verifier: oauthState.codeVerifier,
-        client_id: clientId,
-      });
-    }
+    const tokenBody = new URLSearchParams({
+      grant_type: "authorization_code",
+      code: code as string,
+      redirect_uri: oauthState.callbackUrl,
+      code_verifier: oauthState.codeVerifier,
+      client_id: clientId,
+    });
 
     const tokenRes = await fetch("https://api.twitter.com/2/oauth2/token", {
       method: "POST",
