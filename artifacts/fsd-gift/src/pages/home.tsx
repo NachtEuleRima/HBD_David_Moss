@@ -291,19 +291,28 @@ export default function Home() {
         }
       })
       .catch(() => {})
-      .finally(() => {
-        setXUserLoading(false);
-        if (window.location.hash === "#pledge-section") {
-          setTimeout(() => {
-            document.getElementById("pledge-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
-          }, 400);
-        }
-      });
+      .finally(() => setXUserLoading(false));
 
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (xUserLoading) return;
+    if (window.location.hash !== "#pledge-section") return;
+    let attempts = 0;
+    const tryScroll = () => {
+      const el = document.getElementById("pledge-section");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (attempts < 8) {
+        attempts++;
+        setTimeout(tryScroll, 150);
+      }
+    };
+    setTimeout(tryScroll, 100);
+  }, [xUserLoading]);
 
   const onSubmit = async (values: FormValues) => {
     const name = isAnonymous ? "Anonymous" : values.name;
