@@ -440,7 +440,7 @@ export default function Home() {
               For David Moss.
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed">
-              Celebrating a legendary solo coast-to-coast drive on Full Self-Driving. Let's surprise him with a custom-built NAS for his content creator journey.
+              Celebrating David Moss — Tesla community legend, FSD pioneer, and friend. Let's surprise him with a custom-built NAS for his content creator journey.
             </p>
           </motion.div>
         </div>
