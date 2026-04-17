@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { db, pledgesTable } from "@workspace/db";
-import { CreatePledgeBody } from "@workspace/api-zod";
 import { sum, count, eq } from "drizzle-orm";
 import { desc } from "drizzle-orm";
+import { getUncachableStripeClient } from "../stripeClient";
 
 const GOAL_AMOUNT = 1500;
 
@@ -16,13 +16,48 @@ router.post("/", async (req, res) => {
     return;
   }
 
-  const parsed = CreatePledgeBody.safeParse(req.body);
-  if (!parsed.success) {
-    res.status(400).json({ error: "Invalid input" });
+  const { paymentIntentId } = req.body;
+
+  if (!paymentIntentId || typeof paymentIntentId !== "string") {
+    res.status(400).json({ error: "Payment required to pledge" });
     return;
   }
 
-  const { name, amount } = parsed.data;
+  let stripe: Awaited<ReturnType<typeof getUncachableStripeClient>>;
+  try {
+    stripe = await getUncachableStripeClient();
+  } catch {
+    res.status(500).json({ error: "Payment system unavailable" });
+    return;
+  }
+
+  let paymentIntent: any;
+  try {
+    paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+  } catch {
+    res.status(400).json({ error: "Invalid payment reference" });
+    return;
+  }
+
+  if (paymentIntent.status !== "succeeded") {
+    res.status(400).json({ error: "Payment not completed" });
+    return;
+  }
+
+  const name = paymentIntent.metadata?.name || paymentIntent.metadata?.pledgeName;
+  const xUsername = paymentIntent.metadata?.xUsername;
+
+  if (!name) {
+    res.status(400).json({ error: "Invalid payment metadata" });
+    return;
+  }
+
+  if (xUsername && xUsername !== session.xUser.username) {
+    res.status(403).json({ error: "Payment mismatch" });
+    return;
+  }
+
+  const amount = (paymentIntent.amount / 100).toFixed(2);
 
   const summaryResult = await db
     .select({ total: sum(pledgesTable.amount) })
@@ -34,9 +69,30 @@ router.post("/", async (req, res) => {
     return;
   }
 
+  const existing = await db
+    .select()
+    .from(pledgesTable)
+    .where(eq(pledgesTable.stripePaymentIntentId, paymentIntentId))
+    .limit(1);
+
+  if (existing.length > 0) {
+    res.status(200).json({
+      id: existing[0].id,
+      name: existing[0].name,
+      amount: parseFloat(existing[0].amount),
+      createdAt: existing[0].createdAt,
+    });
+    return;
+  }
+
   const [pledge] = await db
     .insert(pledgesTable)
-    .values({ name, amount: String(amount), xUsername: session.xUser.username })
+    .values({
+      name,
+      amount,
+      xUsername: session.xUser.username,
+      stripePaymentIntentId: paymentIntentId,
+    })
     .returning();
 
   res.status(201).json({

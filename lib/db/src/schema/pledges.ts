@@ -7,6 +7,7 @@ export const pledgesTable = pgTable("pledges", {
   name: text("name").notNull(),
   amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
   xUsername: text("x_username"),
+  stripePaymentIntentId: text("stripe_payment_intent_id").unique(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

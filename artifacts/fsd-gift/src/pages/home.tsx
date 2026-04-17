@@ -3,7 +3,9 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { useGetPledgeSummary, useCreatePledge, getGetPledgeSummaryQueryKey } from "@workspace/api-client-react";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { useGetPledgeSummary, getGetPledgeSummaryQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
@@ -12,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Gift, Route, Calendar, Heart, CheckCircle2, Lock, Trash2, LogIn, LogOut } from "lucide-react";
+import { Gift, Route, Calendar, Heart, CheckCircle2, Lock, Trash2, LogIn, LogOut, CreditCard, ChevronLeft } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 
@@ -76,9 +78,148 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const stripeAppearance = {
+  theme: "night" as const,
+  variables: {
+    colorPrimary: "#ea8e2a",
+    colorBackground: "#1c1c1e",
+    colorText: "#f5f5f5",
+    colorDanger: "#ff453a",
+    borderRadius: "12px",
+    fontFamily: "Inter, system-ui, sans-serif",
+  },
+};
+
+interface StripePaymentFormProps {
+  amount: number;
+  name: string;
+  baseUrl: string;
+  onSuccess: () => void;
+  onBack: () => void;
+}
+
+function StripePaymentForm({ amount, name, baseUrl, onSuccess, onBack }: StripePaymentFormProps) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [error, setError] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
+
+  const handlePay = async () => {
+    if (!stripe || !elements) return;
+    setError(null);
+    setIsProcessing(true);
+
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+      setError(submitError.message || "Invalid payment details");
+      setIsProcessing(false);
+      return;
+    }
+
+    const { error: confirmError, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      redirect: "if_required",
+    });
+
+    if (confirmError) {
+      setError(confirmError.message || "Payment failed. Please try again.");
+      setIsProcessing(false);
+      return;
+    }
+
+    if (paymentIntent?.status === "succeeded") {
+      try {
+        const res = await fetch(`${baseUrl}/api/pledges`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ paymentIntentId: paymentIntent.id }),
+        });
+        if (res.ok) {
+          onSuccess();
+        } else {
+          const data = await res.json();
+          toast({
+            title: "Payment received",
+            description: data.error || "Your payment was received but pledge recording failed. Contact support.",
+            variant: "destructive",
+          });
+          setIsProcessing(false);
+        }
+      } catch {
+        toast({ title: "Network error", description: "Please try again.", variant: "destructive" });
+        setIsProcessing(false);
+      }
+    } else {
+      setError("Payment was not completed. Please try again.");
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-mono text-muted-foreground uppercase tracking-wider">Pledging</p>
+          <p className="text-3xl font-bold font-sans text-foreground tabular-nums">${amount}</p>
+          {name !== "Anonymous" && <p className="text-sm text-muted-foreground mt-0.5">as {name}</p>}
+        </div>
+        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+          <CreditCard className="w-6 h-6 text-primary" />
+        </div>
+      </div>
+
+      <div className="rounded-xl overflow-hidden border border-card-border bg-secondary/20 p-4">
+        <PaymentElement
+          options={{
+            layout: "tabs",
+            wallets: { applePay: "auto", googlePay: "auto" },
+          }}
+        />
+      </div>
+
+      {error && (
+        <p className="text-destructive text-sm font-medium rounded-xl bg-destructive/10 px-4 py-3 border border-destructive/20">
+          {error}
+        </p>
+      )}
+
+      <Button
+        onClick={handlePay}
+        disabled={isProcessing || !stripe || !elements}
+        className="w-full h-14 text-lg font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-[0_0_20px_rgba(234,142,42,0.3)] hover:shadow-[0_0_30px_rgba(234,142,42,0.5)]"
+        data-testid="button-pay"
+      >
+        {isProcessing ? (
+          <span className="flex items-center gap-2">
+            <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+            Processing...
+          </span>
+        ) : (
+          `Pay $${amount}`
+        )}
+      </Button>
+
+      <button
+        onClick={onBack}
+        disabled={isProcessing}
+        className="w-full flex items-center justify-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40"
+      >
+        <ChevronLeft size={14} /> Change amount
+      </button>
+    </div>
+  );
+}
+
 export default function Home() {
-  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [formStep, setFormStep] = useState<"form" | "payment" | "success">("form");
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [stripePromise, setStripePromise] = useState<ReturnType<typeof loadStripe> | null>(null);
+  const [pendingPayment, setPendingPayment] = useState<{ name: string; amount: number } | null>(null);
+  const [isCreatingIntent, setIsCreatingIntent] = useState(false);
+
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [adminInput, setAdminInput] = useState("");
@@ -93,17 +234,22 @@ export default function Home() {
   const { toast } = useToast();
 
   const { data: summary, isLoading: isSummaryLoading } = useGetPledgeSummary();
-  const createPledge = useCreatePledge();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      amount: 20,
-    },
+    defaultValues: { name: "", amount: 20 },
   });
 
   const baseUrl = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
+
+  useEffect(() => {
+    fetch(`${baseUrl}/api/stripe/config`, { credentials: "include" })
+      .then((r) => r.json())
+      .then(({ publishableKey }) => {
+        if (publishableKey) setStripePromise(loadStripe(publishableKey));
+      })
+      .catch(() => {});
+  }, [baseUrl]);
 
   const startPolling = () => {
     if (pollRef.current) clearInterval(pollRef.current);
@@ -152,23 +298,31 @@ export default function Home() {
     };
   }, []);
 
-  const onSubmit = (values: FormValues) => {
-    createPledge.mutate(
-      { data: { ...values, name: isAnonymous ? "Anonymous" : values.name } },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: getGetPledgeSummaryQueryKey() });
-          setHasSubmitted(true);
-        },
-        onError: (error) => {
-          toast({
-            title: "Error submitting pledge",
-            description: error.error || "Please try again",
-            variant: "destructive",
-          });
-        },
-      }
-    );
+  const onSubmit = async (values: FormValues) => {
+    const name = isAnonymous ? "Anonymous" : values.name;
+    setIsCreatingIntent(true);
+    try {
+      const res = await fetch(`${baseUrl}/api/stripe/create-payment-intent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ amount: values.amount, name }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to initialize payment");
+      setClientSecret(data.clientSecret);
+      setPendingPayment({ name, amount: values.amount });
+      setFormStep("payment");
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Please try again", variant: "destructive" });
+    } finally {
+      setIsCreatingIntent(false);
+    }
+  };
+
+  const handlePaymentSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: getGetPledgeSummaryQueryKey() });
+    setFormStep("success");
   };
 
   const handleQuickPick = (amount: number) => {
@@ -237,15 +391,15 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative w-full h-[60vh] min-h-[500px] flex items-end justify-center overflow-hidden border-b border-border">
         <div className="absolute inset-0 z-0">
-          <img 
+          <img
             src={carPhoto}
-            alt="David Moss with his Tesla at a Supercharger" 
+            alt="David Moss with his Tesla at a Supercharger"
             className="w-full h-full object-cover object-center opacity-50"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.5)_100%)] pointer-events-none mix-blend-multiply" />
         </div>
-        
+
         <div className="relative z-10 container px-4 md:px-6 mx-auto text-center flex flex-col items-center pb-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -269,11 +423,11 @@ export default function Home() {
       {/* Main Content */}
       <main className="container px-4 md:px-6 mx-auto py-16 max-w-5xl">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          
+
           {/* Left Column: Story & Progress */}
           <div className="lg:col-span-7 space-y-12">
-            
-            <motion.section 
+
+            <motion.section
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -300,7 +454,7 @@ export default function Home() {
             </motion.section>
 
             {/* Progress Section */}
-            <motion.section 
+            <motion.section
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -309,7 +463,7 @@ export default function Home() {
               data-testid="section-progress"
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
-              
+
               <div className="flex items-center justify-between mb-4 relative z-10">
                 <div className="space-y-1">
                   <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider font-mono">FUNDING PROGRESS</h3>
@@ -338,7 +492,7 @@ export default function Home() {
                 <Skeleton className="h-4 w-full rounded-full bg-secondary my-6" />
               ) : (
                 <div className="relative h-4 bg-secondary rounded-full overflow-hidden my-6">
-                  <motion.div 
+                  <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progressPercentage}%` }}
                     transition={{ duration: 1.5, ease: "easeOut" }}
@@ -450,7 +604,7 @@ export default function Home() {
           <div className="lg:col-span-5 relative">
             <div className="sticky top-8">
               <AnimatePresence mode="wait">
-                {summary?.goalReached && !hasSubmitted ? (
+                {summary?.goalReached && formStep !== "success" ? (
                   /* Goal Reached State */
                   <motion.div
                     key="goal-reached"
@@ -468,55 +622,62 @@ export default function Home() {
                       </p>
                     </div>
                   </motion.div>
-                ) : hasSubmitted ? (
-                  /* Venmo Instructions State */
+                ) : formStep === "success" ? (
+                  /* Success State */
                   <motion.div
-                    key="venmo"
+                    key="success"
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-card border border-primary/20 rounded-3xl p-8 shadow-2xl shadow-primary/5 space-y-6"
+                    className="bg-card border border-primary/20 rounded-3xl p-8 shadow-2xl shadow-primary/5 text-center space-y-6"
                   >
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto text-primary mb-2">
-                      <CheckCircle2 className="w-8 h-8" />
+                    <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                      <CheckCircle2 className="w-10 h-10 text-primary" />
                     </div>
-                    <div className="text-center space-y-2">
-                      <h3 className="text-2xl font-bold font-sans text-foreground">Pledge Recorded!</h3>
+                    <div className="space-y-2">
+                      <h3 className="text-2xl font-bold font-sans text-foreground">Pledge Complete!</h3>
                       <p className="text-muted-foreground">
-                        Thank you for your generosity. To complete your contribution, please send your payment via Venmo.
+                        Thank you! Your payment was received and your pledge for David has been recorded. Happy birthday to the FSD Knight! 🎉
                       </p>
                     </div>
-                    
-                    <div className="bg-secondary rounded-2xl p-6 space-y-4 border border-card-border">
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground mb-1 font-mono uppercase tracking-wider">Required Note</p>
-                        <p className="text-lg text-primary font-medium font-sans bg-primary/10 inline-block px-3 py-1 rounded-lg select-all">
-                          Happy Birthday David
-                        </p>
+                    {pendingPayment && (
+                      <div className="bg-secondary/50 rounded-2xl p-4 border border-card-border text-center">
+                        <p className="text-3xl font-bold text-primary font-mono">${pendingPayment.amount}</p>
+                        <p className="text-sm text-muted-foreground mt-1">from {pendingPayment.name}</p>
                       </div>
-                    </div>
-
-                    <a
-                      href="https://venmo.com/u/Rima-Sukhadia"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-3 w-full h-14 rounded-xl bg-[#008CFF] hover:bg-[#007AE0] text-white font-semibold text-lg transition-all shadow-[0_0_20px_rgba(0,140,255,0.3)] hover:shadow-[0_0_30px_rgba(0,140,255,0.5)]"
-                    >
-                      <svg viewBox="0 0 24 24" className="w-6 h-6 fill-white" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M19.166 1C20.912 3.667 21.7 6.417 21.7 9.917c0 6.917-5.917 15.75-10.75 21.083H2.3L0 2.417 8.167 1.5l1.25 10.083c1.167-1.917 2.583-5 2.583-7.083 0-1.25-.25-2.083-.583-2.75L19.166 1z"/>
-                      </svg>
-                      Pay via Venmo
-                    </a>
-                    
-                    <Button 
-                      variant="outline" 
-                      className="w-full h-12 rounded-xl text-foreground font-medium"
-                      onClick={() => setHasSubmitted(false)}
-                    >
-                      Back
-                    </Button>
+                    )}
+                  </motion.div>
+                ) : formStep === "payment" && clientSecret && stripePromise ? (
+                  /* Payment Step */
+                  <motion.div
+                    key="payment"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                  >
+                    <Card id="pledge-section" className="border-card-border bg-card shadow-2xl rounded-3xl overflow-hidden">
+                      <CardHeader className="pb-6 border-b border-card-border bg-secondary/30">
+                        <CardTitle className="text-2xl font-sans font-bold text-foreground">Complete Payment</CardTitle>
+                        <CardDescription className="text-base text-muted-foreground font-sans">
+                          Secure payment powered by Stripe. Supports Apple Pay, Google Pay & cards.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="pt-6">
+                        <Elements
+                          stripe={stripePromise}
+                          options={{ clientSecret, appearance: stripeAppearance }}
+                        >
+                          <StripePaymentForm
+                            amount={pendingPayment?.amount ?? 0}
+                            name={pendingPayment?.name ?? ""}
+                            baseUrl={baseUrl}
+                            onSuccess={handlePaymentSuccess}
+                            onBack={() => { setFormStep("form"); setClientSecret(null); }}
+                          />
+                        </Elements>
+                      </CardContent>
+                    </Card>
                   </motion.div>
                 ) : (
-                  /* Form State */
+                  /* Form Step */
                   <motion.div
                     key="form"
                     initial={{ opacity: 0, scale: 0.95 }}
@@ -541,7 +702,6 @@ export default function Home() {
                             </div>
                             <div>
                               <p className="font-semibold text-foreground font-sans">Verify your identity to chip in</p>
-
                             </div>
                             <a
                               href={`${baseUrl}/api/auth/x/login-redirect`}
@@ -638,14 +798,19 @@ export default function Home() {
                                 />
                                 <Button
                                   type="submit"
-                                  disabled={createPledge.isPending || isSummaryLoading}
+                                  disabled={isCreatingIntent || isSummaryLoading}
                                   className="w-full h-14 text-lg font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-[0_0_20px_rgba(234,142,42,0.3)] hover:shadow-[0_0_30px_rgba(234,142,42,0.5)]"
                                   data-testid="button-submit"
                                 >
-                                  {createPledge.isPending ? "Processing..." : "Pledge Now"}
+                                  {isCreatingIntent ? (
+                                    <span className="flex items-center gap-2">
+                                      <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                                      Preparing payment...
+                                    </span>
+                                  ) : "Pledge & Pay"}
                                 </Button>
                                 <p className="text-xs text-center text-muted-foreground mt-4 font-mono">
-                                  You will be given Venmo instructions after submitting.
+                                  Secured by Stripe · Apple Pay & cards accepted
                                 </p>
                               </form>
                             </Form>

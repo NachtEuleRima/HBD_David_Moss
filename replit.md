@@ -15,6 +15,8 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **Validation**: Zod (`zod/v4`), `drizzle-zod`
 - **API codegen**: Orval (from OpenAPI spec)
 - **Build**: esbuild (CJS bundle)
+- **Payments**: Stripe (via Replit connector) — Apple Pay, Google Pay, credit cards
+- **Auth**: X (Twitter) OAuth 2.0 PKCE — required before pledging
 
 ## Key Commands
 
