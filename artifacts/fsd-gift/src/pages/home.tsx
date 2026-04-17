@@ -464,8 +464,8 @@ export default function Home() {
                 <Route className="w-8 h-8 text-primary" />
                 The Milestone
               </h2>
-              <div className="flex flex-col gap-6">
-                <div className="w-full max-w-sm mx-auto">
+              <div className="flex flex-col sm:flex-row gap-6 items-stretch lg:items-start">
+                <div className="w-full sm:w-48 lg:w-64 flex-shrink-0 self-stretch">
                   <LidarPhoto />
                 </div>
                 <div className="prose prose-invert prose-lg text-muted-foreground font-sans">
