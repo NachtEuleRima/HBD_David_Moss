@@ -437,11 +437,11 @@ export default function Home() {
       </section>
 
       {/* Main Content */}
-      <main className="container px-4 md:px-6 mx-auto py-16 max-w-5xl">
+      <main className="container px-4 md:px-6 lg:px-12 mx-auto py-16 max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
           {/* Left Column: Story & Progress */}
-          <div className="lg:col-span-7 space-y-12">
+          <div className="lg:col-span-8 space-y-12">
 
             <motion.section
               initial={{ opacity: 0, y: 20 }}
@@ -455,7 +455,7 @@ export default function Home() {
                 The Milestone
               </h2>
               <div className="flex flex-col sm:flex-row gap-6 items-stretch">
-                <div className="w-full sm:w-48 flex-shrink-0 self-stretch">
+                <div className="w-full sm:w-48 lg:w-64 flex-shrink-0 self-stretch">
                   <LidarPhoto />
                 </div>
                 <div className="prose prose-invert prose-lg text-muted-foreground font-sans">
@@ -617,7 +617,7 @@ export default function Home() {
           </div>
 
           {/* Right Column: Form / Action */}
-          <div className="lg:col-span-5 relative">
+          <div className="lg:col-span-4 relative">
             <div className="sticky top-8">
               <AnimatePresence mode="wait">
                 {summary?.goalReached && formStep !== "success" ? (
