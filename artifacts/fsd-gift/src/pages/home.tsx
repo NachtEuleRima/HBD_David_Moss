@@ -868,7 +868,7 @@ export default function Home() {
               <div className="text-center">
                 <p className="font-bold text-foreground font-sans text-lg">📐_Cyber_Owl_🦉</p>
                 <p className="text-sm text-primary font-mono">@RimaSukhadia</p>
-                <p className="text-xs text-muted-foreground mt-2 font-sans">Website &amp; technical issues</p>
+                <p className="text-xs text-muted-foreground mt-2 font-sans">Website &amp; technical inquiries</p>
               </div>
               <span className="text-xs text-muted-foreground/60 group-hover:text-primary font-mono transition-colors">Message on X →</span>
             </a>
@@ -885,7 +885,7 @@ export default function Home() {
               <div className="text-center">
                 <p className="font-bold text-foreground font-sans text-lg">Koby Pierce</p>
                 <p className="text-sm text-primary font-mono">@koby_pierce</p>
-                <p className="text-xs text-muted-foreground mt-2 font-sans">NAS gift questions</p>
+                <p className="text-xs text-muted-foreground mt-2 font-sans">NAS gift inquiries</p>
               </div>
               <span className="text-xs text-muted-foreground/60 group-hover:text-primary font-mono transition-colors">Message on X →</span>
             </a>
