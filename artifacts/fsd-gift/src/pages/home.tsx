@@ -873,7 +873,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
             <a
-              href="https://x.com/RimaSukhadia"
+              href="twitter://user?screen_name=RimaSukhadia"
               target="_blank"
               rel="noopener noreferrer"
               className="group flex flex-col items-center gap-4 p-6 rounded-3xl bg-card border border-card-border hover:border-primary/40 hover:shadow-[0_0_24px_rgba(234,142,42,0.15)] transition-all duration-300"
@@ -890,7 +890,7 @@ export default function Home() {
             </a>
 
             <a
-              href="https://x.com/koby_pierce"
+              href="twitter://user?screen_name=koby_pierce"
               target="_blank"
               rel="noopener noreferrer"
               className="group flex flex-col items-center gap-4 p-6 rounded-3xl bg-card border border-card-border hover:border-primary/40 hover:shadow-[0_0_24px_rgba(234,142,42,0.15)] transition-all duration-300"
