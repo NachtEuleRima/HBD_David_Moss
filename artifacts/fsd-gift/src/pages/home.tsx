@@ -440,7 +440,7 @@ export default function Home() {
               For David Moss.
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed">
-              Celebrating a legend who completed the very first solo coast-to-coast drive on Tesla Full Self-Driving. Let's surprise him with a custom-built NAS for his content creator journey.
+              Celebrating a legend who completed the very first solo coast-to-coast drive on 100% Tesla Full Self-Driving. Let's surprise him with a custom-built NAS for his content creator journey.
             </p>
           </motion.div>
         </div>
