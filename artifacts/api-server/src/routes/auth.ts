@@ -165,7 +165,7 @@ router.get("/x/callback", async (req: Request, res: Response) => {
 
     req.session.save((saveErr) => {
       if (saveErr) console.error("Session save error:", saveErr);
-      res.redirect("/");
+      res.redirect("/?close_tab=1");
     });
   } catch (err) {
     console.error("OAuth error:", err);

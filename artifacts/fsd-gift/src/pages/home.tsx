@@ -117,6 +117,9 @@ export default function Home() {
           setXUser(user);
           setXUserLoading(false);
           form.setValue("name", user.name, { shouldValidate: false });
+          setTimeout(() => {
+            document.getElementById("pledge-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 300);
         }
       } catch {}
     }, 1500);
@@ -126,13 +129,15 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // If this page loaded inside a popup (mobile auth completion), close it
-    if (window.opener && window.opener !== window) {
+    const params = new URLSearchParams(window.location.search);
+
+    // If this tab was opened for OAuth and auth completed, close it so user returns to main tab
+    if (params.get("close_tab") === "1") {
+      window.history.replaceState({}, "", window.location.pathname);
       window.close();
       return;
     }
 
-    const params = new URLSearchParams(window.location.search);
     const authError = params.get("auth_error");
     if (authError) {
       toast({ title: "Verification failed", description: "Could not verify your identity. Please try again.", variant: "destructive" });
@@ -525,7 +530,7 @@ export default function Home() {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                   >
-                    <Card className="border-card-border bg-card shadow-2xl rounded-3xl overflow-hidden">
+                    <Card id="pledge-section" className="border-card-border bg-card shadow-2xl rounded-3xl overflow-hidden">
                       <CardHeader className="pb-6 border-b border-card-border bg-secondary/30">
                         <CardTitle className="text-2xl font-sans font-bold text-foreground">Chip In</CardTitle>
                         <CardDescription className="text-base text-muted-foreground font-sans">
