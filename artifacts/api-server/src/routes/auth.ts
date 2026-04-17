@@ -1,10 +1,11 @@
 import { Router, type Request, type Response } from "express";
 import { createHash, randomBytes } from "crypto";
+import { db } from "@workspace/db";
+import { oauthStatesTable } from "@workspace/db/schema";
+import { eq } from "drizzle-orm";
 
 declare module "express-session" {
   interface SessionData {
-    oauthState: string;
-    codeVerifier: string;
     xUser: { id: string; username: string; name: string } | null;
   }
 }
@@ -35,15 +36,17 @@ function getBaseUrl(req: Request): string {
   return `${proto}://${host}`;
 }
 
-router.get("/x", (req: Request, res: Response) => {
+router.get("/x", async (req: Request, res: Response) => {
   const codeVerifier = generateCodeVerifier();
   const codeChallenge = generateCodeChallenge(codeVerifier);
   const state = base64URLEncode(randomBytes(16));
-
-  req.session.oauthState = state;
-  req.session.codeVerifier = codeVerifier;
-
   const callbackUrl = `${getBaseUrl(req)}/api/auth/x/callback`;
+
+  await db.insert(oauthStatesTable).values({
+    state,
+    codeVerifier,
+    callbackUrl,
+  });
 
   const params = new URLSearchParams({
     response_type: "code",
@@ -67,13 +70,26 @@ router.get("/x/callback", async (req: Request, res: Response) => {
     return;
   }
 
-  if (!code || state !== req.session.oauthState) {
-    console.error("State mismatch:", { receivedState: state, sessionState: req.session.oauthState, hasCode: !!code });
+  if (!code || !state) {
+    console.error("Missing code or state in callback");
     res.redirect("/?auth_error=state");
     return;
   }
 
-  const callbackUrl = `${getBaseUrl(req)}/api/auth/x/callback`;
+  const [oauthState] = await db
+    .select()
+    .from(oauthStatesTable)
+    .where(eq(oauthStatesTable.state, state as string))
+    .limit(1);
+
+  if (!oauthState) {
+    console.error("State not found in DB:", state);
+    res.redirect("/?auth_error=state");
+    return;
+  }
+
+  await db.delete(oauthStatesTable).where(eq(oauthStatesTable.state, state as string));
+
   const clientId = process.env.X_CLIENT_ID!;
   const clientSecret = process.env.X_CLIENT_SECRET;
 
@@ -84,21 +100,19 @@ router.get("/x/callback", async (req: Request, res: Response) => {
     };
 
     if (clientSecret) {
-      // Confidential client (Web App): credentials in Basic Auth header, client_id NOT in body
       headers.Authorization = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`;
       tokenBody = new URLSearchParams({
         grant_type: "authorization_code",
         code: code as string,
-        redirect_uri: callbackUrl,
-        code_verifier: req.session.codeVerifier!,
+        redirect_uri: oauthState.callbackUrl,
+        code_verifier: oauthState.codeVerifier,
       });
     } else {
-      // Public client: client_id in body, no Authorization header
       tokenBody = new URLSearchParams({
         grant_type: "authorization_code",
         code: code as string,
-        redirect_uri: callbackUrl,
-        code_verifier: req.session.codeVerifier!,
+        redirect_uri: oauthState.callbackUrl,
+        code_verifier: oauthState.codeVerifier,
         client_id: clientId,
       });
     }
@@ -138,9 +152,6 @@ router.get("/x/callback", async (req: Request, res: Response) => {
       username: userData.data.username,
       name: userData.data.name,
     };
-
-    delete req.session.oauthState;
-    delete req.session.codeVerifier;
 
     req.session.save((saveErr) => {
       if (saveErr) console.error("Session save error:", saveErr);
