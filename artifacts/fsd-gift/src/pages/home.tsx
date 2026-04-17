@@ -20,6 +20,8 @@ import { useToast } from "@/hooks/use-toast";
 
 import carPhoto from "@assets/G9emjJyWcAA2uhm_1775877269348.jpeg";
 import davidPhoto from "@assets/IMG_4594_1775877101729.jpeg";
+import cyberOwlImg from "@assets/image_1776398972329.png";
+import kobyImg from "@assets/image_1776399089688.png";
 
 const LIDAR_COLORS = [
   "#00ffff", "#00e5ff", "#40c4ff", "#00b0ff",
@@ -824,6 +826,73 @@ export default function Home() {
             </div>
           </div>
         </div>
+        {/* Tech Support Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mt-16 pt-12 border-t border-border"
+        >
+          <style>{`
+            @keyframes neonFlicker {
+              0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 8px #ea8e2a, 0 0 20px #ea8e2a, 0 0 40px #ea8e2a;
+              }
+              20%, 24%, 55% {
+                opacity: 0.4;
+                text-shadow: none;
+              }
+            }
+          `}</style>
+
+          <div className="text-center mb-10">
+            <span
+              className="inline-block text-2xl md:text-3xl font-black font-mono tracking-[0.25em] uppercase text-primary"
+              style={{ animation: "neonFlicker 3s infinite" }}
+            >
+              ⚡ TECH SUPPORT ⚡
+            </span>
+            <p className="text-muted-foreground mt-3 text-sm font-sans">Have a question? Reach out to the right person below.</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+            <a
+              href="https://x.com/RimaSukhadia"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col items-center gap-4 p-6 rounded-3xl bg-card border border-card-border hover:border-primary/40 hover:shadow-[0_0_24px_rgba(234,142,42,0.15)] transition-all duration-300"
+            >
+              <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-card-border group-hover:border-primary/50 transition-colors shadow-lg">
+                <img src={cyberOwlImg} alt="Cyber Owl" className="w-full h-full object-cover" />
+              </div>
+              <div className="text-center">
+                <p className="font-bold text-foreground font-sans text-lg">Cyber Owl</p>
+                <p className="text-sm text-primary font-mono">@RimaSukhadia</p>
+                <p className="text-xs text-muted-foreground mt-2 font-sans">Website &amp; technical issues</p>
+              </div>
+              <span className="text-xs text-muted-foreground/60 group-hover:text-primary font-mono transition-colors">Message on X →</span>
+            </a>
+
+            <a
+              href="https://x.com/koby_pierce"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col items-center gap-4 p-6 rounded-3xl bg-card border border-card-border hover:border-primary/40 hover:shadow-[0_0_24px_rgba(234,142,42,0.15)] transition-all duration-300"
+            >
+              <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-card-border group-hover:border-primary/50 transition-colors shadow-lg">
+                <img src={kobyImg} alt="Koby Pierce" className="w-full h-full object-cover" />
+              </div>
+              <div className="text-center">
+                <p className="font-bold text-foreground font-sans text-lg">Koby Pierce</p>
+                <p className="text-sm text-primary font-mono">@koby_pierce</p>
+                <p className="text-xs text-muted-foreground mt-2 font-sans">NAS gift questions</p>
+              </div>
+              <span className="text-xs text-muted-foreground/60 group-hover:text-primary font-mono transition-colors">Message on X →</span>
+            </a>
+          </div>
+        </motion.section>
       </main>
     </div>
   );
