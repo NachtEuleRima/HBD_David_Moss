@@ -50,11 +50,11 @@ function LidarPhoto() {
   }, []);
 
   return (
-    <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-primary/20 h-full min-h-[220px] lg:h-auto">
+    <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-primary/20 h-full min-h-[220px]">
       <img
         src={davidPhoto}
         alt="David Moss"
-        className="w-full h-full object-cover object-top lg:h-auto lg:object-contain"
+        className="w-full h-full object-cover object-top"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60" />
       <svg
