@@ -567,9 +567,8 @@ export default function Home() {
                                   <div className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground text-left">
                                     <span className="font-semibold text-foreground">Step 1</span> — Log in to X in your browser first.{" "}
                                     <a
-                                      href="https://x.com/login"
+                                      href={`${baseUrl}/api/auth/x/login-redirect`}
                                       className="underline text-foreground font-medium"
-                                      onClick={() => localStorage.setItem("xLoginPending", "1")}
                                     >
                                       Log in to X →
                                     </a>

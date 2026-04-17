@@ -36,6 +36,28 @@ function getBaseUrl(req: Request): string {
   return `${proto}://${host}`;
 }
 
+router.get("/x/login-redirect", async (req: Request, res: Response) => {
+  const codeVerifier = generateCodeVerifier();
+  const codeChallenge = generateCodeChallenge(codeVerifier);
+  const state = base64URLEncode(randomBytes(16));
+  const callbackUrl = `${getBaseUrl(req)}/api/auth/x/callback`;
+
+  await db.insert(oauthStatesTable).values({ state, codeVerifier, callbackUrl });
+
+  const oauthParams = new URLSearchParams({
+    response_type: "code",
+    client_id: process.env.X_CLIENT_ID!,
+    redirect_uri: callbackUrl,
+    scope: "tweet.read users.read",
+    state,
+    code_challenge: codeChallenge,
+    code_challenge_method: "S256",
+  });
+
+  const redirectAfterLogin = `/i/oauth2/authorize?${oauthParams}`;
+  res.redirect(`https://x.com/login?redirect_after_login=${encodeURIComponent(redirectAfterLogin)}`);
+});
+
 router.get("/x/prepare", async (req: Request, res: Response) => {
   const codeVerifier = generateCodeVerifier();
   const codeChallenge = generateCodeChallenge(codeVerifier);
