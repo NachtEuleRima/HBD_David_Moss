@@ -20,8 +20,6 @@ import { useToast } from "@/hooks/use-toast";
 
 import carPhoto from "@assets/G9emjJyWcAA2uhm_1775877269348.jpeg";
 import davidPhoto from "@assets/IMG_4594_1775877101729.jpeg";
-import cyberOwlImg from "@assets/image_1776398972329.png";
-import kobyImg from "@assets/image_1776399089688.png";
 
 const LIDAR_COLORS = [
   "#00ffff", "#00e5ff", "#40c4ff", "#00b0ff",
@@ -864,8 +862,8 @@ export default function Home() {
               rel="noopener noreferrer"
               className="group flex flex-col items-center gap-4 p-6 rounded-3xl bg-card border border-card-border hover:border-primary/40 hover:shadow-[0_0_24px_rgba(234,142,42,0.15)] transition-all duration-300"
             >
-              <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-card-border group-hover:border-primary/50 transition-colors shadow-lg">
-                <img src={cyberOwlImg} alt="Cyber Owl" className="w-full h-full object-cover" />
+              <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center border-2 border-card-border group-hover:border-primary/50 transition-colors">
+                <svg viewBox="0 0 24 24" className="w-7 h-7 fill-muted-foreground group-hover:fill-primary transition-colors" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
               </div>
               <div className="text-center">
                 <p className="font-bold text-foreground font-sans text-lg">Cyber Owl</p>
@@ -881,8 +879,8 @@ export default function Home() {
               rel="noopener noreferrer"
               className="group flex flex-col items-center gap-4 p-6 rounded-3xl bg-card border border-card-border hover:border-primary/40 hover:shadow-[0_0_24px_rgba(234,142,42,0.15)] transition-all duration-300"
             >
-              <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-card-border group-hover:border-primary/50 transition-colors shadow-lg">
-                <img src={kobyImg} alt="Koby Pierce" className="w-full h-full object-cover" />
+              <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center border-2 border-card-border group-hover:border-primary/50 transition-colors">
+                <svg viewBox="0 0 24 24" className="w-7 h-7 fill-muted-foreground group-hover:fill-primary transition-colors" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
               </div>
               <div className="text-center">
                 <p className="font-bold text-foreground font-sans text-lg">Koby Pierce</p>
