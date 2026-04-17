@@ -36,6 +36,27 @@ function getBaseUrl(req: Request): string {
   return `${proto}://${host}`;
 }
 
+router.get("/x/prepare", async (req: Request, res: Response) => {
+  const codeVerifier = generateCodeVerifier();
+  const codeChallenge = generateCodeChallenge(codeVerifier);
+  const state = base64URLEncode(randomBytes(16));
+  const callbackUrl = `${getBaseUrl(req)}/api/auth/x/callback`;
+
+  await db.insert(oauthStatesTable).values({ state, codeVerifier, callbackUrl });
+
+  const params = new URLSearchParams({
+    response_type: "code",
+    client_id: process.env.X_CLIENT_ID!,
+    redirect_uri: callbackUrl,
+    scope: "tweet.read users.read",
+    state,
+    code_challenge: codeChallenge,
+    code_challenge_method: "S256",
+  });
+
+  res.json({ authorizeUrl: `https://x.com/i/oauth2/authorize?${params}` });
+});
+
 router.get("/x", async (req: Request, res: Response) => {
   const codeVerifier = generateCodeVerifier();
   const codeChallenge = generateCodeChallenge(codeVerifier);
