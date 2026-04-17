@@ -50,11 +50,11 @@ function LidarPhoto() {
   }, []);
 
   return (
-    <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-primary/20 h-full min-h-[220px]">
+    <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-primary/20 h-full min-h-[220px] lg:h-auto">
       <img
         src={davidPhoto}
         alt="David Moss"
-        className="w-full h-full object-cover object-top"
+        className="w-full h-full object-cover object-top lg:h-auto lg:object-contain"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60" />
       <svg
@@ -380,6 +380,16 @@ export default function Home() {
       .catch(() => setAdminError(true));
   };
 
+  const openContact = (username: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      window.location.href = `twitter://user?screen_name=${username}`;
+    } else {
+      window.open(`https://x.com/${username}`, "_blank", "noopener,noreferrer");
+    }
+  };
+
   const handleDelete = async (id: number) => {
     setDeletingId(id);
     try {
@@ -454,7 +464,7 @@ export default function Home() {
                 <Route className="w-8 h-8 text-primary" />
                 The Milestone
               </h2>
-              <div className="flex flex-col sm:flex-row gap-6 items-stretch">
+              <div className="flex flex-col sm:flex-row gap-6 items-stretch lg:items-start">
                 <div className="w-full sm:w-48 lg:w-64 flex-shrink-0 self-stretch">
                   <LidarPhoto />
                 </div>
@@ -873,9 +883,8 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
             <a
-              href="twitter://user?screen_name=RimaSukhadia"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#"
+              onClick={openContact("RimaSukhadia")}
               className="group flex flex-col items-center gap-4 p-6 rounded-3xl bg-card border border-card-border hover:border-primary/40 hover:shadow-[0_0_24px_rgba(234,142,42,0.15)] transition-all duration-300"
             >
               <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center border-2 border-card-border group-hover:border-primary/50 transition-colors">
@@ -890,9 +899,8 @@ export default function Home() {
             </a>
 
             <a
-              href="twitter://user?screen_name=koby_pierce"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#"
+              onClick={openContact("koby_pierce")}
               className="group flex flex-col items-center gap-4 p-6 rounded-3xl bg-card border border-card-border hover:border-primary/40 hover:shadow-[0_0_24px_rgba(234,142,42,0.15)] transition-all duration-300"
             >
               <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center border-2 border-card-border group-hover:border-primary/50 transition-colors">
