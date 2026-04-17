@@ -291,7 +291,14 @@ export default function Home() {
         }
       })
       .catch(() => {})
-      .finally(() => setXUserLoading(false));
+      .finally(() => {
+        setXUserLoading(false);
+        if (window.location.hash === "#pledge-section") {
+          setTimeout(() => {
+            document.getElementById("pledge-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 400);
+        }
+      });
 
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
