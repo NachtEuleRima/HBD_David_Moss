@@ -547,22 +547,34 @@ export default function Home() {
 
                             </div>
                             {/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ? (
-                              <button
-                                type="button"
-                                className="w-full h-12 rounded-xl bg-[#000000] hover:bg-[#1a1a1a] text-white font-semibold flex items-center gap-2 justify-center"
-                                onClick={() => {
-                                  const newTab = window.open("about:blank", "_blank");
-                                  fetch(`${baseUrl}/api/auth/x/prepare`, { credentials: "include" })
-                                    .then((r) => r.json())
-                                    .then(({ authorizeUrl }) => {
-                                      if (newTab) newTab.location.href = authorizeUrl;
-                                      startPolling();
-                                    });
-                                }}
-                              >
-                                Authorize with
-                                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
-                              </button>
+                              <div className="w-full flex flex-col gap-3">
+                                <div className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground text-left">
+                                  <span className="font-semibold text-foreground">Step 1</span> — Make sure you're logged in to X in your browser.{" "}
+                                  <button
+                                    type="button"
+                                    className="underline text-foreground font-medium"
+                                    onClick={() => { window.open("https://x.com/login", "_blank"); }}
+                                  >
+                                    Log in to X →
+                                  </button>
+                                </div>
+                                <button
+                                  type="button"
+                                  className="w-full h-12 rounded-xl bg-[#000000] hover:bg-[#1a1a1a] text-white font-semibold flex items-center gap-2 justify-center"
+                                  onClick={() => {
+                                    const newTab = window.open("about:blank", "_blank");
+                                    fetch(`${baseUrl}/api/auth/x/prepare`, { credentials: "include" })
+                                      .then((r) => r.json())
+                                      .then(({ authorizeUrl }) => {
+                                        if (newTab) newTab.location.href = authorizeUrl;
+                                        startPolling();
+                                      });
+                                  }}
+                                >
+                                  Step 2 — Authorize with
+                                  <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+                                </button>
+                              </div>
                             ) : (
                               <a
                                 href={`${baseUrl}/api/auth/x`}
