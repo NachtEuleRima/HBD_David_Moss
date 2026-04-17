@@ -1,5 +1,18 @@
 import Stripe from 'stripe';
 
+async function fetchConnection(hostname: string, token: string, environment: string) {
+  const url = new URL(`https://${hostname}/api/v2/connection`);
+  url.searchParams.set('include_secrets', 'true');
+  url.searchParams.set('connector_names', 'stripe');
+  url.searchParams.set('environment', environment);
+
+  const response = await fetch(url.toString(), {
+    headers: { 'Accept': 'application/json', 'X-Replit-Token': token },
+  });
+  const data = await response.json();
+  return data.items?.[0]?.settings;
+}
+
 async function getCredentials() {
   const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
   const xReplitToken = process.env.REPL_IDENTITY
@@ -10,26 +23,19 @@ async function getCredentials() {
 
   if (!xReplitToken) throw new Error('X-Replit-Token not found');
 
-  const connectorName = 'stripe';
   const isProduction = process.env.REPLIT_DEPLOYMENT === '1';
-  const targetEnvironment = isProduction ? 'production' : 'development';
 
-  const url = new URL(`https://${hostname}/api/v2/connection`);
-  url.searchParams.set('include_secrets', 'true');
-  url.searchParams.set('connector_names', connectorName);
-  url.searchParams.set('environment', targetEnvironment);
+  // Try the environment-matched connection first, fall back to development
+  const environments = isProduction ? ['production', 'development'] : ['development'];
 
-  const response = await fetch(url.toString(), {
-    headers: { 'Accept': 'application/json', 'X-Replit-Token': xReplitToken },
-  });
-
-  const data = await response.json();
-  const settings = data.items?.[0]?.settings;
-  if (!settings?.publishable || !settings?.secret) {
-    throw new Error(`Stripe ${targetEnvironment} connection not found`);
+  for (const env of environments) {
+    const settings = await fetchConnection(hostname!, xReplitToken, env);
+    if (settings?.publishable && settings?.secret) {
+      return { publishableKey: settings.publishable, secretKey: settings.secret };
+    }
   }
 
-  return { publishableKey: settings.publishable, secretKey: settings.secret };
+  throw new Error('Stripe connection not found. Please connect Stripe in the integrations panel.');
 }
 
 export async function getUncachableStripeClient() {
