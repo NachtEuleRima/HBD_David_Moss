@@ -548,10 +548,17 @@ export default function Home() {
                             </div>
                             <Button
                               className="w-full h-12 rounded-xl bg-[#000000] hover:bg-[#1a1a1a] text-white font-semibold flex items-center gap-2 justify-center"
-                              onClick={() => {
+                              onClick={(e) => {
                                 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
                                 if (isMobile) {
-                                  window.open(`${baseUrl}/api/auth/x`, "_blank");
+                                  e.preventDefault();
+                                  const form = document.createElement("form");
+                                  form.method = "GET";
+                                  form.action = `${baseUrl}/api/auth/x`;
+                                  form.target = "_blank";
+                                  document.body.appendChild(form);
+                                  form.submit();
+                                  document.body.removeChild(form);
                                   startPolling();
                                 } else {
                                   window.location.href = `${baseUrl}/api/auth/x`;
