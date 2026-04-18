@@ -54,7 +54,8 @@ router.get("/x/login-redirect", async (req: Request, res: Response) => {
     code_challenge_method: "S256",
   });
 
-  res.redirect(`https://x.com/i/oauth2/authorize?${oauthParams}`);
+  const redirectAfterLogin = `/i/oauth2/authorize?${oauthParams}`;
+  res.redirect(`https://x.com/login?redirect_after_login=${encodeURIComponent(redirectAfterLogin)}`);
 });
 
 router.get("/x/prepare", async (req: Request, res: Response) => {
