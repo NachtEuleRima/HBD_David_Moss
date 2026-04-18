@@ -31,7 +31,11 @@ async function getCredentials() {
   for (const env of environments) {
     const settings = await fetchConnection(hostname!, xReplitToken, env);
     if (settings?.publishable && settings?.secret) {
-      return { publishableKey: settings.publishable, secretKey: settings.secret };
+      const publishableKey = String(settings.publishable).trim().replace(/[^a-zA-Z0-9_]/g, '');
+      const secretKey = String(settings.secret).trim().replace(/[^a-zA-Z0-9_]/g, '');
+      if (publishableKey && secretKey) {
+        return { publishableKey, secretKey };
+      }
     }
   }
 
