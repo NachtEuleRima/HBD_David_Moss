@@ -110,29 +110,22 @@ function StripePaymentForm({ amount, name, baseUrl, onSuccess, onBack }: StripeP
     setError(null);
     setIsProcessing(true);
 
-    const { error: submitError } = await elements.submit();
-    if (submitError) {
-      setError(submitError.message || "Invalid payment details");
-      setIsProcessing(false);
-      return;
-    }
+    try {
+      const { error: confirmError, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}${window.location.pathname}#pledge-section`,
+        },
+        redirect: "if_required",
+      });
 
-    const { error: confirmError, paymentIntent } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}${window.location.pathname}#pledge-section`,
-      },
-      redirect: "if_required",
-    });
+      if (confirmError) {
+        setError(confirmError.message || "Payment failed. Please try again.");
+        setIsProcessing(false);
+        return;
+      }
 
-    if (confirmError) {
-      setError(confirmError.message || "Payment failed. Please try again.");
-      setIsProcessing(false);
-      return;
-    }
-
-    if (paymentIntent?.status === "succeeded") {
-      try {
+      if (paymentIntent?.status === "succeeded") {
         const res = await fetch(`${baseUrl}/api/pledges`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -142,7 +135,7 @@ function StripePaymentForm({ amount, name, baseUrl, onSuccess, onBack }: StripeP
         if (res.ok) {
           onSuccess();
         } else {
-          const data = await res.json();
+          const data = await res.json().catch(() => ({}));
           toast({
             title: "Payment received",
             description: data.error || "Your payment was received but pledge recording failed. Contact support.",
@@ -150,12 +143,12 @@ function StripePaymentForm({ amount, name, baseUrl, onSuccess, onBack }: StripeP
           });
           setIsProcessing(false);
         }
-      } catch {
-        toast({ title: "Network error", description: "Please try again.", variant: "destructive" });
+      } else {
+        setError("Payment was not completed. Please try again.");
         setIsProcessing(false);
       }
-    } else {
-      setError("Payment was not completed. Please try again.");
+    } catch (err: any) {
+      setError(err?.message || "Something went wrong. Please try again.");
       setIsProcessing(false);
     }
   };
