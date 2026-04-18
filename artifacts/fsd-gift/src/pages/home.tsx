@@ -504,7 +504,7 @@ export default function Home() {
                 </div>
                 <div className="prose prose-invert prose-lg text-muted-foreground font-sans">
                   <p>
-                    Driving coast-to-coast is an achievement — and so is turning 30. Doing it entirely on Tesla's Full Self-Driving is a milestone in the history of transportation. David Moss did exactly that — a salesman who allegedly™ believes in a vision-only future, proving what's possible when conviction meets determination.
+                    Driving coast-to-coast is an achievement — and so is turning 30, a milestone. Doing it entirely on Tesla's Full Self-Driving is a milestone in the history of transportation. David Moss did exactly that — a salesman who allegedly™ believes in a vision-only future, proving what's possible when conviction meets determination.
                   </p>
                   <p>
                     As a core member of the Tesla community, David is always sharing insights and pushing the boundaries, whether it's him jumping in front of unsupervised Tesla Robotaxis or testing FSD v14.3.x. For his birthday on April 26th, we're coming together to get him something that powers his content creator journey: <strong>a custom-built NAS he can access from anywhere</strong> — a pro-grade, remote-accessible storage system worthy of the FSD Knight.
