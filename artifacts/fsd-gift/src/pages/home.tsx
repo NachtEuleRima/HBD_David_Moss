@@ -119,6 +119,9 @@ function StripePaymentForm({ amount, name, baseUrl, onSuccess, onBack }: StripeP
 
     const { error: confirmError, paymentIntent } = await stripe.confirmPayment({
       elements,
+      confirmParams: {
+        return_url: `${window.location.origin}${window.location.pathname}#pledge-section`,
+      },
       redirect: "if_required",
     });
 
@@ -280,6 +283,26 @@ export default function Home() {
     if (authError) {
       toast({ title: "Verification failed", description: "Could not verify your identity. Please try again.", variant: "destructive" });
       window.history.replaceState({}, "", window.location.pathname);
+    }
+
+    const paymentIntentId = params.get("payment_intent");
+    const redirectStatus = params.get("redirect_status");
+    if (paymentIntentId && redirectStatus === "succeeded") {
+      window.history.replaceState({}, "", window.location.pathname + "#pledge-section");
+      fetch(`${baseUrl}/api/pledges`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ paymentIntentId }),
+      })
+        .then((r) => r.json())
+        .then(() => setFormStep("success"))
+        .catch(() => {
+          toast({ title: "Payment received", description: "Your payment went through. Contact support if your pledge wasn't recorded.", variant: "destructive" });
+        });
+    } else if (paymentIntentId && redirectStatus && redirectStatus !== "succeeded") {
+      window.history.replaceState({}, "", window.location.pathname);
+      toast({ title: "Payment incomplete", description: "The payment was not completed. Please try again.", variant: "destructive" });
     }
 
     fetch(`${baseUrl}/api/auth/me`, { credentials: "include" })
