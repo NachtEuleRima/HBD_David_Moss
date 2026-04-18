@@ -78,6 +78,12 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+let _cachedStripe: ReturnType<typeof loadStripe> | null = null;
+function getStripe(publishableKey: string) {
+  if (!_cachedStripe) _cachedStripe = loadStripe(publishableKey);
+  return _cachedStripe;
+}
+
 const stripeAppearance = {
   theme: "night" as const,
   variables: {
@@ -259,7 +265,7 @@ export default function Home() {
     fetch(`${baseUrl}/api/stripe/config`, { credentials: "include" })
       .then((r) => r.json())
       .then(({ publishableKey }) => {
-        if (publishableKey) setStripePromise(loadStripe(publishableKey));
+        if (publishableKey) setStripePromise(getStripe(publishableKey));
       })
       .catch(() => {});
   }, [baseUrl]);
@@ -721,6 +727,7 @@ export default function Home() {
                       </CardHeader>
                       <CardContent className="pt-6">
                         <Elements
+                          key={clientSecret}
                           stripe={stripePromise}
                           options={elementsOptions}
                         >
