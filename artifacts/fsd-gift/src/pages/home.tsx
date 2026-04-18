@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { loadStripe } from "@stripe/stripe-js";
-import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useGetPledgeSummary, getGetPledgeSummaryQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -99,36 +99,32 @@ const stripeAppearance = {
 interface StripePaymentFormProps {
   amount: number;
   name: string;
+  clientSecret: string;
   baseUrl: string;
   onSuccess: () => void;
   onBack: () => void;
 }
 
-function StripePaymentForm({ amount, name, baseUrl, onSuccess, onBack }: StripePaymentFormProps) {
+function StripePaymentForm({ amount, name, clientSecret, baseUrl, onSuccess, onBack }: StripePaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isElementReady, setIsElementReady] = useState(false);
   const { toast } = useToast();
-
-  useEffect(() => {
-    const t = setTimeout(() => setIsElementReady(true), 5000);
-    return () => clearTimeout(t);
-  }, []);
 
   const handlePay = async () => {
     if (!stripe || !elements) return;
+    const card = elements.getElement(CardElement);
+    if (!card) {
+      setError("Card input not ready. Please refresh and try again.");
+      return;
+    }
     setError(null);
     setIsProcessing(true);
 
     try {
-      const { error: confirmError, paymentIntent } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: `${window.location.origin}${window.location.pathname}#pledge-section`,
-        },
-        redirect: "if_required",
+      const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: { card },
       });
 
       if (confirmError) {
@@ -178,13 +174,20 @@ function StripePaymentForm({ amount, name, baseUrl, onSuccess, onBack }: StripeP
         </div>
       </div>
 
-      <div className="rounded-xl overflow-hidden border border-card-border bg-secondary/20 p-4">
-        <PaymentElement
-          onReady={() => setIsElementReady(true)}
-          onLoadError={() => setIsElementReady(true)}
+      <div className="rounded-xl border border-card-border bg-secondary/20 px-4 py-[18px]">
+        <CardElement
           options={{
-            layout: "tabs",
-            wallets: { applePay: "auto", googlePay: "auto" },
+            style: {
+              base: {
+                color: "#f2f2f7",
+                fontFamily: "system-ui, -apple-system, sans-serif",
+                fontSize: "16px",
+                fontSmoothing: "antialiased",
+                "::placeholder": { color: "#636366" },
+                iconColor: "#ea8e2a",
+              },
+              invalid: { color: "#ff453a", iconColor: "#ff453a" },
+            },
           }}
         />
       </div>
@@ -197,16 +200,11 @@ function StripePaymentForm({ amount, name, baseUrl, onSuccess, onBack }: StripeP
 
       <Button
         onClick={handlePay}
-        disabled={isProcessing || !stripe || !elements || !isElementReady}
+        disabled={isProcessing || !stripe}
         className="w-full h-14 text-lg font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-[0_0_20px_rgba(234,142,42,0.3)] hover:shadow-[0_0_30px_rgba(234,142,42,0.5)]"
         data-testid="button-pay"
       >
-        {!isElementReady ? (
-          <span className="flex items-center gap-2">
-            <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-            Loading payment form…
-          </span>
-        ) : isProcessing ? (
+        {isProcessing ? (
           <span className="flex items-center gap-2">
             <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
             Processing...
@@ -256,10 +254,7 @@ export default function Home() {
   });
 
   const baseUrl = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
-  const elementsOptions = useMemo(
-    () => (clientSecret ? { clientSecret, appearance: stripeAppearance } : undefined),
-    [clientSecret],
-  );
+  const elementsOptions = useMemo(() => ({ appearance: stripeAppearance }), []);
 
   useEffect(() => {
     fetch(`${baseUrl}/api/stripe/config`, { credentials: "include" })
@@ -734,6 +729,7 @@ export default function Home() {
                           <StripePaymentForm
                             amount={pendingPayment?.amount ?? 0}
                             name={pendingPayment?.name ?? ""}
+                            clientSecret={clientSecret!}
                             baseUrl={baseUrl}
                             onSuccess={handlePaymentSuccess}
                             onBack={() => { setFormStep("form"); setClientSecret(null); }}
