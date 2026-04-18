@@ -103,6 +103,7 @@ function StripePaymentForm({ amount, name, baseUrl, onSuccess, onBack }: StripeP
   const elements = useElements();
   const [error, setError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isElementReady, setIsElementReady] = useState(false);
   const { toast } = useToast();
 
   const handlePay = async () => {
@@ -168,6 +169,7 @@ function StripePaymentForm({ amount, name, baseUrl, onSuccess, onBack }: StripeP
 
       <div className="rounded-xl overflow-hidden border border-card-border bg-secondary/20 p-4">
         <PaymentElement
+          onReady={() => setIsElementReady(true)}
           options={{
             layout: "tabs",
             wallets: { applePay: "auto", googlePay: "auto" },
@@ -183,11 +185,16 @@ function StripePaymentForm({ amount, name, baseUrl, onSuccess, onBack }: StripeP
 
       <Button
         onClick={handlePay}
-        disabled={isProcessing || !stripe || !elements}
+        disabled={isProcessing || !stripe || !elements || !isElementReady}
         className="w-full h-14 text-lg font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-[0_0_20px_rgba(234,142,42,0.3)] hover:shadow-[0_0_30px_rgba(234,142,42,0.5)]"
         data-testid="button-pay"
       >
-        {isProcessing ? (
+        {!isElementReady ? (
+          <span className="flex items-center gap-2">
+            <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+            Loading payment form…
+          </span>
+        ) : isProcessing ? (
           <span className="flex items-center gap-2">
             <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
             Processing...
