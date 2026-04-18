@@ -113,11 +113,6 @@ function StripePaymentForm({ amount, name, baseUrl, onSuccess, onBack }: StripeP
 
   const handlePay = async () => {
     if (!stripe || !elements) return;
-    const paymentEl = elements.getElement("payment");
-    if (!paymentEl) {
-      setError("Payment form is still loading. Please wait a moment and try again.");
-      return;
-    }
     setError(null);
     setIsProcessing(true);
 
@@ -180,6 +175,7 @@ function StripePaymentForm({ amount, name, baseUrl, onSuccess, onBack }: StripeP
       <div className="rounded-xl overflow-hidden border border-card-border bg-secondary/20 p-4">
         <PaymentElement
           onReady={() => setIsElementReady(true)}
+          onLoadError={() => setIsElementReady(true)}
           options={{
             layout: "tabs",
             wallets: { applePay: "auto", googlePay: "auto" },
@@ -254,6 +250,10 @@ export default function Home() {
   });
 
   const baseUrl = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
+  const elementsOptions = useMemo(
+    () => (clientSecret ? { clientSecret, appearance: stripeAppearance } : undefined),
+    [clientSecret],
+  );
 
   useEffect(() => {
     fetch(`${baseUrl}/api/stripe/config`, { credentials: "include" })
@@ -722,7 +722,7 @@ export default function Home() {
                       <CardContent className="pt-6">
                         <Elements
                           stripe={stripePromise}
-                          options={{ clientSecret, appearance: stripeAppearance }}
+                          options={elementsOptions}
                         >
                           <StripePaymentForm
                             amount={pendingPayment?.amount ?? 0}
