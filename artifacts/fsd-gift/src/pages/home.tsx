@@ -247,7 +247,7 @@ export default function Home() {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: { name: "", amount: 20 },
+    defaultValues: { name: "", amount: 42 },
   });
 
   const baseUrl = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
@@ -794,7 +794,7 @@ export default function Home() {
                                     <FormItem>
                                       <FormLabel className="text-foreground font-mono uppercase tracking-wider text-xs">Pledge Amount</FormLabel>
                                       <div className="grid grid-cols-3 gap-3 mb-4">
-                                        {[10, 20, 50].map((amount) => (
+                                        {[42, 69, 420].map((amount) => (
                                           <Button
                                             key={amount}
                                             type="button"
