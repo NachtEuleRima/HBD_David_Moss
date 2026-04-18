@@ -922,8 +922,14 @@ export default function Home() {
               onClick={openContact("RimaSukhadia")}
               className="group flex flex-col items-center gap-4 p-6 rounded-3xl bg-card border border-card-border hover:border-primary/40 hover:shadow-[0_0_24px_rgba(234,142,42,0.15)] transition-all duration-300"
             >
-              <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center border-2 border-card-border group-hover:border-primary/50 transition-colors">
-                <svg viewBox="0 0 24 24" className="w-7 h-7 fill-muted-foreground group-hover:fill-primary transition-colors" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+              <div className="w-16 h-16 rounded-full bg-secondary border-2 border-card-border group-hover:border-primary/50 transition-colors overflow-hidden relative flex items-center justify-center">
+                <img
+                  src="https://unavatar.io/twitter/RimaSukhadia"
+                  alt="RimaSukhadia"
+                  className="w-full h-full object-cover absolute inset-0"
+                  onError={(e) => { e.currentTarget.style.display = "none"; (e.currentTarget.nextSibling as HTMLElement).style.display = "block"; }}
+                />
+                <svg viewBox="0 0 24 24" className="hidden w-7 h-7 fill-muted-foreground group-hover:fill-primary transition-colors" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
               </div>
               <div className="text-center">
                 <p className="font-bold text-foreground font-sans text-lg">📐_Cyber_Owl_🦉</p>
@@ -938,8 +944,14 @@ export default function Home() {
               onClick={openContact("koby_pierce")}
               className="group flex flex-col items-center gap-4 p-6 rounded-3xl bg-card border border-card-border hover:border-primary/40 hover:shadow-[0_0_24px_rgba(234,142,42,0.15)] transition-all duration-300"
             >
-              <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center border-2 border-card-border group-hover:border-primary/50 transition-colors">
-                <svg viewBox="0 0 24 24" className="w-7 h-7 fill-muted-foreground group-hover:fill-primary transition-colors" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+              <div className="w-16 h-16 rounded-full bg-secondary border-2 border-card-border group-hover:border-primary/50 transition-colors overflow-hidden relative flex items-center justify-center">
+                <img
+                  src="https://unavatar.io/twitter/koby_pierce"
+                  alt="koby_pierce"
+                  className="w-full h-full object-cover absolute inset-0"
+                  onError={(e) => { e.currentTarget.style.display = "none"; (e.currentTarget.nextSibling as HTMLElement).style.display = "block"; }}
+                />
+                <svg viewBox="0 0 24 24" className="hidden w-7 h-7 fill-muted-foreground group-hover:fill-primary transition-colors" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
               </div>
               <div className="text-center">
                 <p className="font-bold text-foreground font-sans text-lg">Koby Pierce</p>
