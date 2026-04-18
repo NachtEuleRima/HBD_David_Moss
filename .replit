@@ -46,4 +46,4 @@ channel = "stable-25_05"
 [userenv]
 
 [userenv.production]
-CALLBACK_BASE_URL = "https://mossman-on-fsd.life"
+CALLBACK_BASE_URL = "https://davidmoss-surprise.replit.app"
