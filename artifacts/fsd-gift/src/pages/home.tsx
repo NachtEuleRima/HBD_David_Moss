@@ -106,8 +106,18 @@ function StripePaymentForm({ amount, name, baseUrl, onSuccess, onBack }: StripeP
   const [isElementReady, setIsElementReady] = useState(false);
   const { toast } = useToast();
 
+  useEffect(() => {
+    const t = setTimeout(() => setIsElementReady(true), 5000);
+    return () => clearTimeout(t);
+  }, []);
+
   const handlePay = async () => {
     if (!stripe || !elements) return;
+    const paymentEl = elements.getElement("payment");
+    if (!paymentEl) {
+      setError("Payment form is still loading. Please wait a moment and try again.");
+      return;
+    }
     setError(null);
     setIsProcessing(true);
 
