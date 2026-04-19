@@ -237,6 +237,7 @@ export default function Home() {
   const [adminPassword, setAdminPassword] = useState<string | null>(null);
   const [adminPledges, setAdminPledges] = useState<Array<{ id: number; name: string; amount: number; xUsername?: string; createdAt: string }>>([]);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [showAllSupporters, setShowAllSupporters] = useState(false);
   const [xUser, setXUser] = useState<{ id: string; username: string; name: string } | null>(null);
   const [xUserLoading, setXUserLoading] = useState(true);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -585,7 +586,7 @@ export default function Home() {
               data-testid="section-pledgers"
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-foreground font-sans">Recent Supporters</h3>
+                <h3 className="text-xl font-semibold text-foreground font-sans">Top Supporters</h3>
                 <button
                   onClick={() => { if (isAdminMode) { setIsAdminMode(false); } else { setShowAdminLogin((v) => !v); setAdminError(false); } }}
                   className="text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors"
@@ -625,34 +626,52 @@ export default function Home() {
                   ))}
                 </div>
               ) : (isAdminMode ? adminPledges : summary?.pledges ?? []).length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {(isAdminMode ? adminPledges : summary?.pledges ?? []).map((pledge) => (
-                    <div key={pledge.id} className="flex items-center gap-4 p-3 rounded-2xl hover:bg-secondary/50 transition-colors border border-transparent hover:border-card-border">
-                      <Avatar className="h-12 w-12 border border-card-border shadow-sm flex-shrink-0">
-                        <AvatarFallback className="bg-secondary text-secondary-foreground font-mono font-bold">
-                          {pledge.name.substring(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-foreground font-sans truncate">{pledge.name}</p>
-                        <p className="text-sm text-primary font-mono font-medium">${pledge.amount}</p>
-                        {isAdminMode && (pledge as any).xUsername && (
-                          <p className="text-xs text-cyan-400 font-mono mt-0.5">@{(pledge as any).xUsername}</p>
-                        )}
+                (() => {
+                  const allPledges = isAdminMode ? adminPledges : summary?.pledges ?? [];
+                  const sorted = isAdminMode ? allPledges : [...allPledges].sort((a, b) => Number(b.amount) - Number(a.amount));
+                  const visible = isAdminMode || showAllSupporters ? sorted : sorted.slice(0, 4);
+                  const hasMore = !isAdminMode && sorted.length > 4;
+                  return (
+                    <>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {visible.map((pledge) => (
+                          <div key={pledge.id} className="flex items-center gap-4 p-3 rounded-2xl hover:bg-secondary/50 transition-colors border border-transparent hover:border-card-border">
+                            <Avatar className="h-12 w-12 border border-card-border shadow-sm flex-shrink-0">
+                              <AvatarFallback className="bg-secondary text-secondary-foreground font-mono font-bold">
+                                {pledge.name.substring(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-foreground font-sans truncate">{pledge.name}</p>
+                              <p className="text-sm text-primary font-mono font-medium">${pledge.amount}</p>
+                              {isAdminMode && (pledge as any).xUsername && (
+                                <p className="text-xs text-cyan-400 font-mono mt-0.5">@{(pledge as any).xUsername}</p>
+                              )}
+                            </div>
+                            {isAdminMode && (
+                              <button
+                                onClick={() => handleDelete(pledge.id)}
+                                disabled={deletingId === pledge.id}
+                                className="ml-auto text-muted-foreground hover:text-destructive transition-colors disabled:opacity-40 flex-shrink-0"
+                                title="Remove supporter"
+                              >
+                                <Trash2 size={15} />
+                              </button>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                      {isAdminMode && (
+                      {hasMore && (
                         <button
-                          onClick={() => handleDelete(pledge.id)}
-                          disabled={deletingId === pledge.id}
-                          className="ml-auto text-muted-foreground hover:text-destructive transition-colors disabled:opacity-40 flex-shrink-0"
-                          title="Remove supporter"
+                          onClick={() => setShowAllSupporters((v) => !v)}
+                          className="mt-4 w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-2 rounded-xl hover:bg-secondary/50 border border-transparent hover:border-card-border font-mono"
                         >
-                          <Trash2 size={15} />
+                          {showAllSupporters ? "Show less" : `See all ${sorted.length} supporters`}
                         </button>
                       )}
-                    </div>
-                  ))}
-                </div>
+                    </>
+                  );
+                })()
               ) : (
                 <p className="text-muted-foreground italic">Be the first to chip in!</p>
               )}
