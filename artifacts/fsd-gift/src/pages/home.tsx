@@ -586,7 +586,7 @@ export default function Home() {
               data-testid="section-pledgers"
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-foreground font-sans">Top Supporters</h3>
+                <h3 className="text-xl font-semibold text-foreground font-sans">Supporters</h3>
                 <button
                   onClick={() => { if (isAdminMode) { setIsAdminMode(false); } else { setShowAdminLogin((v) => !v); setAdminError(false); } }}
                   className="text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors"
