@@ -129,7 +129,7 @@ router.get("/summary", async (req, res) => {
       name: p.name,
       amount: parseFloat(p.amount),
       createdAt: p.createdAt,
-      ...(isAdmin ? { xUsername: p.xUsername } : {}),
+      xUsername: p.xUsername,
     })),
   });
 });

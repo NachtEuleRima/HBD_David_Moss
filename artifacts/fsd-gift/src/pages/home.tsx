@@ -11,7 +11,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Gift, Route, Calendar, Heart, CheckCircle2, Lock, Trash2, LogIn, LogOut, CreditCard, ChevronLeft } from "lucide-react";
@@ -637,6 +637,12 @@ export default function Home() {
                         {visible.map((pledge) => (
                           <div key={pledge.id} className="flex items-center gap-4 p-3 rounded-2xl hover:bg-secondary/50 transition-colors border border-transparent hover:border-card-border">
                             <Avatar className="h-12 w-12 border border-card-border shadow-sm flex-shrink-0">
+                              {(pledge as any).xUsername && (
+                                <AvatarImage
+                                  src={`https://unavatar.io/twitter/${(pledge as any).xUsername}`}
+                                  alt={(pledge as any).xUsername}
+                                />
+                              )}
                               <AvatarFallback className="bg-secondary text-secondary-foreground font-mono font-bold">
                                 {pledge.name.substring(0, 2).toUpperCase()}
                               </AvatarFallback>
