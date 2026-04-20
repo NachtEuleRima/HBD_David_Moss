@@ -41,7 +41,7 @@ router.post("/create-payment-intent", async (req, res) => {
         xUsername: session.xUser.username,
         pledgeName: name.trim(),
       },
-      description: `FSD Coast to Coast Gift pledge from ${session.xUser.username}`,
+      description: `David Moss | Birthday Surprise pledge from ${session.xUser.username}`,
     });
 
     res.json({ clientSecret: paymentIntent.client_secret });
