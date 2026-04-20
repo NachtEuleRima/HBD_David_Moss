@@ -341,6 +341,7 @@ export default function Home() {
       const el = document.getElementById("pledge-section");
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.history.replaceState({}, "", window.location.pathname + window.location.search);
       } else if (attempts < 8) {
         attempts++;
         setTimeout(tryScroll, 150);
