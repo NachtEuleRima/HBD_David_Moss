@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 
 declare module "express-session" {
   interface SessionData {
-    xUser: { id: string; username: string; name: string; avatarUrl?: string } | null;
+    xUser: { id: string; username: string; name: string } | null;
   }
 }
 
@@ -164,7 +164,7 @@ router.get("/x/callback", async (req: Request, res: Response) => {
 
     const tokenData = (await tokenRes.json()) as { access_token: string };
 
-    const userRes = await fetch("https://api.twitter.com/2/users/me?user.fields=profile_image_url", {
+    const userRes = await fetch("https://api.twitter.com/2/users/me", {
       headers: { Authorization: `Bearer ${tokenData.access_token}` },
     });
 
@@ -176,16 +176,13 @@ router.get("/x/callback", async (req: Request, res: Response) => {
     }
 
     const userData = (await userRes.json()) as {
-      data: { id: string; username: string; name: string; profile_image_url?: string };
+      data: { id: string; username: string; name: string };
     };
-
-    const avatarUrl = userData.data.profile_image_url?.replace("_normal", "") ?? undefined;
 
     req.session.xUser = {
       id: userData.data.id,
       username: userData.data.username,
       name: userData.data.name,
-      avatarUrl,
     };
 
     req.session.save((saveErr) => {

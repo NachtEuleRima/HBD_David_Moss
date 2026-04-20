@@ -91,7 +91,6 @@ router.post("/", async (req, res) => {
       name,
       amount,
       xUsername: session.xUser.username,
-      xAvatarUrl: session.xUser.avatarUrl ?? null,
       stripePaymentIntentId: paymentIntentId,
     })
     .returning();
