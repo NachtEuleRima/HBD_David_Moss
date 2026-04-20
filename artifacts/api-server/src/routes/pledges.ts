@@ -91,6 +91,7 @@ router.post("/", async (req, res) => {
       name,
       amount,
       xUsername: session.xUser.username,
+      xAvatarUrl: session.xUser.avatarUrl ?? null,
       stripePaymentIntentId: paymentIntentId,
     })
     .returning();
@@ -130,6 +131,7 @@ router.get("/summary", async (req, res) => {
       amount: parseFloat(p.amount),
       createdAt: p.createdAt,
       xUsername: p.xUsername,
+      xAvatarUrl: p.xAvatarUrl,
     })),
   });
 });
@@ -147,15 +149,19 @@ router.patch("/:id", async (req, res) => {
     return;
   }
 
-  const { xUsername } = req.body;
-  if (typeof xUsername !== "string") {
-    res.status(400).json({ error: "xUsername required" });
+  const { xUsername, xAvatarUrl } = req.body;
+  if (typeof xUsername !== "string" && typeof xAvatarUrl !== "string") {
+    res.status(400).json({ error: "xUsername or xAvatarUrl required" });
     return;
   }
 
+  const updateData: Record<string, string | null> = {};
+  if (typeof xUsername === "string") updateData.xUsername = xUsername || null;
+  if (typeof xAvatarUrl === "string") updateData.xAvatarUrl = xAvatarUrl || null;
+
   const [updated] = await db
     .update(pledgesTable)
-    .set({ xUsername: xUsername || null })
+    .set(updateData)
     .where(eq(pledgesTable.id, id))
     .returning();
 

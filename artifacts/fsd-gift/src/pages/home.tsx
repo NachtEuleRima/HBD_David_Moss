@@ -638,10 +638,10 @@ export default function Home() {
                         {visible.map((pledge) => (
                           <div key={pledge.id} className="flex items-center gap-4 p-3 rounded-2xl hover:bg-secondary/50 transition-colors border border-transparent hover:border-card-border">
                             <Avatar className="h-12 w-12 border border-card-border shadow-sm flex-shrink-0">
-                              {(pledge as any).xUsername && (
+                              {((pledge as any).xAvatarUrl || (pledge as any).xUsername) && (
                                 <AvatarImage
-                                  src={`https://unavatar.io/x/${(pledge as any).xUsername}`}
-                                  alt={(pledge as any).xUsername}
+                                  src={(pledge as any).xAvatarUrl || `https://unavatar.io/x/${(pledge as any).xUsername}`}
+                                  alt={(pledge as any).xUsername || pledge.name}
                                 />
                               )}
                               <AvatarFallback className="bg-secondary text-secondary-foreground font-mono font-bold">
