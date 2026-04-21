@@ -511,23 +511,22 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Scroll buttons */}
-      <div className="fixed bottom-6 right-4 z-40 flex flex-col gap-2">
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="w-9 h-9 rounded-full bg-black/50 border border-white/10 backdrop-blur-sm text-white/60 hover:text-white hover:bg-black/70 transition-all flex items-center justify-center"
-          aria-label="Scroll to top"
-        >
-          <ChevronUp className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })}
-          className="w-9 h-9 rounded-full bg-black/50 border border-white/10 backdrop-blur-sm text-white/60 hover:text-white hover:bg-black/70 transition-all flex items-center justify-center"
-          aria-label="Scroll to bottom"
-        >
-          <ChevronDown className="w-4 h-4" />
-        </button>
-      </div>
+      {/* Scroll to top button */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className="fixed top-4 right-4 z-40 w-9 h-9 rounded-full bg-primary/20 border border-primary/30 backdrop-blur-sm text-primary hover:bg-primary/30 transition-all flex items-center justify-center"
+        aria-label="Scroll to top"
+      >
+        <ChevronUp className="w-4 h-4" />
+      </button>
+      {/* Scroll to bottom button */}
+      <button
+        onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })}
+        className="fixed bottom-4 right-4 z-40 w-9 h-9 rounded-full bg-primary/20 border border-primary/30 backdrop-blur-sm text-primary hover:bg-primary/30 transition-all flex items-center justify-center"
+        aria-label="Scroll to bottom"
+      >
+        <ChevronDown className="w-4 h-4" />
+      </button>
 
       {/* Hero Section */}
       <section className="relative w-full h-[60vh] min-h-[500px] flex items-end justify-center overflow-hidden border-b border-border">
