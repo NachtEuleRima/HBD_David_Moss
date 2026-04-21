@@ -398,25 +398,19 @@ export default function Home() {
   }, [summary, isAdminMode, adminPassword]);
 
   useEffect(() => {
-    const COLORS = ["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#ff6bdb", "#ffffff", "#ffab40"];
-    const fire = (delay: number, count: number, velocity: number, spread: number) => {
-      setTimeout(() => {
-        confetti({
-          particleCount: count,
-          spread,
-          origin: { x: 0.5, y: 0.5 },
-          startVelocity: velocity,
-          gravity: 1.4,
-          scalar: 0.9,
-          ticks: 240,
-          colors: COLORS,
-        });
-      }, delay);
-    };
-    fire(200, 80, 42, 70);
-    fire(420, 60, 30, 60);
-    fire(680, 40, 22, 50);
-    setTimeout(() => setShowParty(false), 2600);
+    setTimeout(() => {
+      confetti({
+        particleCount: 140,
+        spread: 80,
+        origin: { x: 0.5, y: 0.5 },
+        startVelocity: 42,
+        gravity: 1.4,
+        scalar: 0.9,
+        ticks: 240,
+        colors: ["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#ff6bdb", "#ffffff", "#ffab40"],
+      });
+    }, 220);
+    setTimeout(() => setShowParty(false), 2400);
   }, []);
 
   const handleAdminLogin = () => {
