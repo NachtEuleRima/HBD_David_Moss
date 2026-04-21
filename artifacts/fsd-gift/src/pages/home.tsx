@@ -499,10 +499,10 @@ export default function Home() {
           <img
             src={carPhoto}
             alt="David Moss with his Tesla at a Supercharger"
-            className="w-full h-full object-cover object-center opacity-50"
+            className="w-full h-full object-cover object-center opacity-80"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.5)_100%)] pointer-events-none mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.2)_100%)] pointer-events-none mix-blend-multiply" />
         </div>
 
         <div className="relative z-10 container px-4 md:px-6 mx-auto text-center flex flex-col items-center pb-12">
