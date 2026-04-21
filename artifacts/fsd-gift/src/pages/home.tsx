@@ -241,8 +241,8 @@ export default function Home() {
   const [showAllSupporters, setShowAllSupporters] = useState(false);
   const [xUser, setXUser] = useState<{ id: string; username: string; name: string } | null>(null);
   const [xUserLoading, setXUserLoading] = useState(true);
+  const [showParty, setShowParty] = useState(true);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const partyEmojiRef = useRef<HTMLSpanElement>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -398,28 +398,25 @@ export default function Home() {
   }, [summary, isAdminMode, adminPassword]);
 
   useEffect(() => {
-    const el = partyEmojiRef.current;
-    if (!el) return;
+    const COLORS = ["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#ff6bdb", "#ffffff", "#ffab40"];
     const fire = (delay: number, count: number, velocity: number, spread: number) => {
       setTimeout(() => {
-        const rect = el.getBoundingClientRect();
-        const x = (rect.left + rect.width / 2) / window.innerWidth;
-        const y = (rect.top + rect.height / 2) / window.innerHeight;
         confetti({
           particleCount: count,
           spread,
-          origin: { x, y },
+          origin: { x: 0.5, y: 0.5 },
           startVelocity: velocity,
           gravity: 1.4,
           scalar: 0.9,
-          ticks: 220,
-          colors: ["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#ff6bdb", "#ffffff", "#ffab40"],
+          ticks: 240,
+          colors: COLORS,
         });
       }, delay);
     };
-    fire(200, 70, 38, 65);
-    fire(400, 50, 28, 55);
-    fire(650, 35, 22, 45);
+    fire(200, 80, 42, 70);
+    fire(420, 60, 30, 60);
+    fire(680, 40, 22, 50);
+    setTimeout(() => setShowParty(false), 2600);
   }, []);
 
   const handleAdminLogin = () => {
@@ -477,6 +474,27 @@ export default function Home() {
 
   return (
     <div className="min-h-[100dvh] w-full bg-background selection:bg-primary/30">
+      <AnimatePresence>
+        {showParty && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+          >
+            <motion.span
+              initial={{ scale: 0, rotate: -20 }}
+              animate={{ scale: [0, 1.5, 0.85, 1.2, 1], rotate: [-20, 12, -8, 5, 0] }}
+              transition={{ duration: 0.75, ease: "easeOut", delay: 0.1 }}
+              className="select-none"
+              style={{ fontSize: "7rem", lineHeight: 1 }}
+            >
+              🎉
+            </motion.span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Hero Section */}
       <section className="relative w-full h-[60vh] min-h-[500px] flex items-end justify-center overflow-hidden border-b border-border">
         <div className="absolute inset-0 z-0">
@@ -495,16 +513,6 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <motion.span
-              ref={partyEmojiRef}
-              initial={{ scale: 0, rotate: -20 }}
-              animate={{ scale: [0, 1.4, 0.9, 1.15, 1], rotate: [-20, 10, -8, 5, 0] }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.15 }}
-              className="inline-block text-5xl md:text-6xl mb-3 select-none cursor-default"
-              style={{ display: "inline-block", lineHeight: 1 }}
-            >
-              🎉
-            </motion.span>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
               <Calendar className="w-4 h-4" />
               <span>April 26th Birthday Surprise</span>
