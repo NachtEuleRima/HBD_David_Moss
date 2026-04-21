@@ -243,7 +243,7 @@ export default function Home() {
   const [showAllSupporters, setShowAllSupporters] = useState(false);
   const [xUser, setXUser] = useState<{ id: string; username: string; name: string } | null>(null);
   const [xUserLoading, setXUserLoading] = useState(true);
-  const [showParty, setShowParty] = useState(true);
+  const [showParty, setShowParty] = useState(!confettiFired);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
