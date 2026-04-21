@@ -15,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Gift, Route, Calendar, Heart, CheckCircle2, Lock, Trash2, LogIn, LogOut, CreditCard, ChevronLeft } from "lucide-react";
+import { Gift, Route, Calendar, Heart, CheckCircle2, Lock, Trash2, LogIn, LogOut, CreditCard, ChevronLeft, ChevronUp, ChevronDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 
@@ -493,6 +493,24 @@ export default function Home() {
         )}
       </AnimatePresence>
 
+      {/* Scroll buttons */}
+      <div className="fixed bottom-6 right-4 z-40 flex flex-col gap-2">
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="w-9 h-9 rounded-full bg-black/50 border border-white/10 backdrop-blur-sm text-white/60 hover:text-white hover:bg-black/70 transition-all flex items-center justify-center"
+          aria-label="Scroll to top"
+        >
+          <ChevronUp className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })}
+          className="w-9 h-9 rounded-full bg-black/50 border border-white/10 backdrop-blur-sm text-white/60 hover:text-white hover:bg-black/70 transition-all flex items-center justify-center"
+          aria-label="Scroll to bottom"
+        >
+          <ChevronDown className="w-4 h-4" />
+        </button>
+      </div>
+
       {/* Hero Section */}
       <section className="relative w-full h-[60vh] min-h-[500px] flex items-end justify-center overflow-hidden border-b border-border">
         <div className="absolute inset-0 z-0">
@@ -511,7 +529,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/55 border border-white/10 text-white/90 text-sm font-medium mb-6 backdrop-blur-sm">
               <Calendar className="w-4 h-4" />
               <span>April 26th Birthday Surprise</span>
             </div>
