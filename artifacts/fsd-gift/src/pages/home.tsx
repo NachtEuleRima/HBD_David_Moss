@@ -569,7 +569,7 @@ export default function Home() {
                     Driving coast-to-coast is an achievement. Doing it entirely on Tesla's Full Self-Driving is a milestone (and so is turning 30) in the history of transportation. David Moss did exactly that — a LiDAR salesman who allegedly™ believes in a vision-only future, proving what's possible when conviction meets determination.
                   </p>
                   <p>
-                    As a core member of the Tesla community, David is always sharing insights and pushing the boundaries, whether it's him jumping in front of unsupervised Tesla Robotaxis or testing FSD v14.3.x. For his birthday on April 26th, we're coming together to get him something that powers his content creator journey: <strong>a custom-built NAS (Network Attached Storage) he can access from anywhere</strong> — a pro-grade, remote-accessible storage system worthy of the FSD Knight.
+                    As a core member of the Tesla community, David is always sharing insights and pushing the boundaries, whether it's him jumping in front of unsupervised Tesla Robotaxis or testing FSD v14.3.x. For his birthday on April 26th, we're coming together to get him something that powers his content creator journey: <strong className="text-primary/75 font-semibold">a custom-built NAS (Network Attached Storage) he can access from anywhere</strong> — a pro-grade, remote-accessible storage system worthy of the FSD Knight.
                   </p>
                 </div>
               </div>
