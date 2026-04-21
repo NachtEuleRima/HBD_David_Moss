@@ -242,6 +242,7 @@ export default function Home() {
   const [xUser, setXUser] = useState<{ id: string; username: string; name: string } | null>(null);
   const [xUserLoading, setXUserLoading] = useState(true);
   const [showParty, setShowParty] = useState(true);
+  const confettiFiredRef = useRef(false);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -398,6 +399,8 @@ export default function Home() {
   }, [summary, isAdminMode, adminPassword]);
 
   useEffect(() => {
+    if (confettiFiredRef.current) return;
+    confettiFiredRef.current = true;
     setTimeout(() => {
       confetti({
         particleCount: 140,
