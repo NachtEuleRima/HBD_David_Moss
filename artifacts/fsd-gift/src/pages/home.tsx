@@ -483,9 +483,9 @@ export default function Home() {
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
             <motion.span
-              initial={{ scale: 0, rotate: -20 }}
-              animate={{ scale: [0, 1.5, 0.85, 1.2, 1], rotate: [-20, 12, -8, 5, 0] }}
-              transition={{ duration: 0.75, ease: "easeOut", delay: 0.1 }}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: [0, 1.18, 1], opacity: 1 }}
+              transition={{ duration: 0.45, ease: "easeOut", times: [0, 0.65, 1], delay: 0.1 }}
               className="select-none"
               style={{ fontSize: "7rem", lineHeight: 1 }}
             >
