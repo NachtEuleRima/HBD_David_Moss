@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
+import confetti from "canvas-confetti";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -241,6 +242,7 @@ export default function Home() {
   const [xUser, setXUser] = useState<{ id: string; username: string; name: string } | null>(null);
   const [xUserLoading, setXUserLoading] = useState(true);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const partyEmojiRef = useRef<HTMLSpanElement>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -395,6 +397,31 @@ export default function Home() {
     }
   }, [summary, isAdminMode, adminPassword]);
 
+  useEffect(() => {
+    const el = partyEmojiRef.current;
+    if (!el) return;
+    const fire = (delay: number, count: number, velocity: number, spread: number) => {
+      setTimeout(() => {
+        const rect = el.getBoundingClientRect();
+        const x = (rect.left + rect.width / 2) / window.innerWidth;
+        const y = (rect.top + rect.height / 2) / window.innerHeight;
+        confetti({
+          particleCount: count,
+          spread,
+          origin: { x, y },
+          startVelocity: velocity,
+          gravity: 1.4,
+          scalar: 0.9,
+          ticks: 220,
+          colors: ["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#ff6bdb", "#ffffff", "#ffab40"],
+        });
+      }, delay);
+    };
+    fire(200, 70, 38, 65);
+    fire(400, 50, 28, 55);
+    fire(650, 35, 22, 45);
+  }, []);
+
   const handleAdminLogin = () => {
     if (adminInput !== "cyberowlcanaccess") {
       setAdminError(true);
@@ -468,6 +495,16 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
+            <motion.span
+              ref={partyEmojiRef}
+              initial={{ scale: 0, rotate: -20 }}
+              animate={{ scale: [0, 1.4, 0.9, 1.15, 1], rotate: [-20, 10, -8, 5, 0] }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.15 }}
+              className="inline-block text-5xl md:text-6xl mb-3 select-none cursor-default"
+              style={{ display: "inline-block", lineHeight: 1 }}
+            >
+              🎉
+            </motion.span>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
               <Calendar className="w-4 h-4" />
               <span>April 26th Birthday Surprise</span>
