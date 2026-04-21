@@ -402,37 +402,19 @@ export default function Home() {
   useEffect(() => {
     if (confettiFired) return;
     confettiFired = true;
-    const COLORS = ["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#ff6bdb", "#ffffff", "#ffab40"];
-    // Main burst from center
     setTimeout(() => {
       confetti({
-        particleCount: 130,
+        particleCount: 140,
         spread: 80,
         origin: { x: 0.5, y: 0.5 },
-        startVelocity: 40,
-        gravity: 0.75,
+        startVelocity: 42,
+        gravity: 1.4,
         scalar: 0.9,
-        ticks: 500,
-        colors: COLORS,
+        ticks: 240,
+        colors: ["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#ff6bdb", "#ffffff", "#ffab40"],
       });
     }, 100);
-    // Gathering phase — flat pieces rain from top and settle at bottom
-    [0.2, 0.4, 0.6, 0.8].forEach((x, i) => {
-      setTimeout(() => {
-        confetti({
-          particleCount: 18,
-          spread: 30,
-          origin: { x, y: 0 },
-          startVelocity: 22,
-          gravity: 2.8,
-          scalar: 0.75,
-          ticks: 220,
-          flat: true,
-          colors: COLORS,
-        });
-      }, 700 + i * 120);
-    });
-    setTimeout(() => setShowParty(false), 2800);
+    setTimeout(() => setShowParty(false), 2400);
   }, []);
 
   const handleAdminLogin = () => {
