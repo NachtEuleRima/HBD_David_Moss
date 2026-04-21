@@ -413,7 +413,7 @@ export default function Home() {
         ticks: 240,
         colors: ["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#ff6bdb", "#ffffff", "#ffab40"],
       });
-    }, 220);
+    }, 100);
     setTimeout(() => setShowParty(false), 2400);
   }, []);
 
@@ -481,9 +481,9 @@ export default function Home() {
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
             <motion.span
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: [0, 1.18, 1], opacity: 1 }}
-              transition={{ duration: 0.45, ease: "easeOut", times: [0, 0.65, 1], delay: 0.1 }}
+              initial={{ scale: 0 }}
+              animate={{ scale: [0, 1.18, 1] }}
+              transition={{ duration: 0.35, ease: "easeOut", times: [0, 0.65, 1] }}
               className="select-none"
               style={{ fontSize: "7rem", lineHeight: 1 }}
             >
