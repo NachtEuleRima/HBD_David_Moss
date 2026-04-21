@@ -135,6 +135,27 @@ router.get("/summary", async (req, res) => {
   });
 });
 
+router.post("/admin", async (req, res) => {
+  const adminPassword = req.headers["x-admin-password"];
+  if (!adminPassword || adminPassword !== process.env.ADMIN_PASSWORD) {
+    res.status(401).json({ error: "Unauthorized" });
+    return;
+  }
+
+  const { name, amount, xUsername, xAvatarUrl } = req.body;
+  if (!name || !amount) {
+    res.status(400).json({ error: "name and amount required" });
+    return;
+  }
+
+  const [pledge] = await db
+    .insert(pledgesTable)
+    .values({ name, amount: String(amount), xUsername: xUsername || null, xAvatarUrl: xAvatarUrl || null })
+    .returning();
+
+  res.status(201).json({ success: true, pledge });
+});
+
 router.patch("/:id", async (req, res) => {
   const adminPassword = req.headers["x-admin-password"];
   if (!adminPassword || adminPassword !== process.env.ADMIN_PASSWORD) {
