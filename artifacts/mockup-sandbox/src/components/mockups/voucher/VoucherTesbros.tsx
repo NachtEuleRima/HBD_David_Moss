@@ -29,22 +29,15 @@ export function VoucherTesbros() {
           </div>
         </div>
 
-        {/* CHECK CONTENT — above watermark */}
+        {/* CHECK CONTENT */}
         <div className="relative pl-7 pr-6 pt-5 pb-0" style={{ zIndex: 2 }}>
-          {/* Top row: logo + check number + date */}
+          {/* Top row: logo image + check number + date */}
           <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <img
-                src="/tesbros-logo.jpeg"
-                alt="TESbros"
-                className="w-10 h-10 rounded-md object-cover border border-zinc-300"
-              />
-              <div>
-                <p className="text-black text-sm font-black tracking-tight leading-none">TESbros</p>
-                <p className="text-red-600 text-[10px] font-bold tracking-widest uppercase leading-none mt-0.5">DIY Wrap Club</p>
-                <p className="text-zinc-400 text-[9px] mt-0.5">tesbros.com</p>
-              </div>
-            </div>
+            <img
+              src="/tesbros-logo.jpeg"
+              alt="TESbros DIY Wrap Club"
+              className="h-14 w-auto object-contain"
+            />
             <div className="text-right">
               <p className="text-zinc-400 text-[9px] uppercase tracking-wider">Check No.</p>
               <p className="text-zinc-800 text-sm font-bold font-mono">042069</p>
@@ -100,7 +93,7 @@ export function VoucherTesbros() {
           style={{ zIndex: 2 }}
         >
           <p className="text-zinc-400 text-[10px] font-mono tracking-widest">⑆ 042069042 ⑆ 0420690042069 ⑇ 042069</p>
-          <p className="text-zinc-400 text-[9px] uppercase tracking-wider">TESbros DIY Wrap Club · tesbros.com</p>
+          <p className="text-zinc-400 text-[9px] uppercase tracking-wider">tesbros.com</p>
         </div>
       </div>
     </div>
