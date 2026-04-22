@@ -383,20 +383,6 @@ export function ScratchVoucher() {
         </AnimatePresence>
       </div>
 
-      <AnimatePresence>
-        {isRevealed && (
-          <motion.p
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            style={{
-              textAlign: "center", fontSize: 12, color: "#5d7a90",
-              marginTop: 12, fontFamily: "'Space Grotesk', monospace",
-            }}
-          >
-            ⚡ Surprise from the community — happy birthday, Mossman!
-          </motion.p>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
