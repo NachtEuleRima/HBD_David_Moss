@@ -184,12 +184,20 @@ export function ScratchVoucher() {
   const [isRevealed,  setIsRevealed]  = useState(false);
   const [halfwayMsg,  setHalfwayMsg]  = useState<string | null>(null);
 
-  const MILESTONES: [number, string][] = [
-    [20, "Your FSD fingers are doing work 🔥"],
-    [40, "Keep scratching, legend 👀"],
-    [60, "LiDAR couldn't see this coming 😂"],
-    [80, "Almost there, Mossman! ⚡"],
+  const ALL_QUIPS = [
+    "Almost there, Mossman! ⚡",
+    "Your FSD fingers are doing work 🔥",
+    "Keep scratching, legend 👀",
+    "LiDAR couldn't see this coming 😂",
   ];
+
+  // Shuffle once at mount for a unique order every session
+  const quipQueue = useRef<string[]>(
+    [...ALL_QUIPS].sort(() => Math.random() - 0.5)
+  );
+  const quipIndex = useRef(0);
+
+  const BANNER_THRESHOLDS = [10, 25, 40, 52];
 
   const drawSilver = useCallback(() => {
     const canvas = canvasRef.current;
@@ -271,16 +279,18 @@ export function ScratchVoucher() {
       for (let i = 3; i < data.length; i += 4 * 20) if (data[i] < 128) t++;
       const pct = t / (data.length / (4 * 20));
 
-      for (const [t, quip] of MILESTONES) {
+      for (const t of BANNER_THRESHOLDS) {
         if (!shownMilestones.current.has(t) && pct * 100 >= t) {
           shownMilestones.current.add(t);
+          const quip = quipQueue.current[quipIndex.current % quipQueue.current.length];
+          quipIndex.current += 1;
           setHalfwayMsg(quip);
           setTimeout(() => setHalfwayMsg(null), 2200);
           break;
         }
       }
 
-      if (pct > 0.85) setIsRevealed(true);
+      if (pct > 0.60) setIsRevealed(true);
     }
   }, [isRevealed]);
 
