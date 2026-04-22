@@ -117,8 +117,8 @@ function VoucherContent() {
               color: C.white, fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1,
               fontSize: "clamp(52px, 10vw, 76px)",
               textShadow: `0 0 50px ${C.cyan}55, 0 0 100px ${C.cyan}22`,
-            }}>420</span>
-            <span style={{ color: C.cyan, fontSize: 20, fontWeight: 900, marginBottom: 8 }}>.69</span>
+            }}>69</span>
+            <span style={{ color: C.cyan, fontSize: 20, fontWeight: 900, marginBottom: 8 }}>.42</span>
           </div>
           {/* Mini ornamental rule under amount */}
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
