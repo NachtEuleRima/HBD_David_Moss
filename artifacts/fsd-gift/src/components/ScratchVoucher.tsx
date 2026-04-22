@@ -149,17 +149,6 @@ export function ScratchVoucher() {
       ctx.fillRect(i, 0, 3, h);
     }
     ctx.globalAlpha = 1;
-
-    // Hint text
-    const fs = Math.max(14, Math.floor(h / 6));
-    ctx.fillStyle = "rgba(50,50,50,0.8)";
-    ctx.font = `900 ${fs}px system-ui, sans-serif`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("✦  Scratch to Reveal  ✦", w / 2, h / 2 - fs * 0.6);
-    ctx.font = `${Math.max(11, Math.floor(h / 10))}px system-ui, sans-serif`;
-    ctx.fillStyle = "rgba(50,50,50,0.5)";
-    ctx.fillText("🎁 Birthday gift from the community", w / 2, h / 2 + fs * 0.7);
   }, []);
 
   useEffect(() => {
