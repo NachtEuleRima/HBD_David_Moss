@@ -529,13 +529,22 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <button
-              onClick={() => document.getElementById("voucher-section")?.scrollIntoView({ behavior: "smooth", block: "center" })}
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-sm font-medium mb-4 backdrop-blur-sm hover:bg-primary/30 transition-colors cursor-pointer"
-            >
-              <Calendar className="w-4 h-4" />
-              <span>April 26th Birthday Surprise</span>
-            </button>
+            <div className="inline-flex items-center gap-2 mb-4">
+              <motion.span
+                animate={{ x: [0, -7, 2, -5, 0] }}
+                transition={{ duration: 1.4, repeat: Infinity, repeatDelay: 1.8, ease: "easeInOut" }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 15, userSelect: "none" }}
+              >
+                🎁<span style={{ fontSize: 12, opacity: 0.75 }}>←</span>
+              </motion.span>
+              <button
+                onClick={() => document.getElementById("voucher-section")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-sm font-medium backdrop-blur-sm hover:bg-primary/30 transition-colors cursor-pointer"
+              >
+                <Calendar className="w-4 h-4" />
+                <span>April 26th Birthday Surprise</span>
+              </button>
+            </div>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground mb-4 font-sans drop-shadow-lg">
               For David Moss.
             </h1>
