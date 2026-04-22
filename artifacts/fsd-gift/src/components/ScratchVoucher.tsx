@@ -85,36 +85,32 @@ function VoucherContent() {
         position: "relative", zIndex: 2,
       }}>
 
-        {/* LEFT — From + logo */}
+        {/* LEFT — vertical "DIY Wrap Club" bar */}
         <div style={{
-          flex: "0 0 auto", width: 140,
+          flex: "0 0 auto", width: 48,
           display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center", gap: 10,
+          borderRight: `1px solid ${C.faint}`,
+          marginRight: 0,
+          paddingRight: 0,
         }}>
-          <img
-            src="/tesbros-logo.jpeg"
-            alt="TESbros DIY Wrap Club"
-            style={{ height: 52, width: "auto", objectFit: "contain", borderRadius: 8 }}
-            draggable={false}
-          />
-          <div style={{ textAlign: "center" }}>
-            <div style={{ color: C.muted, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.25em" }}>From</div>
-            <div style={{ color: C.silver, fontSize: 11, fontWeight: 700, marginTop: 3, letterSpacing: "0.05em" }}>DIY Wrap Club</div>
-          </div>
+          <span style={{
+            color: C.cyan,
+            fontWeight: 800,
+            fontSize: 10,
+            letterSpacing: "0.3em",
+            textTransform: "uppercase",
+            writingMode: "vertical-rl" as const,
+            transform: "rotate(180deg)",
+          }}>DIY Wrap Club</span>
         </div>
-
-        {/* Vertical divider */}
-        <div style={{
-          width: 1, margin: "4px 28px",
-          background: `linear-gradient(to bottom, transparent, ${C.cyan}55, transparent)`,
-          flexShrink: 0,
-        }} />
 
         {/* CENTER — Amount */}
         <div style={{
           flex: 1,
           display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center", gap: 6,
+          paddingLeft: 24,
         }}>
           <div style={{ color: C.muted, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.3em" }}>Gift Value</div>
           <div style={{ display: "flex", alignItems: "flex-end", gap: 1, lineHeight: 1 }}>
@@ -132,7 +128,7 @@ function VoucherContent() {
             <span style={{ color: C.cyan, fontSize: 8, opacity: 0.6 }}>✦</span>
             <div style={{ width: 28, height: 1, background: `linear-gradient(to right, ${C.cyan}88, transparent)` }} />
           </div>
-          <div style={{ color: C.muted, fontSize: 8, letterSpacing: "0.3em", textTransform: "uppercase" }}>TESbros · April 2025</div>
+          <div style={{ color: C.muted, fontSize: 8, letterSpacing: "0.3em", textTransform: "uppercase" }}>April 26 · 2025</div>
         </div>
 
         {/* Vertical divider */}
