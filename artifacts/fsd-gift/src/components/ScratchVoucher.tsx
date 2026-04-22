@@ -187,11 +187,11 @@ export function ScratchVoucher() {
     const size = Math.max(32, canvas.width / 8);
     drawBolt(ctx, x, y, size);
 
-    if (Math.random() < 0.1) {
+    if (Math.random() < 0.25) {
       const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
       let t = 0;
       for (let i = 3; i < data.length; i += 4 * 20) if (data[i] < 128) t++;
-      if (t / (data.length / (4 * 20)) > 0.55) setIsRevealed(true);
+      if (t / (data.length / (4 * 20)) > 0.30) setIsRevealed(true);
     }
   }, [isRevealed]);
 
