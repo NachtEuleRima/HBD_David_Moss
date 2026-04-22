@@ -1062,11 +1062,16 @@ export default function Home() {
               aspectRatio: "16/9",
             }}
           >
+            {/* Gradient background behind NAS */}
+            <div style={{
+              position: "absolute", inset: 0,
+              background: "radial-gradient(ellipse at 60% 55%, #0d2a3a 0%, #071628 55%, #020c18 100%)",
+            }} />
             <video
               src="/david-fsd-video.mov"
-              poster="/nas-cover.png"
+              poster="/nas-cover-clean.png"
               muted playsInline preload="metadata"
-              style={{ width: "100%", height: "100%", objectFit: "contain", display: "block", pointerEvents: "none", background: "#000" }}
+              style={{ width: "100%", height: "100%", objectFit: "contain", display: "block", pointerEvents: "none", position: "relative" }}
             />
             {/* Dark overlay */}
             <div style={{ position: "absolute", inset: 0, background: "rgba(7,16,31,0.38)" }} />
