@@ -1071,7 +1071,7 @@ export default function Home() {
               src="/david-fsd-video.mov"
               poster="/nas-cover-clean.png"
               muted playsInline preload="metadata"
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "45% 50%", display: "block", pointerEvents: "none", position: "relative" }}
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "45% 38%", display: "block", pointerEvents: "none", position: "relative" }}
             />
             {/* Dark overlay */}
             <div style={{ position: "absolute", inset: 0, background: "rgba(7,16,31,0.38)" }} />
