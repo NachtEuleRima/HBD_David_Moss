@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 
 import carPhoto from "@assets/G9emjJyWcAA2uhm_1775877269348.jpeg";
 import davidPhoto from "@assets/IMG_4594_1775877101729.jpeg";
+import { ScratchVoucher } from "@/components/ScratchVoucher";
 
 const LIDAR_COLORS = [
   "#00ffff", "#00e5ff", "#40c4ff", "#00b0ff",
@@ -528,10 +529,13 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-sm font-medium mb-4 backdrop-blur-sm">
+            <button
+              onClick={() => document.getElementById("voucher-section")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-sm font-medium mb-4 backdrop-blur-sm hover:bg-primary/30 transition-colors cursor-pointer"
+            >
               <Calendar className="w-4 h-4" />
               <span>April 26th Birthday Surprise</span>
-            </div>
+            </button>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground mb-4 font-sans drop-shadow-lg">
               For David Moss.
             </h1>
@@ -971,6 +975,17 @@ export default function Home() {
             </div>
           </div>
         </div>
+        {/* Scratch Voucher */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mt-16"
+        >
+          <ScratchVoucher />
+        </motion.div>
+
         {/* Tech Support Section */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
