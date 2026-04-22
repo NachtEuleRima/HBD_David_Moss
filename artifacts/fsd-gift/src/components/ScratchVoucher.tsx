@@ -81,18 +81,16 @@ function VoucherContent() {
       {/* 3-column body */}
       <div style={{
         display: "flex", alignItems: "stretch",
-        padding: "28px 32px", gap: 0,
+        padding: "24px 20px", gap: 0,
         position: "relative", zIndex: 2,
       }}>
 
         {/* LEFT — vertical "DIY Wrap Club" bar */}
         <div style={{
-          flex: "0 0 auto", width: 48,
+          flex: "0 0 40px", width: 40,
           display: "flex", flexDirection: "column",
-          alignItems: "center", justifyContent: "center", gap: 10,
+          alignItems: "center", justifyContent: "center",
           borderRight: `1px solid ${C.faint}`,
-          marginRight: 0,
-          paddingRight: 0,
         }}>
           <span style={{
             color: C.cyan,
@@ -140,21 +138,23 @@ function VoucherContent() {
 
         {/* RIGHT — To + purpose */}
         <div style={{
-          flex: "0 0 auto", width: 140,
+          flex: 1,
           display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center", gap: 8,
+          minWidth: 0,
         }}>
           <div style={{ textAlign: "center" }}>
             <div style={{ color: C.muted, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.25em" }}>To</div>
-            <div style={{ color: C.white, fontSize: 17, fontWeight: 800, marginTop: 4, letterSpacing: "0.02em" }}>David Moss</div>
+            <div style={{ color: C.white, fontSize: 15, fontWeight: 800, marginTop: 4, letterSpacing: "0.02em", whiteSpace: "nowrap" }}>David Moss</div>
           </div>
           <div style={{
-            padding: "4px 12px",
+            padding: "4px 10px",
             border: `1px solid ${C.cyan}44`,
             borderRadius: 99,
-            color: C.cyan, fontSize: 9,
-            textTransform: "uppercase", letterSpacing: "0.2em",
+            color: C.cyan, fontSize: 8,
+            textTransform: "uppercase", letterSpacing: "0.15em",
             fontFamily: "'Space Grotesk', monospace",
+            whiteSpace: "nowrap",
           }}>NAS Wrap Only</div>
         </div>
 
