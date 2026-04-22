@@ -1055,11 +1055,11 @@ export default function Home() {
             onClick={() => setVideoOpen(true)}
             style={{
               position: "relative", borderRadius: 16, overflow: "hidden",
-              cursor: "pointer", maxWidth: 360, margin: "0 auto",
+              cursor: "pointer", maxWidth: 480, margin: "0 auto",
               background: "#0d1829",
               border: "1px solid rgba(0,229,245,0.18)",
               boxShadow: "0 0 24px rgba(0,229,245,0.08)",
-              aspectRatio: "9/16",
+              aspectRatio: "16/9",
             }}
           >
             <video
@@ -1117,8 +1117,7 @@ export default function Home() {
                 onClick={e => e.stopPropagation()}
                 style={{
                   position: "relative", borderRadius: 20, overflow: "hidden",
-                  width: "min(92vw, 380px)",
-                  maxHeight: "90vh",
+                  width: "min(88vw, 420px)",
                   aspectRatio: "9/16",
                   background: "#000",
                   boxShadow: "0 0 60px rgba(0,229,245,0.18)",
@@ -1130,18 +1129,6 @@ export default function Home() {
                   autoPlay controls playsInline
                   style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                 />
-                {/* Close button */}
-                <button
-                  onClick={() => setVideoOpen(false)}
-                  style={{
-                    position: "absolute", top: 12, right: 12,
-                    width: 34, height: 34, borderRadius: "50%",
-                    background: "rgba(0,0,0,0.6)", border: "1px solid rgba(255,255,255,0.2)",
-                    color: "#fff", fontSize: 18, lineHeight: 1,
-                    cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                    backdropFilter: "blur(4px)",
-                  }}
-                >×</button>
               </motion.div>
             </motion.div>
           )}
