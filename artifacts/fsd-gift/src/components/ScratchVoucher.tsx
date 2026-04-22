@@ -290,7 +290,7 @@ export function ScratchVoucher() {
         }
       }
 
-      if (pct > 0.80) setIsRevealed(true);
+      if (pct > 0.75) setIsRevealed(true);
     }
   }, [isRevealed]);
 
