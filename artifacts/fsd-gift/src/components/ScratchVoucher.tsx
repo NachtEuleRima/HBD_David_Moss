@@ -209,51 +209,74 @@ export function ScratchVoucher() {
 
     ctx.globalCompositeOperation = "source-over";
 
-    // Layer 1 — metallic base: deep shadow corners, bright silver sweep through middle
-    const base = ctx.createLinearGradient(0, h, w, 0); // bottom-left → top-right
-    base.addColorStop(0,    "#2e4f62");   // dark steel shadow
-    base.addColorStop(0.18, "#5a8499");   // mid steel
-    base.addColorStop(0.30, "#a8cad8");   // light silver
-    base.addColorStop(0.44, "#eef4f7");   // bright silver highlight
-    base.addColorStop(0.56, "#d0e4ec");   // silver
-    base.addColorStop(0.70, "#7aaabb");   // cyan-steel mid
-    base.addColorStop(0.84, "#3d6478");   // dark steel
-    base.addColorStop(1,    "#1e3a4a");   // deep shadow
+    // Foundation — solid bright silver so it reads as metal first
+    ctx.fillStyle = "#c8d8e0";
+    ctx.fillRect(0, 0, w, h);
+
+    // Layer 1 — primary metallic sweep (bottom-left → top-right)
+    const base = ctx.createLinearGradient(0, h, w, 0);
+    base.addColorStop(0,    "#4a6e82");   // dark steel
+    base.addColorStop(0.12, "#8ab0c0");   // mid silver
+    base.addColorStop(0.22, "#c8dce6");   // light silver
+    base.addColorStop(0.32, "#f0f6f8");   // near-white highlight
+    base.addColorStop(0.42, "#ffffff");   // pure white peak
+    base.addColorStop(0.50, "#e8f2f6");   // back to light silver
+    base.addColorStop(0.60, "#b8d0da");   // silver
+    base.addColorStop(0.72, "#7098a8");   // mid steel
+    base.addColorStop(0.84, "#9abcca");   // light steel
+    base.addColorStop(1,    "#c0d4de");   // silver
     ctx.fillStyle = base;
     ctx.fillRect(0, 0, w, h);
 
-    // Layer 2 — cross-angle metallic band (top-left → bottom-right, perpendicular sheen)
+    // Layer 2 — perpendicular silver band (top-left → bottom-right)
     const cross = ctx.createLinearGradient(0, 0, w, h);
-    cross.addColorStop(0,    "rgba(100,180,200,0.35)");  // cyan-steel
-    cross.addColorStop(0.25, "rgba(220,238,245,0.20)");  // silver
-    cross.addColorStop(0.5,  "rgba(80,140,165,0.10)");   // mid steel
-    cross.addColorStop(0.75, "rgba(200,228,240,0.22)");  // silver
-    cross.addColorStop(1,    "rgba(60,110,140,0.30)");   // dark steel
+    cross.addColorStop(0,    "rgba(255,255,255,0.40)");
+    cross.addColorStop(0.20, "rgba(200,228,240,0.30)");
+    cross.addColorStop(0.40, "rgba(160,200,218,0.15)");
+    cross.addColorStop(0.60, "rgba(220,238,248,0.28)");
+    cross.addColorStop(0.80, "rgba(180,210,228,0.20)");
+    cross.addColorStop(1,    "rgba(255,255,255,0.35)");
     ctx.fillStyle = cross;
     ctx.fillRect(0, 0, w, h);
 
-    // Layer 3 — bright radial hot-spot (simulates direct light on metal)
-    const spot = ctx.createRadialGradient(w * 0.38, h * 0.35, 0, w * 0.38, h * 0.35, w * 0.55);
-    spot.addColorStop(0,    "rgba(255,255,255,0.70)");
-    spot.addColorStop(0.20, "rgba(235,248,252,0.35)");
-    spot.addColorStop(0.55, "rgba(180,220,235,0.08)");
-    spot.addColorStop(1,    "rgba(180,220,235,0)");
+    // Layer 3 — strong radial hot-spot (direct light)
+    const spot = ctx.createRadialGradient(w * 0.35, h * 0.28, 0, w * 0.35, h * 0.28, w * 0.6);
+    spot.addColorStop(0,    "rgba(255,255,255,0.85)");
+    spot.addColorStop(0.15, "rgba(240,250,255,0.50)");
+    spot.addColorStop(0.40, "rgba(200,232,245,0.18)");
+    spot.addColorStop(1,    "rgba(200,232,245,0)");
     ctx.fillStyle = spot;
     ctx.fillRect(0, 0, w, h);
 
-    // Layer 4 — cyan-teal bloom (bottom-right — site colour baked into metal)
-    const bloom = ctx.createRadialGradient(w * 0.82, h * 0.78, 0, w * 0.82, h * 0.78, w * 0.65);
-    bloom.addColorStop(0,   "rgba(0,200,220,0.38)");
-    bloom.addColorStop(0.4, "rgba(0,180,200,0.14)");
-    bloom.addColorStop(1,   "rgba(0,180,200,0)");
+    // Layer 4 — secondary hot-spot (lower-right edge catch)
+    const spot2 = ctx.createRadialGradient(w * 0.75, h * 0.80, 0, w * 0.75, h * 0.80, w * 0.45);
+    spot2.addColorStop(0,    "rgba(255,255,255,0.55)");
+    spot2.addColorStop(0.30, "rgba(220,240,248,0.22)");
+    spot2.addColorStop(1,    "rgba(220,240,248,0)");
+    ctx.fillStyle = spot2;
+    ctx.fillRect(0, 0, w, h);
+
+    // Layer 5 — cyan-teal bloom baked into metal (site colour)
+    const bloom = ctx.createRadialGradient(w * 0.85, h * 0.75, 0, w * 0.85, h * 0.75, w * 0.70);
+    bloom.addColorStop(0,   "rgba(0,210,228,0.30)");
+    bloom.addColorStop(0.35,"rgba(0,190,210,0.12)");
+    bloom.addColorStop(1,   "rgba(0,190,210,0)");
     ctx.fillStyle = bloom;
     ctx.fillRect(0, 0, w, h);
 
-    // Layer 5 — edge vignette for premium depth
-    const vig = ctx.createRadialGradient(w * 0.5, h * 0.5, h * 0.05, w * 0.5, h * 0.5, w * 0.9);
+    // Layer 6 — top-left cyan accent
+    const bloom2 = ctx.createRadialGradient(0, 0, 0, 0, 0, w * 0.50);
+    bloom2.addColorStop(0,   "rgba(0,200,220,0.22)");
+    bloom2.addColorStop(0.5, "rgba(0,200,220,0.06)");
+    bloom2.addColorStop(1,   "rgba(0,200,220,0)");
+    ctx.fillStyle = bloom2;
+    ctx.fillRect(0, 0, w, h);
+
+    // Layer 7 — edge vignette
+    const vig = ctx.createRadialGradient(w * 0.5, h * 0.5, h * 0.08, w * 0.5, h * 0.5, w * 0.95);
     vig.addColorStop(0,   "rgba(0,0,0,0)");
-    vig.addColorStop(0.7, "rgba(5,18,28,0.10)");
-    vig.addColorStop(1,   "rgba(5,18,28,0.45)");
+    vig.addColorStop(0.65,"rgba(8,22,35,0.08)");
+    vig.addColorStop(1,   "rgba(8,22,35,0.50)");
     ctx.fillStyle = vig;
     ctx.fillRect(0, 0, w, h);
 
