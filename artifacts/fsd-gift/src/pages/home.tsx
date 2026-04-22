@@ -246,6 +246,7 @@ export default function Home() {
   const [xUserLoading, setXUserLoading] = useState(true);
   const [showParty, setShowParty] = useState(!confettiFired);
   const [showGiftNudge, setShowGiftNudge] = useState(false);
+  const [videoOpen, setVideoOpen] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -1038,6 +1039,113 @@ export default function Home() {
         >
           <ScratchVoucher />
         </motion.div>
+
+        {/* Video Preview Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mt-16"
+        >
+          <p style={{ textAlign: "center", fontSize: 13, letterSpacing: "0.18em", textTransform: "uppercase", color: "#5d7a90", marginBottom: 14, fontFamily: "'Space Grotesk', monospace" }}>
+            See it in action
+          </p>
+          <div
+            onClick={() => setVideoOpen(true)}
+            style={{
+              position: "relative", borderRadius: 16, overflow: "hidden",
+              cursor: "pointer", maxWidth: 360, margin: "0 auto",
+              background: "#0d1829",
+              border: "1px solid rgba(0,229,245,0.18)",
+              boxShadow: "0 0 24px rgba(0,229,245,0.08)",
+              aspectRatio: "9/16",
+            }}
+          >
+            <video
+              src="/david-fsd-video.mov"
+              muted playsInline preload="metadata"
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }}
+            />
+            {/* Dark overlay */}
+            <div style={{ position: "absolute", inset: 0, background: "rgba(7,16,31,0.38)" }} />
+            {/* Play button */}
+            <div style={{
+              position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <motion.div
+                whileHover={{ scale: 1.12 }}
+                whileTap={{ scale: 0.95 }}
+                style={{
+                  width: 64, height: 64, borderRadius: "50%",
+                  background: "rgba(0,229,245,0.18)",
+                  border: "2px solid rgba(0,229,245,0.7)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  backdropFilter: "blur(6px)",
+                  boxShadow: "0 0 28px rgba(0,229,245,0.30)",
+                }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#00e5f5">
+                  <polygon points="6,3 20,12 6,21" />
+                </svg>
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Video Modal */}
+        <AnimatePresence>
+          {videoOpen && (
+            <motion.div
+              key="video-modal"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setVideoOpen(false)}
+              style={{
+                position: "fixed", inset: 0, zIndex: 9999,
+                background: "rgba(0,0,0,0.88)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                backdropFilter: "blur(8px)",
+              }}
+            >
+              <motion.div
+                initial={{ scale: 0.88, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.88, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 26 }}
+                onClick={e => e.stopPropagation()}
+                style={{
+                  position: "relative", borderRadius: 20, overflow: "hidden",
+                  width: "min(92vw, 380px)",
+                  maxHeight: "90vh",
+                  aspectRatio: "9/16",
+                  background: "#000",
+                  boxShadow: "0 0 60px rgba(0,229,245,0.18)",
+                  border: "1px solid rgba(0,229,245,0.22)",
+                }}
+              >
+                <video
+                  src="/david-fsd-video.mov"
+                  autoPlay controls playsInline
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                />
+                {/* Close button */}
+                <button
+                  onClick={() => setVideoOpen(false)}
+                  style={{
+                    position: "absolute", top: 12, right: 12,
+                    width: 34, height: 34, borderRadius: "50%",
+                    background: "rgba(0,0,0,0.6)", border: "1px solid rgba(255,255,255,0.2)",
+                    color: "#fff", fontSize: 18, lineHeight: 1,
+                    cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                    backdropFilter: "blur(4px)",
+                  }}
+                >×</button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Tech Support Section */}
         <motion.section
