@@ -180,17 +180,14 @@ export function ScratchVoucher() {
   const canvasRef    = useRef<HTMLCanvasElement>(null);
   const wrapRef      = useRef<HTMLDivElement>(null);
   const isDrawing    = useRef(false);
-  const halfwayShown = useRef(false);
+  const shownMilestones = useRef<Set<number>>(new Set());
   const [isRevealed,  setIsRevealed]  = useState(false);
   const [halfwayMsg,  setHalfwayMsg]  = useState<string | null>(null);
 
-  const HALFWAY_QUIPS = [
-    "Almost there, Mossman! ⚡",
-    "Your FSD fingers are doing work 🔥",
-    "Keep scratching, legend 👀",
-    "Getting warmer... 🌡️",
-    "LiDAR couldn't see this coming 😂",
-  ];
+  const MILESTONE_QUIPS: Record<number, string> = {
+    20: "Your FSD fingers are doing work 🔥",
+    38: "Getting warmer... keep going! 🌡️",
+  };
 
   const drawSilver = useCallback(() => {
     const canvas = canvasRef.current;
@@ -272,11 +269,14 @@ export function ScratchVoucher() {
       for (let i = 3; i < data.length; i += 4 * 20) if (data[i] < 128) t++;
       const pct = t / (data.length / (4 * 20));
 
-      if (!halfwayShown.current && pct > 0.15) {
-        halfwayShown.current = true;
-        const quip = HALFWAY_QUIPS[Math.floor(Math.random() * HALFWAY_QUIPS.length)];
-        setHalfwayMsg(quip);
-        setTimeout(() => setHalfwayMsg(null), 2200);
+      for (const [threshold, quip] of Object.entries(MILESTONE_QUIPS)) {
+        const t = Number(threshold);
+        if (!shownMilestones.current.has(t) && pct * 100 >= t) {
+          shownMilestones.current.add(t);
+          setHalfwayMsg(quip);
+          setTimeout(() => setHalfwayMsg(null), 2200);
+          break;
+        }
       }
 
       if (pct > 0.50) setIsRevealed(true);
