@@ -271,12 +271,12 @@ export function ScratchVoucher() {
               style={{
                 position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)",
                 zIndex: 30, pointerEvents: "none",
-                background: "rgba(0,229,245,0.15)", backdropFilter: "blur(8px)",
-                border: "1px solid rgba(0,229,245,0.35)", borderRadius: 99,
+                background: "rgba(4, 10, 22, 0.92)", backdropFilter: "blur(10px)",
+                border: "1px solid rgba(0,229,245,0.2)", borderRadius: 99,
                 padding: "7px 18px", whiteSpace: "nowrap",
                 color: "#00e5f5", fontWeight: 700, fontSize: 13,
                 fontFamily: "'Outfit', system-ui, sans-serif",
-                boxShadow: "0 4px 20px rgba(0,229,245,0.2)",
+                boxShadow: "0 4px 24px rgba(0,0,0,0.6)",
               }}
             >
               {halfwayMsg}
