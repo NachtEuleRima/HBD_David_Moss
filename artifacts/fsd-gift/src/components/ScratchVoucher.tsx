@@ -184,14 +184,12 @@ export function ScratchVoucher() {
   const [isRevealed,  setIsRevealed]  = useState(false);
   const [halfwayMsg,  setHalfwayMsg]  = useState<string | null>(null);
 
-  const QUIPS = [
-    "Almost there, Mossman! ⚡",
-    "Your FSD fingers are doing work 🔥",
-    "Keep scratching, legend 👀",
-    "Getting warmer... 🌡️",
-    "LiDAR couldn't see this coming 😂",
+  const MILESTONES: [number, string][] = [
+    [20, "Your FSD fingers are doing work 🔥"],
+    [40, "Keep scratching, legend 👀"],
+    [60, "LiDAR couldn't see this coming 😂"],
+    [80, "Almost there, Mossman! ⚡"],
   ];
-  const MILESTONES = [20, 38];
 
   const drawSilver = useCallback(() => {
     const canvas = canvasRef.current;
@@ -273,17 +271,16 @@ export function ScratchVoucher() {
       for (let i = 3; i < data.length; i += 4 * 20) if (data[i] < 128) t++;
       const pct = t / (data.length / (4 * 20));
 
-      for (const t of MILESTONES) {
+      for (const [t, quip] of MILESTONES) {
         if (!shownMilestones.current.has(t) && pct * 100 >= t) {
           shownMilestones.current.add(t);
-          const quip = QUIPS[Math.floor(Math.random() * QUIPS.length)];
           setHalfwayMsg(quip);
           setTimeout(() => setHalfwayMsg(null), 2200);
           break;
         }
       }
 
-      if (pct > 0.50) setIsRevealed(true);
+      if (pct > 0.85) setIsRevealed(true);
     }
   }, [isRevealed]);
 
