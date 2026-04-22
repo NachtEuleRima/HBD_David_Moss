@@ -318,7 +318,7 @@ export function ScratchVoucher() {
         <span style={{
           fontSize: 11, fontFamily: "'Space Grotesk', monospace",
           letterSpacing: "0.2em", textTransform: "uppercase", color: "#5d7a90",
-        }}>⚡ Birthday Bonus</span>
+        }}>🎁 Birthday Bonus</span>
         <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.07)" }} />
       </div>
 
