@@ -252,6 +252,19 @@ export function ScratchVoucher() {
 
     ctx.restore();
     ctx.globalAlpha = 1;
+
+    // Subtle "scratch me" hint text centered on overlay
+    ctx.save();
+    ctx.globalAlpha = 0.28;
+    ctx.globalCompositeOperation = "source-over";
+    const fontSize = Math.max(11, Math.round(w / 18));
+    ctx.font = `600 ${fontSize}px 'Space Grotesk', monospace`;
+    ctx.letterSpacing = "0.25em";
+    ctx.fillStyle = "#c8dde8";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("✦  scratch me  ✦", w / 2, h / 2);
+    ctx.restore();
   }, []);
 
   useEffect(() => {
@@ -290,7 +303,7 @@ export function ScratchVoucher() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     ctx.globalCompositeOperation = "destination-out";
-    const size = Math.max(32, canvas.width / 8);
+    const size = Math.max(18, canvas.width / 14);
     drawBolt(ctx, x, y, size);
 
     if (Math.random() < 0.25) {
