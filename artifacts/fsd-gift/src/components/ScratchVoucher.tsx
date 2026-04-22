@@ -81,7 +81,7 @@ function VoucherContent() {
       {/* 3-column body */}
       <div style={{
         display: "flex", alignItems: "stretch",
-        padding: "24px 20px", gap: 0,
+        padding: "20px 16px", gap: 0,
         position: "relative", zIndex: 2,
       }}>
 
@@ -108,7 +108,7 @@ function VoucherContent() {
           flex: 1,
           display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center", gap: 6,
-          paddingLeft: 24,
+          paddingLeft: 12,
         }}>
           <div style={{ color: C.muted, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.3em" }}>Gift Value</div>
           <div style={{ display: "flex", alignItems: "flex-end", gap: 1, lineHeight: 1 }}>
@@ -131,7 +131,7 @@ function VoucherContent() {
 
         {/* Vertical divider */}
         <div style={{
-          width: 1, margin: "4px 28px",
+          width: 1, margin: "4px 14px",
           background: `linear-gradient(to bottom, transparent, ${C.cyan}55, transparent)`,
           flexShrink: 0,
         }} />
