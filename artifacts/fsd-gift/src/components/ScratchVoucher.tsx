@@ -279,7 +279,7 @@ export function ScratchVoucher() {
         setTimeout(() => setHalfwayMsg(null), 2200);
       }
 
-      if (pct > 0.30) setIsRevealed(true);
+      if (pct > 0.50) setIsRevealed(true);
     }
   }, [isRevealed]);
 
