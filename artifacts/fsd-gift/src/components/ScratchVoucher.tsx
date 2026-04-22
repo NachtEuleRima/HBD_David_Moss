@@ -222,29 +222,35 @@ export function ScratchVoucher() {
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, w, h);
 
-    // Brushed-metal micro-texture: fine horizontal grain lines
+    // Brushed-metal grain: horizontal micro-lines with visible sine-wave sheen
     for (let y = 0; y < h; y += 2) {
-      // Sine wave makes opacity pulse — invisible individually, metallic in aggregate
-      const wave = 0.5 + 0.5 * Math.sin((y / h) * Math.PI * 14);
-      const alpha = 0.03 + wave * 0.055;
+      const wave = 0.5 + 0.5 * Math.sin((y / h) * Math.PI * 18);
+      const alpha = 0.06 + wave * 0.18; // much more visible — 0.06–0.24
       ctx.globalAlpha = alpha;
-      // Alternate between silver-white and cyan tones for the teal-silver blend
-      const isCyan = (y / 2) % 3 === 0;
-      ctx.fillStyle = isCyan ? "rgba(0,229,245,1)" : "rgba(210,228,236,1)";
+      const isCyan = (y / 2) % 4 === 0;
+      ctx.fillStyle = isCyan ? "rgba(0,229,245,1)" : "rgba(200,222,232,1)";
       ctx.fillRect(0, y, w, 1);
     }
 
-    // Subtle diagonal sheen sweep (very low alpha — feels like light catching the metal)
+    // Cross-grain: very fine vertical lines for depth
+    for (let x = 0; x < w; x += 4) {
+      const wave = 0.5 + 0.5 * Math.sin((x / w) * Math.PI * 10);
+      ctx.globalAlpha = 0.04 + wave * 0.06;
+      ctx.fillStyle = "rgba(180,210,228,1)";
+      ctx.fillRect(x, 0, 1, h);
+    }
+
+    // Diagonal sheen sweep at 20° — visible but not banded
     ctx.save();
     const diag = Math.ceil(Math.sqrt(w * w + h * h));
     ctx.translate(w / 2, h / 2);
-    ctx.rotate(Math.PI / 9); // 20 degrees — gentle, not obvious
-    ctx.globalAlpha = 0.055;
-    for (let i = -diag; i < diag; i += 6) {
-      const sg = ctx.createLinearGradient(i, 0, i + 3, 0);
-      sg.addColorStop(0,   "rgba(180,210,222,0)");
-      sg.addColorStop(0.5, "rgba(180,210,222,1)");
-      sg.addColorStop(1,   "rgba(180,210,222,0)");
+    ctx.rotate(Math.PI / 9);
+    ctx.globalAlpha = 0.12;
+    for (let i = -diag; i < diag; i += 8) {
+      const sg = ctx.createLinearGradient(i, 0, i + 4, 0);
+      sg.addColorStop(0,   "rgba(0,229,245,0)");
+      sg.addColorStop(0.5, "rgba(0,229,245,1)");
+      sg.addColorStop(1,   "rgba(0,229,245,0)");
       ctx.fillStyle = sg;
       ctx.fillRect(i, -diag, 2, diag * 2);
     }
@@ -316,7 +322,7 @@ export function ScratchVoucher() {
           const quip = quipQueue.current[quipIndex.current % quipQueue.current.length];
           quipIndex.current += 1;
           setHalfwayMsg(quip);
-          setTimeout(() => setHalfwayMsg(null), 2200);
+          setTimeout(() => setHalfwayMsg(null), 1400);
           break;
         }
       }
