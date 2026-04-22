@@ -1064,8 +1064,9 @@ export default function Home() {
           >
             <video
               src="/david-fsd-video.mov"
+              poster="/nas-cover.png"
               muted playsInline preload="metadata"
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }}
+              style={{ width: "100%", height: "100%", objectFit: "contain", display: "block", pointerEvents: "none", background: "#000" }}
             />
             {/* Dark overlay */}
             <div style={{ position: "absolute", inset: 0, background: "rgba(7,16,31,0.38)" }} />
