@@ -210,14 +210,14 @@ export function ScratchVoucher() {
     ctx.globalCompositeOperation = "source-over";
 
     const grad = ctx.createLinearGradient(0, 0, w, h);
-    grad.addColorStop(0,    "#7a8a96");
-    grad.addColorStop(0.12, "#c8d4de");
-    grad.addColorStop(0.25, "#8a9aaa");
-    grad.addColorStop(0.42, "#e0eaf0");
-    grad.addColorStop(0.58, "#9aaabb");
-    grad.addColorStop(0.72, "#d8e4ec");
-    grad.addColorStop(0.88, "#8898a8");
-    grad.addColorStop(1,    "#b0c0cc");
+    grad.addColorStop(0,    "#5c6e7a");
+    grad.addColorStop(0.12, "#a8b8c4");
+    grad.addColorStop(0.25, "#6e8090");
+    grad.addColorStop(0.42, "#c2ced8");
+    grad.addColorStop(0.58, "#7c9098");
+    grad.addColorStop(0.72, "#b8c8d2");
+    grad.addColorStop(0.88, "#6a7a88");
+    grad.addColorStop(1,    "#92a4b0");
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, w, h);
 
