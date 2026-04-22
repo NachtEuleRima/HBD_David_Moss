@@ -245,6 +245,7 @@ export default function Home() {
   const [xUser, setXUser] = useState<{ id: string; username: string; name: string } | null>(null);
   const [xUserLoading, setXUserLoading] = useState(true);
   const [showParty, setShowParty] = useState(!confettiFired);
+  const [showGiftNudge, setShowGiftNudge] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -416,6 +417,8 @@ export default function Home() {
       });
     }, 100);
     setTimeout(() => setShowParty(false), 2400);
+    setTimeout(() => setShowGiftNudge(true), 2800);
+    setTimeout(() => setShowGiftNudge(false), 9200);
   }, []);
 
   const handleAdminLogin = () => {
@@ -530,23 +533,37 @@ export default function Home() {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <div className="inline-flex items-center gap-2 mb-4">
-              <motion.span
-                animate={{ x: [0, 7, -2, 5, 0] }}
-                transition={{ duration: 1.4, repeat: Infinity, repeatDelay: 1.8, ease: "easeInOut" }}
-                style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 15, userSelect: "none", color: "#00e5f5" }}
-              >
-                🎁<span style={{ fontSize: 12, opacity: 0.85 }}>→</span>
-              </motion.span>
+              <AnimatePresence>
+                {showGiftNudge && (
+                  <motion.span
+                    key="nudge-left"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1, x: [0, 7, -2, 5, 0] }}
+                    exit={{ opacity: 0, transition: { duration: 0.4 } }}
+                    transition={{ opacity: { duration: 0.3 }, x: { duration: 1.2, repeat: 2, repeatDelay: 0.9, ease: "easeInOut" } }}
+                    style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 15, userSelect: "none", color: "#00e5f5" }}
+                  >
+                    🎁<span style={{ fontSize: 12, opacity: 0.85 }}>→</span>
+                  </motion.span>
+                )}
+              </AnimatePresence>
               <div style={{ position: "relative", display: "inline-flex" }}>
-                <motion.span
-                  animate={{ scale: [1, 1.35, 1], opacity: [0.55, 0, 0.55] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  style={{
-                    position: "absolute", inset: -4, borderRadius: 99,
-                    border: "1.5px solid rgba(0,229,245,0.65)",
-                    pointerEvents: "none",
-                  }}
-                />
+                <AnimatePresence>
+                  {showGiftNudge && (
+                    <motion.span
+                      key="ring"
+                      initial={{ opacity: 0 }}
+                      animate={{ scale: [1, 1.35, 1], opacity: [0.55, 0, 0.55] }}
+                      exit={{ opacity: 0, transition: { duration: 0.4 } }}
+                      transition={{ duration: 2, repeat: 3, ease: "easeInOut" }}
+                      style={{
+                        position: "absolute", inset: -4, borderRadius: 99,
+                        border: "1.5px solid rgba(0,229,245,0.65)",
+                        pointerEvents: "none",
+                      }}
+                    />
+                  )}
+                </AnimatePresence>
                 <motion.button
                   whileHover={{ scale: 1.07, boxShadow: "0 0 18px rgba(0,229,245,0.45)" }}
                   whileTap={{ scale: 0.93 }}
@@ -557,13 +574,20 @@ export default function Home() {
                   <span>April 26th Birthday Surprise</span>
                 </motion.button>
               </div>
-              <motion.span
-                animate={{ x: [0, -7, 2, -5, 0] }}
-                transition={{ duration: 1.4, repeat: Infinity, repeatDelay: 1.8, ease: "easeInOut" }}
-                style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 15, userSelect: "none", color: "#00e5f5" }}
-              >
-                <span style={{ fontSize: 12, opacity: 0.85 }}>←</span>🎁
-              </motion.span>
+              <AnimatePresence>
+                {showGiftNudge && (
+                  <motion.span
+                    key="nudge-right"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1, x: [0, -7, 2, -5, 0] }}
+                    exit={{ opacity: 0, transition: { duration: 0.4 } }}
+                    transition={{ opacity: { duration: 0.3 }, x: { duration: 1.2, repeat: 2, repeatDelay: 0.9, ease: "easeInOut" } }}
+                    style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 15, userSelect: "none", color: "#00e5f5" }}
+                  >
+                    <span style={{ fontSize: 12, opacity: 0.85 }}>←</span>🎁
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground mb-4 font-sans drop-shadow-lg">
               For David Moss.
