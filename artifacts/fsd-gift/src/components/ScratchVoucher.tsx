@@ -209,46 +209,51 @@ export function ScratchVoucher() {
 
     ctx.globalCompositeOperation = "source-over";
 
-    // Layer 1 — silver base (diagonal, dark-to-light-to-dark)
-    const base = ctx.createLinearGradient(0, 0, w, h);
-    base.addColorStop(0,    "#7a9aaa");
-    base.addColorStop(0.20, "#c0d4de");
-    base.addColorStop(0.42, "#8aa8b8");
-    base.addColorStop(0.58, "#d4e4ec");
-    base.addColorStop(0.78, "#90acba");
-    base.addColorStop(1,    "#b8ccd8");
+    // Layer 1 — metallic base: deep shadow corners, bright silver sweep through middle
+    const base = ctx.createLinearGradient(0, h, w, 0); // bottom-left → top-right
+    base.addColorStop(0,    "#2e4f62");   // dark steel shadow
+    base.addColorStop(0.18, "#5a8499");   // mid steel
+    base.addColorStop(0.30, "#a8cad8");   // light silver
+    base.addColorStop(0.44, "#eef4f7");   // bright silver highlight
+    base.addColorStop(0.56, "#d0e4ec");   // silver
+    base.addColorStop(0.70, "#7aaabb");   // cyan-steel mid
+    base.addColorStop(0.84, "#3d6478");   // dark steel
+    base.addColorStop(1,    "#1e3a4a");   // deep shadow
     ctx.fillStyle = base;
     ctx.fillRect(0, 0, w, h);
 
-    // Layer 2 — radial highlight (top-left, like a point light source)
-    const hl = ctx.createRadialGradient(w * 0.3, h * 0.2, 0, w * 0.3, h * 0.2, w * 0.75);
-    hl.addColorStop(0,    "rgba(255,255,255,0.55)");
-    hl.addColorStop(0.35, "rgba(255,255,255,0.15)");
-    hl.addColorStop(1,    "rgba(255,255,255,0)");
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = hl;
+    // Layer 2 — cross-angle metallic band (top-left → bottom-right, perpendicular sheen)
+    const cross = ctx.createLinearGradient(0, 0, w, h);
+    cross.addColorStop(0,    "rgba(100,180,200,0.35)");  // cyan-steel
+    cross.addColorStop(0.25, "rgba(220,238,245,0.20)");  // silver
+    cross.addColorStop(0.5,  "rgba(80,140,165,0.10)");   // mid steel
+    cross.addColorStop(0.75, "rgba(200,228,240,0.22)");  // silver
+    cross.addColorStop(1,    "rgba(60,110,140,0.30)");   // dark steel
+    ctx.fillStyle = cross;
     ctx.fillRect(0, 0, w, h);
 
-    // Layer 3 — secondary radial highlight (bottom-right, softer)
-    const hl2 = ctx.createRadialGradient(w * 0.8, h * 0.85, 0, w * 0.8, h * 0.85, w * 0.6);
-    hl2.addColorStop(0,   "rgba(210,230,240,0.45)");
-    hl2.addColorStop(0.5, "rgba(210,230,240,0.10)");
-    hl2.addColorStop(1,   "rgba(210,230,240,0)");
-    ctx.fillStyle = hl2;
+    // Layer 3 — bright radial hot-spot (simulates direct light on metal)
+    const spot = ctx.createRadialGradient(w * 0.38, h * 0.35, 0, w * 0.38, h * 0.35, w * 0.55);
+    spot.addColorStop(0,    "rgba(255,255,255,0.70)");
+    spot.addColorStop(0.20, "rgba(235,248,252,0.35)");
+    spot.addColorStop(0.55, "rgba(180,220,235,0.08)");
+    spot.addColorStop(1,    "rgba(180,220,235,0)");
+    ctx.fillStyle = spot;
     ctx.fillRect(0, 0, w, h);
 
-    // Layer 4 — subtle cyan hue tint (site colour)
-    const cyan = ctx.createLinearGradient(0, h, w, 0);
-    cyan.addColorStop(0,   "rgba(0,229,245,0.12)");
-    cyan.addColorStop(0.5, "rgba(0,229,245,0.04)");
-    cyan.addColorStop(1,   "rgba(0,229,245,0.10)");
-    ctx.fillStyle = cyan;
+    // Layer 4 — cyan-teal bloom (bottom-right — site colour baked into metal)
+    const bloom = ctx.createRadialGradient(w * 0.82, h * 0.78, 0, w * 0.82, h * 0.78, w * 0.65);
+    bloom.addColorStop(0,   "rgba(0,200,220,0.38)");
+    bloom.addColorStop(0.4, "rgba(0,180,200,0.14)");
+    bloom.addColorStop(1,   "rgba(0,180,200,0)");
+    ctx.fillStyle = bloom;
     ctx.fillRect(0, 0, w, h);
 
-    // Layer 5 — vignette (dark edges for depth)
-    const vig = ctx.createRadialGradient(w/2, h/2, h * 0.1, w/2, h/2, w * 0.85);
+    // Layer 5 — edge vignette for premium depth
+    const vig = ctx.createRadialGradient(w * 0.5, h * 0.5, h * 0.05, w * 0.5, h * 0.5, w * 0.9);
     vig.addColorStop(0,   "rgba(0,0,0,0)");
-    vig.addColorStop(1,   "rgba(10,20,30,0.38)");
+    vig.addColorStop(0.7, "rgba(5,18,28,0.10)");
+    vig.addColorStop(1,   "rgba(5,18,28,0.45)");
     ctx.fillStyle = vig;
     ctx.fillRect(0, 0, w, h);
 
