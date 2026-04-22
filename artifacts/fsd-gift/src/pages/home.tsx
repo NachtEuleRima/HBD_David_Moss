@@ -1068,7 +1068,7 @@ export default function Home() {
               background: "radial-gradient(ellipse at 60% 55%, #0d2a3a 0%, #071628 55%, #020c18 100%)",
             }} />
             <video
-              src="/david-fsd-video.mov"
+              src="/david-fsd-video.mp4"
               poster="/nas-cover-clean.png"
               muted playsInline preload="metadata"
               style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 53%", display: "block", pointerEvents: "none", position: "relative" }}
@@ -1143,7 +1143,7 @@ export default function Home() {
                   background: "rgba(255,255,255,0.35)", zIndex: 10, pointerEvents: "none",
                 }} />
                 <video
-                  src="/david-fsd-video.mov"
+                  src="/david-fsd-video.mp4"
                   autoPlay controls playsInline
                   style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                 />
