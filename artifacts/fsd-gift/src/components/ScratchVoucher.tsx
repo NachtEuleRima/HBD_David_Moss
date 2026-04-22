@@ -177,30 +177,20 @@ function drawBolt(ctx: CanvasRenderingContext2D, x: number, y: number, size: num
 }
 
 export function ScratchVoucher() {
-  const canvasRef       = useRef<HTMLCanvasElement>(null);
-  const wrapRef         = useRef<HTMLDivElement>(null);
-  const isDrawing       = useRef(false);
-  const shownMilestones = useRef<Set<number>>(new Set());
+  const canvasRef    = useRef<HTMLCanvasElement>(null);
+  const wrapRef      = useRef<HTMLDivElement>(null);
+  const isDrawing    = useRef(false);
+  const halfwayShown = useRef(false);
   const [isRevealed,  setIsRevealed]  = useState(false);
   const [halfwayMsg,  setHalfwayMsg]  = useState<string | null>(null);
 
-  const MILESTONE_QUIPS: Record<number, string[]> = {
-    30: [
-      "Warming up those FSD fingers! ⚡",
-      "30% done — Mossman would approve 🚗",
-      "That's what I call torque vectoring 🔥",
-    ],
-    60: [
-      "Over halfway! Keep it rolling 🌡️",
-      "60% — faster than FSD v14.3 loading 😂",
-      "You're built different, scratcher 👀",
-    ],
-    90: [
-      "Almost there, legend! 🎁",
-      "90% — LiDAR couldn't see this coming 😂",
-      "One more push, coast to coast style ⚡",
-    ],
-  };
+  const HALFWAY_QUIPS = [
+    "Almost there, Mossman! ⚡",
+    "Your FSD fingers are doing work 🔥",
+    "Keep scratching, legend 👀",
+    "Getting warmer... 🌡️",
+    "LiDAR couldn't see this coming 😂",
+  ];
 
   const drawSilver = useCallback(() => {
     const canvas = canvasRef.current;
@@ -282,19 +272,14 @@ export function ScratchVoucher() {
       for (let i = 3; i < data.length; i += 4 * 20) if (data[i] < 128) t++;
       const pct = t / (data.length / (4 * 20));
 
-      const milestones = [30, 60, 90] as const;
-      for (const m of milestones) {
-        if (!shownMilestones.current.has(m) && pct * 100 >= m) {
-          shownMilestones.current.add(m);
-          const quips = MILESTONE_QUIPS[m];
-          const quip = quips[Math.floor(Math.random() * quips.length)];
-          setHalfwayMsg(quip);
-          setTimeout(() => setHalfwayMsg(null), 2200);
-          break;
-        }
+      if (!halfwayShown.current && pct > 0.15) {
+        halfwayShown.current = true;
+        const quip = HALFWAY_QUIPS[Math.floor(Math.random() * HALFWAY_QUIPS.length)];
+        setHalfwayMsg(quip);
+        setTimeout(() => setHalfwayMsg(null), 2200);
       }
 
-      if (pct > 0.92) setIsRevealed(true);
+      if (pct > 0.30) setIsRevealed(true);
     }
   }, [isRevealed]);
 
