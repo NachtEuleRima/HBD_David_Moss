@@ -109,10 +109,20 @@ function drawBolt(ctx: CanvasRenderingContext2D, x: number, y: number, size: num
 }
 
 export function ScratchVoucher() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const wrapRef   = useRef<HTMLDivElement>(null);
-  const isDrawing = useRef(false);
-  const [isRevealed, setIsRevealed] = useState(false);
+  const canvasRef    = useRef<HTMLCanvasElement>(null);
+  const wrapRef      = useRef<HTMLDivElement>(null);
+  const isDrawing    = useRef(false);
+  const halfwayShown = useRef(false);
+  const [isRevealed,  setIsRevealed]  = useState(false);
+  const [halfwayMsg,  setHalfwayMsg]  = useState<string | null>(null);
+
+  const HALFWAY_QUIPS = [
+    "Almost there, Mossman! ⚡",
+    "Your FSD fingers are doing work 🔥",
+    "Keep scratching, legend 👀",
+    "Getting warmer... 🌡️",
+    "LiDAR couldn't see this coming 😂",
+  ];
 
   const drawSilver = useCallback(() => {
     const canvas = canvasRef.current;
@@ -191,7 +201,16 @@ export function ScratchVoucher() {
       const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
       let t = 0;
       for (let i = 3; i < data.length; i += 4 * 20) if (data[i] < 128) t++;
-      if (t / (data.length / (4 * 20)) > 0.30) setIsRevealed(true);
+      const pct = t / (data.length / (4 * 20));
+
+      if (!halfwayShown.current && pct > 0.15) {
+        halfwayShown.current = true;
+        const quip = HALFWAY_QUIPS[Math.floor(Math.random() * HALFWAY_QUIPS.length)];
+        setHalfwayMsg(quip);
+        setTimeout(() => setHalfwayMsg(null), 2200);
+      }
+
+      if (pct > 0.30) setIsRevealed(true);
     }
   }, [isRevealed]);
 
@@ -239,6 +258,30 @@ export function ScratchVoucher() {
         style={{ position: "relative", borderRadius: 16, overflow: "hidden", boxShadow: "0 25px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,245,0.08)" }}
       >
         <VoucherContent />
+
+        <AnimatePresence>
+          {halfwayMsg && (
+            <motion.div
+              key="halfway"
+              initial={{ opacity: 0, y: 8, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.9 }}
+              transition={{ duration: 0.25 }}
+              style={{
+                position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)",
+                zIndex: 30, pointerEvents: "none",
+                background: "rgba(0,229,245,0.15)", backdropFilter: "blur(8px)",
+                border: "1px solid rgba(0,229,245,0.35)", borderRadius: 99,
+                padding: "7px 18px", whiteSpace: "nowrap",
+                color: "#00e5f5", fontWeight: 700, fontSize: 13,
+                fontFamily: "'Outfit', system-ui, sans-serif",
+                boxShadow: "0 4px 20px rgba(0,229,245,0.2)",
+              }}
+            >
+              {halfwayMsg}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <AnimatePresence>
           {!isRevealed && (
