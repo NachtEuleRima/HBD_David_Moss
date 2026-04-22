@@ -221,16 +221,21 @@ export function ScratchVoucher() {
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, w, h);
 
-    // White sheen streaks
+    // White sheen streaks — subtly slanted ~10°
+    const diag = Math.ceil(Math.sqrt(w * w + h * h));
+    ctx.save();
+    ctx.translate(w / 2, h / 2);
+    ctx.rotate(Math.PI / 18); // 10 degrees
+    const sg = ctx.createLinearGradient(0, -diag, 0, diag);
+    sg.addColorStop(0,   "rgba(255,255,255,0)");
+    sg.addColorStop(0.5, "rgba(255,255,255,0.65)");
+    sg.addColorStop(1,   "rgba(255,255,255,0)");
+    ctx.fillStyle = sg;
     ctx.globalAlpha = 0.22;
-    for (let i = 0; i < w; i += 9) {
-      const sg = ctx.createLinearGradient(i, 0, i + 4, h);
-      sg.addColorStop(0,   "rgba(255,255,255,0)");
-      sg.addColorStop(0.5, "rgba(255,255,255,0.65)");
-      sg.addColorStop(1,   "rgba(255,255,255,0)");
-      ctx.fillStyle = sg;
-      ctx.fillRect(i, 0, 2, h);
+    for (let i = -diag; i < diag; i += 9) {
+      ctx.fillRect(i, -diag, 2, diag * 2);
     }
+    ctx.restore();
     ctx.globalAlpha = 1;
 
   }, []);
