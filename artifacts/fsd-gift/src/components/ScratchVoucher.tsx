@@ -209,77 +209,28 @@ export function ScratchVoucher() {
 
     ctx.globalCompositeOperation = "source-over";
 
-    // Foundation — solid bright silver so it reads as metal first
-    ctx.fillStyle = "#c8d8e0";
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0,    "#7a8a96");
+    grad.addColorStop(0.12, "#c8d4de");
+    grad.addColorStop(0.25, "#8a9aaa");
+    grad.addColorStop(0.42, "#e0eaf0");
+    grad.addColorStop(0.58, "#9aaabb");
+    grad.addColorStop(0.72, "#d8e4ec");
+    grad.addColorStop(0.88, "#8898a8");
+    grad.addColorStop(1,    "#b0c0cc");
+    ctx.fillStyle = grad;
     ctx.fillRect(0, 0, w, h);
 
-    // Layer 1 — primary metallic sweep (bottom-left → top-right)
-    const base = ctx.createLinearGradient(0, h, w, 0);
-    base.addColorStop(0,    "#4a6e82");   // dark steel
-    base.addColorStop(0.12, "#8ab0c0");   // mid silver
-    base.addColorStop(0.22, "#c8dce6");   // light silver
-    base.addColorStop(0.32, "#f0f6f8");   // near-white highlight
-    base.addColorStop(0.42, "#ffffff");   // pure white peak
-    base.addColorStop(0.50, "#e8f2f6");   // back to light silver
-    base.addColorStop(0.60, "#b8d0da");   // silver
-    base.addColorStop(0.72, "#7098a8");   // mid steel
-    base.addColorStop(0.84, "#9abcca");   // light steel
-    base.addColorStop(1,    "#c0d4de");   // silver
-    ctx.fillStyle = base;
-    ctx.fillRect(0, 0, w, h);
-
-    // Layer 2 — perpendicular silver band (top-left → bottom-right)
-    const cross = ctx.createLinearGradient(0, 0, w, h);
-    cross.addColorStop(0,    "rgba(255,255,255,0.40)");
-    cross.addColorStop(0.20, "rgba(200,228,240,0.30)");
-    cross.addColorStop(0.40, "rgba(160,200,218,0.15)");
-    cross.addColorStop(0.60, "rgba(220,238,248,0.28)");
-    cross.addColorStop(0.80, "rgba(180,210,228,0.20)");
-    cross.addColorStop(1,    "rgba(255,255,255,0.35)");
-    ctx.fillStyle = cross;
-    ctx.fillRect(0, 0, w, h);
-
-    // Layer 3 — strong radial hot-spot (direct light)
-    const spot = ctx.createRadialGradient(w * 0.35, h * 0.28, 0, w * 0.35, h * 0.28, w * 0.6);
-    spot.addColorStop(0,    "rgba(255,255,255,0.85)");
-    spot.addColorStop(0.15, "rgba(240,250,255,0.50)");
-    spot.addColorStop(0.40, "rgba(200,232,245,0.18)");
-    spot.addColorStop(1,    "rgba(200,232,245,0)");
-    ctx.fillStyle = spot;
-    ctx.fillRect(0, 0, w, h);
-
-    // Layer 4 — secondary hot-spot (lower-right edge catch)
-    const spot2 = ctx.createRadialGradient(w * 0.75, h * 0.80, 0, w * 0.75, h * 0.80, w * 0.45);
-    spot2.addColorStop(0,    "rgba(255,255,255,0.55)");
-    spot2.addColorStop(0.30, "rgba(220,240,248,0.22)");
-    spot2.addColorStop(1,    "rgba(220,240,248,0)");
-    ctx.fillStyle = spot2;
-    ctx.fillRect(0, 0, w, h);
-
-    // Layer 5 — cyan-teal bloom baked into metal (site colour)
-    const bloom = ctx.createRadialGradient(w * 0.85, h * 0.75, 0, w * 0.85, h * 0.75, w * 0.70);
-    bloom.addColorStop(0,   "rgba(0,210,228,0.30)");
-    bloom.addColorStop(0.35,"rgba(0,190,210,0.12)");
-    bloom.addColorStop(1,   "rgba(0,190,210,0)");
-    ctx.fillStyle = bloom;
-    ctx.fillRect(0, 0, w, h);
-
-    // Layer 6 — top-left cyan accent
-    const bloom2 = ctx.createRadialGradient(0, 0, 0, 0, 0, w * 0.50);
-    bloom2.addColorStop(0,   "rgba(0,200,220,0.22)");
-    bloom2.addColorStop(0.5, "rgba(0,200,220,0.06)");
-    bloom2.addColorStop(1,   "rgba(0,200,220,0)");
-    ctx.fillStyle = bloom2;
-    ctx.fillRect(0, 0, w, h);
-
-    // Layer 7 — edge vignette
-    const vig = ctx.createRadialGradient(w * 0.5, h * 0.5, h * 0.08, w * 0.5, h * 0.5, w * 0.95);
-    vig.addColorStop(0,   "rgba(0,0,0,0)");
-    vig.addColorStop(0.65,"rgba(8,22,35,0.08)");
-    vig.addColorStop(1,   "rgba(8,22,35,0.50)");
-    ctx.fillStyle = vig;
-    ctx.fillRect(0, 0, w, h);
-
+    // White sheen streaks
+    ctx.globalAlpha = 0.22;
+    for (let i = 0; i < w; i += 9) {
+      const sg = ctx.createLinearGradient(i, 0, i + 4, h);
+      sg.addColorStop(0,   "rgba(255,255,255,0)");
+      sg.addColorStop(0.5, "rgba(255,255,255,0.65)");
+      sg.addColorStop(1,   "rgba(255,255,255,0)");
+      ctx.fillStyle = sg;
+      ctx.fillRect(i, 0, 2, h);
+    }
     ctx.globalAlpha = 1;
 
   }, []);
