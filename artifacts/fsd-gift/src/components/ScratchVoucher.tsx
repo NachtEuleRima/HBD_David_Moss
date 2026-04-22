@@ -227,11 +227,13 @@ export function ScratchVoucher() {
     ctx.translate(w / 2, h / 2);
     ctx.rotate(Math.PI / 18); // 10 degrees
     const sg = ctx.createLinearGradient(0, -diag, 0, diag);
-    sg.addColorStop(0,   "rgba(255,255,255,0)");
-    sg.addColorStop(0.5, "rgba(255,255,255,0.65)");
-    sg.addColorStop(1,   "rgba(255,255,255,0)");
+    sg.addColorStop(0,    "rgba(255,255,255,0)");
+    sg.addColorStop(0.42, "rgba(220,252,255,0.45)");  // barely-cyan fade-in
+    sg.addColorStop(0.5,  "rgba(0,229,245,0.65)");    // site cyan at peak
+    sg.addColorStop(0.58, "rgba(220,252,255,0.45)");  // barely-cyan fade-out
+    sg.addColorStop(1,    "rgba(255,255,255,0)");
     ctx.fillStyle = sg;
-    ctx.globalAlpha = 0.22;
+    ctx.globalAlpha = 0.20;
     for (let i = -diag; i < diag; i += 9) {
       ctx.fillRect(i, -diag, 2, diag * 2);
     }
