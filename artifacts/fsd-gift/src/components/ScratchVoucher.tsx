@@ -209,53 +209,49 @@ export function ScratchVoucher() {
 
     ctx.globalCompositeOperation = "source-over";
 
-    // Base: dark navy + silver blend gradient (diagonal top-left → bottom-right)
-    const grad = ctx.createLinearGradient(0, 0, w, h);
-    grad.addColorStop(0,    "#1a2d3e");
-    grad.addColorStop(0.10, "#8a9aaa");  // silver
-    grad.addColorStop(0.22, "#0d1f2e");
-    grad.addColorStop(0.35, "#a8bcc8");  // silver
-    grad.addColorStop(0.48, "#112d3e");
-    grad.addColorStop(0.60, "#7a9aae");  // silver-teal
-    grad.addColorStop(0.74, "#0a2030");
-    grad.addColorStop(0.88, "#90aaba");  // silver
-    grad.addColorStop(1,    "#1c3f52");
-    ctx.fillStyle = grad;
+    // Layer 1 — silver base (diagonal, dark-to-light-to-dark)
+    const base = ctx.createLinearGradient(0, 0, w, h);
+    base.addColorStop(0,    "#7a9aaa");
+    base.addColorStop(0.20, "#c0d4de");
+    base.addColorStop(0.42, "#8aa8b8");
+    base.addColorStop(0.58, "#d4e4ec");
+    base.addColorStop(0.78, "#90acba");
+    base.addColorStop(1,    "#b8ccd8");
+    ctx.fillStyle = base;
     ctx.fillRect(0, 0, w, h);
 
-    // Brushed-metal grain: horizontal micro-lines with visible sine-wave sheen
-    for (let y = 0; y < h; y += 2) {
-      const wave = 0.5 + 0.5 * Math.sin((y / h) * Math.PI * 18);
-      const alpha = 0.06 + wave * 0.18; // much more visible — 0.06–0.24
-      ctx.globalAlpha = alpha;
-      const isCyan = (y / 2) % 4 === 0;
-      ctx.fillStyle = isCyan ? "rgba(0,229,245,1)" : "rgba(200,222,232,1)";
-      ctx.fillRect(0, y, w, 1);
-    }
+    // Layer 2 — radial highlight (top-left, like a point light source)
+    const hl = ctx.createRadialGradient(w * 0.3, h * 0.2, 0, w * 0.3, h * 0.2, w * 0.75);
+    hl.addColorStop(0,    "rgba(255,255,255,0.55)");
+    hl.addColorStop(0.35, "rgba(255,255,255,0.15)");
+    hl.addColorStop(1,    "rgba(255,255,255,0)");
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = hl;
+    ctx.fillRect(0, 0, w, h);
 
-    // Cross-grain: very fine vertical lines for depth
-    for (let x = 0; x < w; x += 4) {
-      const wave = 0.5 + 0.5 * Math.sin((x / w) * Math.PI * 10);
-      ctx.globalAlpha = 0.04 + wave * 0.06;
-      ctx.fillStyle = "rgba(180,210,228,1)";
-      ctx.fillRect(x, 0, 1, h);
-    }
+    // Layer 3 — secondary radial highlight (bottom-right, softer)
+    const hl2 = ctx.createRadialGradient(w * 0.8, h * 0.85, 0, w * 0.8, h * 0.85, w * 0.6);
+    hl2.addColorStop(0,   "rgba(210,230,240,0.45)");
+    hl2.addColorStop(0.5, "rgba(210,230,240,0.10)");
+    hl2.addColorStop(1,   "rgba(210,230,240,0)");
+    ctx.fillStyle = hl2;
+    ctx.fillRect(0, 0, w, h);
 
-    // Diagonal sheen sweep at 20° — visible but not banded
-    ctx.save();
-    const diag = Math.ceil(Math.sqrt(w * w + h * h));
-    ctx.translate(w / 2, h / 2);
-    ctx.rotate(Math.PI / 9);
-    ctx.globalAlpha = 0.12;
-    for (let i = -diag; i < diag; i += 8) {
-      const sg = ctx.createLinearGradient(i, 0, i + 4, 0);
-      sg.addColorStop(0,   "rgba(0,229,245,0)");
-      sg.addColorStop(0.5, "rgba(0,229,245,1)");
-      sg.addColorStop(1,   "rgba(0,229,245,0)");
-      ctx.fillStyle = sg;
-      ctx.fillRect(i, -diag, 2, diag * 2);
-    }
-    ctx.restore();
+    // Layer 4 — subtle cyan hue tint (site colour)
+    const cyan = ctx.createLinearGradient(0, h, w, 0);
+    cyan.addColorStop(0,   "rgba(0,229,245,0.12)");
+    cyan.addColorStop(0.5, "rgba(0,229,245,0.04)");
+    cyan.addColorStop(1,   "rgba(0,229,245,0.10)");
+    ctx.fillStyle = cyan;
+    ctx.fillRect(0, 0, w, h);
+
+    // Layer 5 — vignette (dark edges for depth)
+    const vig = ctx.createRadialGradient(w/2, h/2, h * 0.1, w/2, h/2, w * 0.85);
+    vig.addColorStop(0,   "rgba(0,0,0,0)");
+    vig.addColorStop(1,   "rgba(10,20,30,0.38)");
+    ctx.fillStyle = vig;
+    ctx.fillRect(0, 0, w, h);
+
     ctx.globalAlpha = 1;
 
   }, []);
