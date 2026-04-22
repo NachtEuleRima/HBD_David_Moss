@@ -333,8 +333,8 @@ export function ScratchVoucher() {
         <VoucherContent />
 
         <div style={{
-          position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
-          zIndex: 9999, pointerEvents: "none",
+          position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+          zIndex: 30, pointerEvents: "none", width: "max-content",
         }}>
           <AnimatePresence>
             {halfwayMsg && (
