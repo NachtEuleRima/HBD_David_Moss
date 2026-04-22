@@ -355,16 +355,17 @@ export function ScratchVoucher() {
             <motion.div
               key="scratch-hint"
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.35 }}
+              animate={{ opacity: 0.80 }}
               exit={{ opacity: 0, transition: { duration: 0.5 } }}
               style={{
                 position: "absolute", top: "50%", left: "50%",
                 transform: "translate(-50%, -50%)",
                 zIndex: 28, pointerEvents: "none",
-                color: "#c8dde8", fontSize: 12, fontWeight: 600,
+                color: "#1a2e3a", fontSize: 12, fontWeight: 700,
                 fontFamily: "'Space Grotesk', monospace",
                 letterSpacing: "0.25em", textTransform: "uppercase",
                 whiteSpace: "nowrap",
+                textShadow: "0 1px 3px rgba(255,255,255,0.55), 0 0 8px rgba(255,255,255,0.25)",
               }}
             >
               ✦ &nbsp;scratch me&nbsp; ✦
