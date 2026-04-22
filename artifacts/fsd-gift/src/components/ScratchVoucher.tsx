@@ -208,40 +208,49 @@ export function ScratchVoucher() {
 
     ctx.globalCompositeOperation = "source-over";
 
-    // Base: dark navy-to-teal metallic gradient (site palette)
+    // Base: dark navy + silver blend gradient (diagonal top-left → bottom-right)
     const grad = ctx.createLinearGradient(0, 0, w, h);
-    grad.addColorStop(0,    "#0d1f2e");
-    grad.addColorStop(0.12, "#1a3a4a");
-    grad.addColorStop(0.25, "#0a2535");
-    grad.addColorStop(0.40, "#163344");
-    grad.addColorStop(0.55, "#071828");
-    grad.addColorStop(0.68, "#1c3f52");
-    grad.addColorStop(0.82, "#0e2233");
-    grad.addColorStop(1,    "#112d3e");
+    grad.addColorStop(0,    "#1a2d3e");
+    grad.addColorStop(0.10, "#8a9aaa");  // silver
+    grad.addColorStop(0.22, "#0d1f2e");
+    grad.addColorStop(0.35, "#a8bcc8");  // silver
+    grad.addColorStop(0.48, "#112d3e");
+    grad.addColorStop(0.60, "#7a9aae");  // silver-teal
+    grad.addColorStop(0.74, "#0a2030");
+    grad.addColorStop(0.88, "#90aaba");  // silver
+    grad.addColorStop(1,    "#1c3f52");
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, w, h);
 
-    // Cyan shimmer streaks (site primary colour)
-    ctx.globalAlpha = 0.18;
-    for (let i = 0; i < w; i += 11) {
-      const sg = ctx.createLinearGradient(i, 0, i + 5, h);
-      sg.addColorStop(0,   "rgba(0,229,245,0)");
-      sg.addColorStop(0.45, "rgba(0,229,245,0.7)");
-      sg.addColorStop(1,   "rgba(0,229,245,0)");
+    // Slanted cyan + silver shimmer streaks (~30° angle)
+    const diag = Math.ceil(Math.sqrt(w * w + h * h));
+    ctx.save();
+    ctx.translate(w / 2, h / 2);
+    ctx.rotate(Math.PI / 6); // 30 degrees
+
+    // Cyan streaks
+    ctx.globalAlpha = 0.20;
+    for (let i = -diag; i < diag; i += 14) {
+      const sg = ctx.createLinearGradient(i, -diag, i + 6, diag);
+      sg.addColorStop(0,    "rgba(0,229,245,0)");
+      sg.addColorStop(0.45, "rgba(0,229,245,0.75)");
+      sg.addColorStop(1,    "rgba(0,229,245,0)");
       ctx.fillStyle = sg;
-      ctx.fillRect(i, 0, 2, h);
+      ctx.fillRect(i, -diag, 3, diag * 2);
     }
 
-    // White highlight streaks for depth
-    ctx.globalAlpha = 0.08;
-    for (let i = 3; i < w; i += 11) {
-      const wg = ctx.createLinearGradient(i, 0, i + 3, h);
-      wg.addColorStop(0,   "rgba(255,255,255,0)");
-      wg.addColorStop(0.5, "rgba(255,255,255,0.9)");
-      wg.addColorStop(1,   "rgba(255,255,255,0)");
-      ctx.fillStyle = wg;
-      ctx.fillRect(i, 0, 1, h);
+    // Silver highlight streaks between cyan
+    ctx.globalAlpha = 0.14;
+    for (let i = -diag + 7; i < diag; i += 14) {
+      const sg = ctx.createLinearGradient(i, -diag, i + 4, diag);
+      sg.addColorStop(0,    "rgba(200,220,230,0)");
+      sg.addColorStop(0.5,  "rgba(200,220,230,0.9)");
+      sg.addColorStop(1,    "rgba(200,220,230,0)");
+      ctx.fillStyle = sg;
+      ctx.fillRect(i, -diag, 2, diag * 2);
     }
+
+    ctx.restore();
     ctx.globalAlpha = 1;
   }, []);
 
