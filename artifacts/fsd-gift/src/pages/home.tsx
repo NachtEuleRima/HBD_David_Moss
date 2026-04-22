@@ -531,11 +531,11 @@ export default function Home() {
           >
             <div className="inline-flex items-center gap-2 mb-4">
               <motion.span
-                animate={{ x: [0, -7, 2, -5, 0] }}
+                animate={{ x: [0, 7, -2, 5, 0] }}
                 transition={{ duration: 1.4, repeat: Infinity, repeatDelay: 1.8, ease: "easeInOut" }}
-                style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 15, userSelect: "none" }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 15, userSelect: "none", color: "#00e5f5" }}
               >
-                🎁<span style={{ fontSize: 12, opacity: 0.75 }}>←</span>
+                🎁<span style={{ fontSize: 12, opacity: 0.85 }}>→</span>
               </motion.span>
               <button
                 onClick={() => document.getElementById("voucher-section")?.scrollIntoView({ behavior: "smooth", block: "center" })}
@@ -544,6 +544,13 @@ export default function Home() {
                 <Calendar className="w-4 h-4" />
                 <span>April 26th Birthday Surprise</span>
               </button>
+              <motion.span
+                animate={{ x: [0, -7, 2, -5, 0] }}
+                transition={{ duration: 1.4, repeat: Infinity, repeatDelay: 1.8, ease: "easeInOut" }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 15, userSelect: "none", color: "#00e5f5" }}
+              >
+                <span style={{ fontSize: 12, opacity: 0.85 }}>←</span>🎁
+              </motion.span>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground mb-4 font-sans drop-shadow-lg">
               For David Moss.
