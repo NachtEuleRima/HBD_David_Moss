@@ -222,34 +222,32 @@ export function ScratchVoucher() {
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, w, h);
 
-    // Slanted cyan + silver shimmer streaks (~30° angle)
-    const diag = Math.ceil(Math.sqrt(w * w + h * h));
-    ctx.save();
-    ctx.translate(w / 2, h / 2);
-    ctx.rotate(Math.PI / 6); // 30 degrees
-
-    // Cyan streaks
-    ctx.globalAlpha = 0.20;
-    for (let i = -diag; i < diag; i += 14) {
-      const sg = ctx.createLinearGradient(i, -diag, i + 6, diag);
-      sg.addColorStop(0,    "rgba(0,229,245,0)");
-      sg.addColorStop(0.45, "rgba(0,229,245,0.75)");
-      sg.addColorStop(1,    "rgba(0,229,245,0)");
-      ctx.fillStyle = sg;
-      ctx.fillRect(i, -diag, 3, diag * 2);
+    // Brushed-metal micro-texture: fine horizontal grain lines
+    for (let y = 0; y < h; y += 2) {
+      // Sine wave makes opacity pulse — invisible individually, metallic in aggregate
+      const wave = 0.5 + 0.5 * Math.sin((y / h) * Math.PI * 14);
+      const alpha = 0.03 + wave * 0.055;
+      ctx.globalAlpha = alpha;
+      // Alternate between silver-white and cyan tones for the teal-silver blend
+      const isCyan = (y / 2) % 3 === 0;
+      ctx.fillStyle = isCyan ? "rgba(0,229,245,1)" : "rgba(210,228,236,1)";
+      ctx.fillRect(0, y, w, 1);
     }
 
-    // Silver highlight streaks between cyan
-    ctx.globalAlpha = 0.14;
-    for (let i = -diag + 7; i < diag; i += 14) {
-      const sg = ctx.createLinearGradient(i, -diag, i + 4, diag);
-      sg.addColorStop(0,    "rgba(200,220,230,0)");
-      sg.addColorStop(0.5,  "rgba(200,220,230,0.9)");
-      sg.addColorStop(1,    "rgba(200,220,230,0)");
+    // Subtle diagonal sheen sweep (very low alpha — feels like light catching the metal)
+    ctx.save();
+    const diag = Math.ceil(Math.sqrt(w * w + h * h));
+    ctx.translate(w / 2, h / 2);
+    ctx.rotate(Math.PI / 9); // 20 degrees — gentle, not obvious
+    ctx.globalAlpha = 0.055;
+    for (let i = -diag; i < diag; i += 6) {
+      const sg = ctx.createLinearGradient(i, 0, i + 3, 0);
+      sg.addColorStop(0,   "rgba(180,210,222,0)");
+      sg.addColorStop(0.5, "rgba(180,210,222,1)");
+      sg.addColorStop(1,   "rgba(180,210,222,0)");
       ctx.fillStyle = sg;
       ctx.fillRect(i, -diag, 2, diag * 2);
     }
-
     ctx.restore();
     ctx.globalAlpha = 1;
 
