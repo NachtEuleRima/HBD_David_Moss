@@ -180,7 +180,8 @@ export function ScratchVoucher() {
     return () => ro.disconnect();
   }, [isRevealed, drawSilver]);
 
-  const getPos = (e: MouseEvent | Touch, canvas: HTMLCanvasElement) => {
+  const getPos = (e: MouseEvent | Touch, canvas: HTMLCanvasElement | null) => {
+    if (!canvas) return null;
     const rect = canvas.getBoundingClientRect();
     return {
       x: (e.clientX - rect.left) * (canvas.width  / rect.width),
@@ -216,14 +217,14 @@ export function ScratchVoucher() {
 
   const onMD = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     isDrawing.current = true;
-    const p = getPos(e.nativeEvent, canvasRef.current!);
-    scratchAt(p.x, p.y);
+    const p = getPos(e.nativeEvent, canvasRef.current);
+    if (p) scratchAt(p.x, p.y);
   }, [scratchAt]);
 
   const onMM = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing.current) return;
-    const p = getPos(e.nativeEvent, canvasRef.current!);
-    scratchAt(p.x, p.y);
+    const p = getPos(e.nativeEvent, canvasRef.current);
+    if (p) scratchAt(p.x, p.y);
   }, [scratchAt]);
 
   const onMU = () => { isDrawing.current = false; };
@@ -231,15 +232,15 @@ export function ScratchVoucher() {
   const onTS = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
     e.preventDefault();
     isDrawing.current = true;
-    const p = getPos(e.touches[0], canvasRef.current!);
-    scratchAt(p.x, p.y);
+    const p = getPos(e.touches[0], canvasRef.current);
+    if (p) scratchAt(p.x, p.y);
   }, [scratchAt]);
 
   const onTM = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
     e.preventDefault();
     if (!isDrawing.current) return;
-    const p = getPos(e.touches[0], canvasRef.current!);
-    scratchAt(p.x, p.y);
+    const p = getPos(e.touches[0], canvasRef.current);
+    if (p) scratchAt(p.x, p.y);
   }, [scratchAt]);
 
   return (
