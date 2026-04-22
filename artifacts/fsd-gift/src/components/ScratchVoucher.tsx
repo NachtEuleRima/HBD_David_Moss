@@ -156,10 +156,25 @@ export function ScratchVoucher() {
     const canvas = canvasRef.current;
     const wrap = wrapRef.current;
     if (!canvas || !wrap) return;
-    const rect = wrap.getBoundingClientRect();
-    canvas.width = rect.width || 700;
-    canvas.height = rect.height || 220;
-    drawSilver();
+
+    const init = () => {
+      const w = wrap.offsetWidth;
+      const h = wrap.offsetHeight;
+      if (!w || !h) return;
+      canvas.width = w;
+      canvas.height = h;
+      drawSilver();
+    };
+
+    // Draw immediately once layout is ready
+    init();
+
+    // Re-draw if the wrapper ever changes size (e.g. image loads, font renders)
+    const ro = new ResizeObserver(() => {
+      if (!isRevealed) init();
+    });
+    ro.observe(wrap);
+    return () => ro.disconnect();
   }, [isRevealed, drawSilver]);
 
   const getPos = (e: MouseEvent | Touch, canvas: HTMLCanvasElement) => {
