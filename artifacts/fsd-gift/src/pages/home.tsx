@@ -537,13 +537,26 @@ export default function Home() {
               >
                 🎁<span style={{ fontSize: 12, opacity: 0.85 }}>→</span>
               </motion.span>
-              <button
-                onClick={() => document.getElementById("voucher-section")?.scrollIntoView({ behavior: "smooth", block: "center" })}
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-sm font-medium backdrop-blur-sm hover:bg-primary/30 transition-colors cursor-pointer"
-              >
-                <Calendar className="w-4 h-4" />
-                <span>April 26th Birthday Surprise</span>
-              </button>
+              <div style={{ position: "relative", display: "inline-flex" }}>
+                <motion.span
+                  animate={{ scale: [1, 1.35, 1], opacity: [0.55, 0, 0.55] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  style={{
+                    position: "absolute", inset: -4, borderRadius: 99,
+                    border: "1.5px solid rgba(0,229,245,0.65)",
+                    pointerEvents: "none",
+                  }}
+                />
+                <motion.button
+                  whileHover={{ scale: 1.07, boxShadow: "0 0 18px rgba(0,229,245,0.45)" }}
+                  whileTap={{ scale: 0.93 }}
+                  onClick={() => document.getElementById("voucher-section")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-sm font-medium backdrop-blur-sm cursor-pointer"
+                >
+                  <Calendar className="w-4 h-4" />
+                  <span>April 26th Birthday Surprise</span>
+                </motion.button>
+              </div>
               <motion.span
                 animate={{ x: [0, -7, 2, -5, 0] }}
                 transition={{ duration: 1.4, repeat: Infinity, repeatDelay: 1.8, ease: "easeInOut" }}
