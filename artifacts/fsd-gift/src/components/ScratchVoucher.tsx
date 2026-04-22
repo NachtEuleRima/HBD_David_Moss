@@ -252,6 +252,7 @@ export function ScratchVoucher() {
               style={{
                 position: "absolute", inset: 0, width: "100%", height: "100%",
                 borderRadius: 16, cursor: "crosshair", touchAction: "none",
+                zIndex: 20,
               }}
               onMouseDown={onMD}
               onMouseMove={onMM}
