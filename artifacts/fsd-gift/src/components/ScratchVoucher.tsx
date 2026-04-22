@@ -197,7 +197,7 @@ export function ScratchVoucher() {
   );
   const quipIndex = useRef(0);
 
-  const BANNER_THRESHOLDS = [10, 25, 40, 52];
+  const BANNER_THRESHOLDS = [10, 30, 50, 70];
 
   const drawSilver = useCallback(() => {
     const canvas = canvasRef.current;
@@ -290,7 +290,7 @@ export function ScratchVoucher() {
         }
       }
 
-      if (pct > 0.60) setIsRevealed(true);
+      if (pct > 0.80) setIsRevealed(true);
     }
   }, [isRevealed]);
 
