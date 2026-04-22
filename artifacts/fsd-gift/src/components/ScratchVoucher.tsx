@@ -81,7 +81,7 @@ function VoucherContent() {
       {/* 3-column body */}
       <div style={{
         display: "flex", alignItems: "stretch",
-        padding: "24px 20px", gap: 16,
+        padding: "24px 20px", gap: 0,
         position: "relative", zIndex: 2,
       }}>
 
@@ -108,6 +108,7 @@ function VoucherContent() {
           flex: 1,
           display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center", gap: 6,
+          paddingLeft: 24,
         }}>
           <div style={{ color: C.muted, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.3em" }}>Gift Value</div>
           <div style={{ display: "flex", alignItems: "flex-end", gap: 1, lineHeight: 1 }}>
