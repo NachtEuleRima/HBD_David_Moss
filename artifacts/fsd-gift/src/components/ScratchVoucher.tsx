@@ -181,8 +181,9 @@ export function ScratchVoucher() {
   const wrapRef      = useRef<HTMLDivElement>(null);
   const isDrawing    = useRef(false);
   const shownMilestones = useRef<Set<number>>(new Set());
-  const [isRevealed,  setIsRevealed]  = useState(false);
-  const [halfwayMsg,  setHalfwayMsg]  = useState<string | null>(null);
+  const [isRevealed,    setIsRevealed]    = useState(false);
+  const [halfwayMsg,    setHalfwayMsg]    = useState<string | null>(null);
+  const [showHint,      setShowHint]      = useState(true);
 
   const ALL_QUIPS = [
     "Almost there, Mossman! ⚡",
@@ -257,18 +258,6 @@ export function ScratchVoucher() {
     ctx.restore();
     ctx.globalAlpha = 1;
 
-    // Subtle "scratch me" hint text centered on overlay
-    ctx.save();
-    ctx.globalAlpha = 0.28;
-    ctx.globalCompositeOperation = "source-over";
-    const fontSize = Math.max(11, Math.round(w / 18));
-    ctx.font = `600 ${fontSize}px 'Space Grotesk', monospace`;
-    ctx.letterSpacing = "0.25em";
-    ctx.fillStyle = "#c8dde8";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("✦  scratch me  ✦", w / 2, h / 2);
-    ctx.restore();
   }, []);
 
   useEffect(() => {
@@ -315,6 +304,8 @@ export function ScratchVoucher() {
       let t = 0;
       for (let i = 3; i < data.length; i += 4 * 20) if (data[i] < 128) t++;
       const pct = t / (data.length / (4 * 20));
+
+      if (showHint && pct > 0.10) setShowHint(false);
 
       for (const t of BANNER_THRESHOLDS) {
         if (!shownMilestones.current.has(t) && pct * 100 >= t) {
@@ -375,6 +366,29 @@ export function ScratchVoucher() {
         style={{ position: "relative", borderRadius: 16, overflow: "hidden", boxShadow: "0 25px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,245,0.08)" }}
       >
         <VoucherContent />
+
+        {/* "Scratch me" hint — fades out at 10% */}
+        <AnimatePresence>
+          {showHint && (
+            <motion.div
+              key="scratch-hint"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.35 }}
+              exit={{ opacity: 0, transition: { duration: 0.5 } }}
+              style={{
+                position: "absolute", top: "50%", left: "50%",
+                transform: "translate(-50%, -50%)",
+                zIndex: 28, pointerEvents: "none",
+                color: "#c8dde8", fontSize: 12, fontWeight: 600,
+                fontFamily: "'Space Grotesk', monospace",
+                letterSpacing: "0.25em", textTransform: "uppercase",
+                whiteSpace: "nowrap",
+              }}
+            >
+              ✦ &nbsp;scratch me&nbsp; ✦
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div style={{
           position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
