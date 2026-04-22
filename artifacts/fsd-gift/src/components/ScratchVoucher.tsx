@@ -208,28 +208,39 @@ export function ScratchVoucher() {
 
     ctx.globalCompositeOperation = "source-over";
 
-    // Dark navy base (matches site) with subtle silver sheen
+    // Base: dark navy-to-teal metallic gradient (site palette)
     const grad = ctx.createLinearGradient(0, 0, w, h);
-    grad.addColorStop(0,    "#7a8a96");
-    grad.addColorStop(0.12, "#c8d4de");
-    grad.addColorStop(0.25, "#8a9aaa");
-    grad.addColorStop(0.42, "#e0eaf0");
-    grad.addColorStop(0.58, "#9aaabb");
-    grad.addColorStop(0.72, "#d8e4ec");
-    grad.addColorStop(0.88, "#8898a8");
-    grad.addColorStop(1,    "#b0c0cc");
+    grad.addColorStop(0,    "#0d1f2e");
+    grad.addColorStop(0.12, "#1a3a4a");
+    grad.addColorStop(0.25, "#0a2535");
+    grad.addColorStop(0.40, "#163344");
+    grad.addColorStop(0.55, "#071828");
+    grad.addColorStop(0.68, "#1c3f52");
+    grad.addColorStop(0.82, "#0e2233");
+    grad.addColorStop(1,    "#112d3e");
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, w, h);
 
-    // Sheen streaks
-    ctx.globalAlpha = 0.22;
-    for (let i = 0; i < w; i += 9) {
-      const sg = ctx.createLinearGradient(i, 0, i + 4, h);
-      sg.addColorStop(0,   "rgba(255,255,255,0)");
-      sg.addColorStop(0.5, "rgba(255,255,255,0.65)");
-      sg.addColorStop(1,   "rgba(255,255,255,0)");
+    // Cyan shimmer streaks (site primary colour)
+    ctx.globalAlpha = 0.18;
+    for (let i = 0; i < w; i += 11) {
+      const sg = ctx.createLinearGradient(i, 0, i + 5, h);
+      sg.addColorStop(0,   "rgba(0,229,245,0)");
+      sg.addColorStop(0.45, "rgba(0,229,245,0.7)");
+      sg.addColorStop(1,   "rgba(0,229,245,0)");
       ctx.fillStyle = sg;
       ctx.fillRect(i, 0, 2, h);
+    }
+
+    // White highlight streaks for depth
+    ctx.globalAlpha = 0.08;
+    for (let i = 3; i < w; i += 11) {
+      const wg = ctx.createLinearGradient(i, 0, i + 3, h);
+      wg.addColorStop(0,   "rgba(255,255,255,0)");
+      wg.addColorStop(0.5, "rgba(255,255,255,0.9)");
+      wg.addColorStop(1,   "rgba(255,255,255,0)");
+      ctx.fillStyle = wg;
+      ctx.fillRect(i, 0, 1, h);
     }
     ctx.globalAlpha = 1;
   }, []);
