@@ -23,127 +23,73 @@ function VoucherContent() {
       overflow: "hidden",
       position: "relative",
       userSelect: "none",
-      display: "flex",
       fontFamily: "'Outfit', system-ui, sans-serif",
       border: `1px solid ${C.border}`,
+      padding: "32px 36px",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      gap: 20,
     }}>
-      {/* Corner brackets */}
-      {([
-        { top: 8, left: 8,   borderTop: `1.5px solid ${C.cyan}`, borderLeft:  `1.5px solid ${C.cyan}`, borderRadius: "6px 0 0 0" },
-        { top: 8, right: 8,  borderTop: `1.5px solid ${C.cyan}`, borderRight: `1.5px solid ${C.cyan}`, borderRadius: "0 6px 0 0" },
-        { bottom: 8, left: 8,  borderBottom: `1.5px solid ${C.cyan}`, borderLeft:  `1.5px solid ${C.cyan}`, borderRadius: "0 0 0 6px" },
-        { bottom: 8, right: 8, borderBottom: `1.5px solid ${C.cyan}`, borderRight: `1.5px solid ${C.cyan}`, borderRadius: "0 0 6px 0" },
-      ] as React.CSSProperties[]).map((s, i) => (
-        <div key={i} style={{ position: "absolute", width: 20, height: 20, zIndex: 3, ...s }} />
-      ))}
 
-      {/* Watermark */}
+      {/* BIG background watermark */}
       <div style={{
-        position: "absolute", inset: 0, display: "flex", alignItems: "center",
-        justifyContent: "center", pointerEvents: "none", overflow: "hidden", zIndex: 1,
+        position: "absolute", inset: 0,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        pointerEvents: "none", overflow: "hidden", zIndex: 1,
       }}>
         <span style={{
-          color: C.cyan, fontWeight: 900, fontSize: "clamp(30px, 6vw, 58px)",
-          opacity: 0.06, transform: "rotate(-18deg)", whiteSpace: "nowrap", letterSpacing: "0.1em",
-        }}>⚡ MOSSMAN ONLY ⚡</span>
+          color: C.white,
+          fontWeight: 900,
+          fontSize: "clamp(40px, 9vw, 80px)",
+          opacity: 0.04,
+          transform: "rotate(-16deg)",
+          whiteSpace: "nowrap",
+          letterSpacing: "0.08em",
+          fontFamily: "'Outfit', system-ui, sans-serif",
+        }}>MOSSMAN ONLY!!</span>
       </div>
 
-      {/* Cyan glow left accent */}
-      <div style={{
-        width: 6,
-        background: `linear-gradient(to bottom, ${C.cyan}, ${C.cyanDim})`,
-        flexShrink: 0,
-        zIndex: 2,
-      }} />
-
-      {/* Left dark panel */}
-      <div style={{
-        background: C.card,
-        minWidth: 76,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "20px 10px",
-        gap: 8,
-        zIndex: 2,
-        borderRight: `1px solid ${C.faint}`,
-      }}>
-        <span style={{
-          color: C.cyan,
-          fontWeight: 800,
-          fontSize: 9,
-          letterSpacing: "0.35em",
-          textTransform: "uppercase",
-          writingMode: "vertical-rl" as const,
-          transform: "rotate(180deg)",
-        }}>GIFT VOUCHER</span>
-        <span style={{
-          color: C.muted, fontSize: 9, letterSpacing: "0.2em",
-          writingMode: "vertical-rl" as const, transform: "rotate(180deg)",
-        }}>⚡</span>
+      {/* Top: logo + "from" */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, zIndex: 2 }}>
+        <img
+          src="/tesbros-logo.jpeg"
+          alt="TESbros DIY Wrap Club"
+          style={{ height: 56, width: "auto", objectFit: "contain", borderRadius: 10 }}
+          draggable={false}
+        />
+        <span style={{ color: C.muted, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.22em" }}>
+          DIY Wrap Club
+        </span>
       </div>
 
-      {/* Main body */}
-      <div style={{ flex: 1, padding: "20px 22px", display: "flex", flexDirection: "column", gap: 10, zIndex: 2 }}>
+      {/* Thin cyan rule */}
+      <div style={{ width: "60%", height: 1, background: `linear-gradient(to right, transparent, ${C.cyan}, transparent)`, zIndex: 2 }} />
 
-        {/* Top row */}
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
-          <img
-            src="/tesbros-logo.jpeg"
-            alt="TESbros DIY Wrap Club"
-            style={{ height: 48, width: "auto", objectFit: "contain", borderRadius: 8 }}
-            draggable={false}
-          />
-          <div style={{ textAlign: "right" }}>
-            <div style={{ color: C.muted, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em" }}>Valid from</div>
-            <div style={{ color: C.silver, fontSize: 11, fontWeight: 700, marginTop: 2 }}>April 26, 2025</div>
-            <div style={{
-              display: "inline-block", marginTop: 4, padding: "2px 7px",
-              border: `1px solid ${C.faint}`, borderRadius: 99,
-              color: C.muted, fontSize: 8, letterSpacing: "0.15em", textTransform: "uppercase",
-            }}>Non-transferable</div>
-          </div>
+      {/* Amount — hero */}
+      <div style={{ textAlign: "center", zIndex: 2, lineHeight: 1 }}>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "center", gap: 2 }}>
+          <span style={{ color: C.cyan, fontSize: 28, fontWeight: 900, marginBottom: 8 }}>$</span>
+          <span style={{
+            color: C.white, fontWeight: 900, letterSpacing: "-0.03em",
+            fontSize: "clamp(60px, 14vw, 96px)",
+            textShadow: `0 0 60px ${C.cyan}44`,
+          }}>420</span>
+          <span style={{ color: C.cyan, fontSize: 28, fontWeight: 900, marginBottom: 8 }}>.69</span>
         </div>
+      </div>
 
-        {/* Divider */}
-        <div style={{ height: 1, background: `linear-gradient(to right, ${C.cyan}44, transparent)` }} />
+      {/* Thin rule */}
+      <div style={{ width: "60%", height: 1, background: `linear-gradient(to right, transparent, ${C.cyan}, transparent)`, zIndex: 2 }} />
 
-        {/* Amount */}
-        <div>
-          <div style={{ color: C.muted, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.22em", marginBottom: 4 }}>Gift Value</div>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: 1, lineHeight: 1 }}>
-            <span style={{ color: C.cyan, fontSize: 26, fontWeight: 900, marginBottom: 6 }}>$</span>
-            <span style={{
-              color: C.white, fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1,
-              fontSize: "clamp(44px, 8vw, 68px)",
-              textShadow: `0 0 40px ${C.cyan}55`,
-            }}>420</span>
-            <span style={{ color: C.cyan, fontSize: 26, fontWeight: 900, marginBottom: 6 }}>.69</span>
-          </div>
-          <div style={{ color: C.muted, fontSize: 9, fontStyle: "italic", marginTop: 2 }}>
-            Four hundred twenty and 69/100 — numbers as legendary as the man
-          </div>
-        </div>
-
-        {/* Bottom divider */}
-        <div style={{ height: 1, background: C.faint }} />
-
-        {/* Footer */}
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
-          <div>
-            <div style={{ color: C.muted, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.18em" }}>Issued to</div>
-            <div style={{ color: C.white, fontSize: 14, fontWeight: 800, marginTop: 2 }}>David Moss</div>
-            <div style={{ color: C.muted, fontSize: 10, marginTop: 2 }}>DIY Wrap supplies, gear &amp; club benefits</div>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ color: C.muted, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.12em" }}>Voucher No.</div>
-            <div style={{
-              color: C.cyan, fontSize: 10, fontWeight: 700,
-              fontFamily: "'Space Grotesk', monospace", marginTop: 2,
-            }}>MOSSM-042069</div>
-          </div>
-        </div>
+      {/* To + purpose */}
+      <div style={{ textAlign: "center", zIndex: 2, display: "flex", flexDirection: "column", gap: 4 }}>
+        <span style={{ color: C.muted, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.22em" }}>To</span>
+        <span style={{ color: C.white, fontWeight: 800, fontSize: 22 }}>David Moss</span>
+        <span style={{
+          color: C.cyan, fontSize: 11, letterSpacing: "0.18em",
+          textTransform: "uppercase", marginTop: 2, fontFamily: "'Space Grotesk', monospace",
+        }}>NAS Wrap Only</span>
       </div>
     </div>
   );
