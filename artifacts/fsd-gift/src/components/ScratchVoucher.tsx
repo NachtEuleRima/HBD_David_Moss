@@ -51,20 +51,6 @@ function VoucherContent() {
         }}>✦</span>
       ))}
 
-      {/* Watermark */}
-      <div style={{
-        position: "absolute", inset: 0,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        pointerEvents: "none", overflow: "hidden", zIndex: 1,
-      }}>
-        <span style={{
-          color: C.white, fontWeight: 900,
-          fontSize: "clamp(38px, 8vw, 72px)",
-          opacity: 0.035, transform: "rotate(-14deg)",
-          whiteSpace: "nowrap", letterSpacing: "0.1em",
-        }}>MOSSMAN ONLY!!</span>
-      </div>
-
       {/* Subtle top cyan glow bar */}
       <div style={{
         position: "absolute", top: 0, left: 0, right: 0, height: 2,
