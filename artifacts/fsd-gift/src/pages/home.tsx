@@ -1110,10 +1110,14 @@ export default function Home() {
               }}
             >
               <motion.div
-                initial={{ scale: 0.88, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.88, opacity: 0 }}
-                transition={{ type: "spring", stiffness: 300, damping: 26 }}
+                initial={{ y: 60, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 120, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 28 }}
+                drag="y"
+                dragConstraints={{ top: 0, bottom: 0 }}
+                dragElastic={{ top: 0.05, bottom: 0.4 }}
+                onDragEnd={(_e, info) => { if (info.offset.y > 80) setVideoOpen(false); }}
                 onClick={e => e.stopPropagation()}
                 style={{
                   position: "relative", borderRadius: 20, overflow: "hidden",
@@ -1122,8 +1126,16 @@ export default function Home() {
                   background: "#000",
                   boxShadow: "0 0 60px rgba(0,229,245,0.18)",
                   border: "1px solid rgba(0,229,245,0.22)",
+                  cursor: "grab",
+                  touchAction: "none",
                 }}
               >
+                {/* Swipe handle */}
+                <div style={{
+                  position: "absolute", top: 8, left: "50%", transform: "translateX(-50%)",
+                  width: 36, height: 4, borderRadius: 2,
+                  background: "rgba(255,255,255,0.35)", zIndex: 10, pointerEvents: "none",
+                }} />
                 <video
                   src="/david-fsd-video.mov"
                   autoPlay controls playsInline
