@@ -283,7 +283,7 @@ export function ScratchVoucher() {
           quipIndex.current += 1;
           if (wrapRef.current) {
             const rect = wrapRef.current.getBoundingClientRect();
-            setBadgeY(rect.bottom);
+            setBadgeY(rect.top + rect.height / 2);
           }
           setHalfwayMsg(quip);
           setTimeout(() => setHalfwayMsg(null), 1600);
