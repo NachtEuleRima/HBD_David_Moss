@@ -169,6 +169,7 @@ export function ScratchVoucher() {
   const shownMilestones = useRef<Set<number>>(new Set());
   const [isRevealed,    setIsRevealed]    = useState(false);
   const [halfwayMsg,    setHalfwayMsg]    = useState<string | null>(null);
+  const [badgeKey,      setBadgeKey]      = useState(0);
   const [badgeY,        setBadgeY]        = useState(0);
   const [showHint,      setShowHint]      = useState(true);
 
@@ -285,6 +286,7 @@ export function ScratchVoucher() {
             const rect = wrapRef.current.getBoundingClientRect();
             setBadgeY(rect.bottom);
           }
+          setBadgeKey(Date.now());
           setHalfwayMsg(quip);
           setTimeout(() => setHalfwayMsg(null), 3200);
           break;
@@ -390,7 +392,7 @@ export function ScratchVoucher() {
       <AnimatePresence>
         {halfwayMsg && (
           <motion.div
-            key={halfwayMsg + Date.now()}
+            key={badgeKey}
             initial={{ opacity: 0, y: 0 }}
             animate={{ opacity: [0, 1, 1, 0], y: [0, -16, -55, -100] }}
             transition={{ duration: 3.2, times: [0, 0.12, 0.65, 1], ease: "easeOut" }}
