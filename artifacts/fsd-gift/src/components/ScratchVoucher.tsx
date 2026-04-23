@@ -381,19 +381,18 @@ export function ScratchVoucher() {
         </AnimatePresence>
       </div>
 
-      {/* Milestone badge — outside overflow:hidden so it never clips */}
+      {/* Milestone badge — fixed to viewport so nothing can clip it */}
       <AnimatePresence>
         {halfwayMsg && (
           <motion.div
             key={halfwayMsg + Date.now()}
-            initial={{ opacity: 0, y: 0, scale: 0.88 }}
-            animate={{ opacity: 1, y: -14, scale: 1 }}
-            exit={{ opacity: 0, y: -60, scale: 0.92, transition: { duration: 0.55, ease: "easeIn" } }}
-            transition={{ duration: 0.28, ease: "easeOut" }}
+            initial={{ opacity: 0, y: 0 }}
+            animate={{ opacity: [0, 1, 1, 0], y: [0, -24, -80, -150] }}
+            transition={{ duration: 1.6, times: [0, 0.12, 0.65, 1], ease: "easeOut" }}
             style={{
-              position: "absolute",
-              bottom: "12%", left: "50%", transform: "translateX(-50%)",
-              zIndex: 40, pointerEvents: "none", width: "max-content",
+              position: "fixed",
+              bottom: "28%", left: "50%", transform: "translateX(-50%)",
+              zIndex: 9999, pointerEvents: "none", width: "max-content",
               background: "rgba(6,15,30,0.62)",
               backdropFilter: "blur(10px)",
               border: "1px solid rgba(0,229,245,0.25)",
