@@ -396,7 +396,7 @@ export function ScratchVoucher() {
             transition={{ duration: 1.6, times: [0, 0.12, 0.65, 1], ease: "easeOut" }}
             style={{
               position: "fixed",
-              top: badgeY - 16, left: "50%", transform: "translateX(-50%)",
+              top: badgeY - 16, left: "30%", transform: "translateX(-50%)",
               zIndex: 9999, pointerEvents: "none",
               maxWidth: "calc(100vw - 48px)", textAlign: "center",
               background: "rgba(6,15,30,0.62)",
