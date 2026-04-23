@@ -286,7 +286,7 @@ export function ScratchVoucher() {
             setBadgeY(rect.bottom);
           }
           setHalfwayMsg(quip);
-          setTimeout(() => setHalfwayMsg(null), 1600);
+          setTimeout(() => setHalfwayMsg(null), 3200);
           break;
         }
       }
@@ -392,8 +392,8 @@ export function ScratchVoucher() {
           <motion.div
             key={halfwayMsg + Date.now()}
             initial={{ opacity: 0, y: 0 }}
-            animate={{ opacity: [0, 1, 1, 0], y: [0, -24, -80, -150] }}
-            transition={{ duration: 1.6, times: [0, 0.12, 0.65, 1], ease: "easeOut" }}
+            animate={{ opacity: [0, 1, 1, 0], y: [0, -16, -55, -100] }}
+            transition={{ duration: 3.2, times: [0, 0.12, 0.65, 1], ease: "easeOut" }}
             style={{
               position: "fixed",
               top: badgeY - 16, left: "37%", transform: "translateX(-50%)",
