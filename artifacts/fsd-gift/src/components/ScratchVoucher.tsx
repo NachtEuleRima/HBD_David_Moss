@@ -392,7 +392,8 @@ export function ScratchVoucher() {
             style={{
               position: "fixed",
               bottom: "28%", left: "50%", transform: "translateX(-50%)",
-              zIndex: 9999, pointerEvents: "none", width: "max-content",
+              zIndex: 9999, pointerEvents: "none",
+              maxWidth: "calc(100vw - 48px)", textAlign: "center",
               background: "rgba(6,15,30,0.62)",
               backdropFilter: "blur(10px)",
               border: "1px solid rgba(0,229,245,0.25)",
