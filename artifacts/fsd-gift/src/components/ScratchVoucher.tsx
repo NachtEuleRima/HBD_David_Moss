@@ -267,7 +267,7 @@ export function ScratchVoucher() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     ctx.globalCompositeOperation = "destination-out";
-    const size = Math.max(18, canvas.width / 14);
+    const size = Math.max(14, canvas.width / 17);
     drawBolt(ctx, x, y, size);
 
     if (Math.random() < 0.25) {
