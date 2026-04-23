@@ -397,7 +397,12 @@ export function ScratchVoucher() {
             key={badgeKey}
             initial={{ opacity: 0, y: 0 }}
             animate={{ opacity: [0, 1, 1, 0], y: [0, -16, -55, -100] }}
+            exit={{ opacity: 0, transition: { duration: 0 } }}
             transition={{ duration: 3.2, times: [0, 0.12, 0.65, 1], ease: "easeOut" }}
+            onAnimationComplete={() => {
+              if (badgeTimer.current) clearTimeout(badgeTimer.current);
+              setHalfwayMsg(null);
+            }}
             style={{
               position: "fixed",
               top: badgeY - 16, left: "37%", transform: "translateX(-50%)",
