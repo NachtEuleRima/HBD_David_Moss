@@ -185,6 +185,7 @@ export function ScratchVoucher() {
     [...ALL_QUIPS].sort(() => Math.random() - 0.5)
   );
   const quipIndex = useRef(0);
+  const badgeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const BANNER_THRESHOLDS = [10, 30, 50, 70];
 
@@ -288,7 +289,8 @@ export function ScratchVoucher() {
           }
           setBadgeKey(Date.now());
           setHalfwayMsg(quip);
-          setTimeout(() => setHalfwayMsg(null), 3200);
+          if (badgeTimer.current) clearTimeout(badgeTimer.current);
+          badgeTimer.current = setTimeout(() => setHalfwayMsg(null), 3200);
           break;
         }
       }
