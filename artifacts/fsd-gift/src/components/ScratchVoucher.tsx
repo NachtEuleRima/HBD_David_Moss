@@ -359,41 +359,39 @@ export function ScratchVoucher() {
           )}
         </AnimatePresence>
 
-        <div style={{
-          position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
-          zIndex: 30, pointerEvents: "none", width: "max-content",
-        }}>
-          <AnimatePresence>
-            {halfwayMsg && (
-              <motion.div
-                key="halfway"
-                initial={{ opacity: 0, y: 8, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -8, scale: 0.9 }}
-                transition={{ duration: 0.25 }}
-                style={{
-                  background: "linear-gradient(135deg, #060f1e 0%, #0a1828 100%)",
-                  backdropFilter: "blur(12px)",
-                  border: "1px solid rgba(0,229,245,0.3)",
-                  borderRadius: 99,
-                  padding: "9px 22px",
-                  whiteSpace: "nowrap",
-                  color: "#00e5f5",
-                  fontWeight: 700,
-                  fontSize: 13,
-                  fontFamily: "'Outfit', system-ui, sans-serif",
-                  boxShadow: "0 0 0 1px rgba(0,229,245,0.08), 0 8px 32px rgba(0,0,0,0.7), 0 0 20px rgba(0,229,245,0.12)",
-                  letterSpacing: "0.02em",
-                  display: "flex", alignItems: "center", gap: 8,
-                }}
-              >
-                <span style={{ opacity: 0.7, fontSize: 11 }}>⚡</span>
-                {halfwayMsg}
-                <span style={{ opacity: 0.7, fontSize: 11 }}>⚡</span>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        <AnimatePresence>
+          {halfwayMsg && (
+            <motion.div
+              key={halfwayMsg + Date.now()}
+              initial={{ opacity: 0, y: 0, scale: 0.88 }}
+              animate={{ opacity: 1, y: -18, scale: 1 }}
+              exit={{ opacity: 0, y: -72, scale: 0.92, transition: { duration: 0.55, ease: "easeIn" } }}
+              transition={{ duration: 0.28, ease: "easeOut" }}
+              style={{
+                position: "absolute",
+                bottom: "18%", left: "50%", transform: "translateX(-50%)",
+                zIndex: 30, pointerEvents: "none", width: "max-content",
+                background: "linear-gradient(135deg, #060f1e 0%, #0a1828 100%)",
+                backdropFilter: "blur(12px)",
+                border: "1px solid rgba(0,229,245,0.3)",
+                borderRadius: 99,
+                padding: "9px 22px",
+                whiteSpace: "nowrap",
+                color: "#00e5f5",
+                fontWeight: 700,
+                fontSize: 13,
+                fontFamily: "'Outfit', system-ui, sans-serif",
+                boxShadow: "0 0 0 1px rgba(0,229,245,0.08), 0 8px 32px rgba(0,0,0,0.7), 0 0 20px rgba(0,229,245,0.12)",
+                letterSpacing: "0.02em",
+                display: "flex", alignItems: "center", gap: 8,
+              }}
+            >
+              <span style={{ opacity: 0.7, fontSize: 11 }}>⚡</span>
+              {halfwayMsg}
+              <span style={{ opacity: 0.7, fontSize: 11 }}>⚡</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <AnimatePresence>
           {!isRevealed && (
