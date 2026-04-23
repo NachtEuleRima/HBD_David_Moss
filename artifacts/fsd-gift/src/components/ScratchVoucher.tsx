@@ -391,13 +391,11 @@ export function ScratchVoucher() {
       </div>
 
       {/* Milestone badge — fixed to viewport so nothing can clip it */}
-      <AnimatePresence>
-        {halfwayMsg && (
+      {halfwayMsg && (
           <motion.div
             key={badgeKey}
             initial={{ opacity: 0, y: 0 }}
             animate={{ opacity: [0, 1, 1, 0], y: [0, -16, -55, -100] }}
-            exit={{ opacity: 0, transition: { duration: 0 } }}
             transition={{ duration: 3.2, times: [0, 0.12, 0.65, 1], ease: "easeOut" }}
             onAnimationComplete={() => {
               if (badgeTimer.current) clearTimeout(badgeTimer.current);
@@ -428,7 +426,6 @@ export function ScratchVoucher() {
             <span style={{ opacity: 0.6, fontSize: 10 }}>⚡</span>
           </motion.div>
         )}
-      </AnimatePresence>
 
     </div>
   );
