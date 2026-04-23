@@ -169,6 +169,7 @@ export function ScratchVoucher() {
   const shownMilestones = useRef<Set<number>>(new Set());
   const [isRevealed,    setIsRevealed]    = useState(false);
   const [halfwayMsg,    setHalfwayMsg]    = useState<string | null>(null);
+  const [badgeY,        setBadgeY]        = useState(0);
   const [showHint,      setShowHint]      = useState(true);
 
   const ALL_QUIPS = [
@@ -280,8 +281,12 @@ export function ScratchVoucher() {
           shownMilestones.current.add(t);
           const quip = quipQueue.current[quipIndex.current % quipQueue.current.length];
           quipIndex.current += 1;
+          if (wrapRef.current) {
+            const rect = wrapRef.current.getBoundingClientRect();
+            setBadgeY(rect.bottom);
+          }
           setHalfwayMsg(quip);
-          setTimeout(() => setHalfwayMsg(null), 1400);
+          setTimeout(() => setHalfwayMsg(null), 1600);
           break;
         }
       }
@@ -391,7 +396,7 @@ export function ScratchVoucher() {
             transition={{ duration: 1.6, times: [0, 0.12, 0.65, 1], ease: "easeOut" }}
             style={{
               position: "fixed",
-              bottom: "28%", left: "50%", transform: "translateX(-50%)",
+              top: badgeY - 16, left: "50%", transform: "translateX(-50%)",
               zIndex: 9999, pointerEvents: "none",
               maxWidth: "calc(100vw - 48px)", textAlign: "center",
               background: "rgba(6,15,30,0.62)",
