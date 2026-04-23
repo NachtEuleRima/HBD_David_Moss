@@ -392,25 +392,18 @@ export function ScratchVoucher() {
 
       {/* Milestone badge — fixed to viewport so nothing can clip it */}
       {halfwayMsg && (
-        <>
-          <style>{`
-            @keyframes badgeFloat {
-              0%   { opacity: 0;   transform: translateX(-50%) translateY(0px);    }
-              12%  { opacity: 1;   transform: translateX(-50%) translateY(-16px);  }
-              60%  { opacity: 1;   transform: translateX(-50%) translateY(-55px);  }
-              100% { opacity: 0;   transform: translateX(-50%) translateY(-100px); }
-            }
-          `}</style>
-          <div
+          <motion.div
             key={badgeKey}
-            onAnimationEnd={() => {
+            initial={{ opacity: 0, y: 0 }}
+            animate={{ opacity: [0, 1, 1, 0], y: [0, -16, -55, -100] }}
+            transition={{ duration: 3.2, times: [0, 0.12, 0.60, 1], ease: ["easeOut", "linear", "easeIn"] }}
+            onAnimationComplete={() => {
               if (badgeTimer.current) clearTimeout(badgeTimer.current);
               setHalfwayMsg(null);
             }}
             style={{
               position: "fixed",
-              top: badgeY - 16, left: "37%",
-              transform: "translateX(-50%)",
+              top: badgeY - 16, left: "37%", transform: "translateX(-50%)",
               zIndex: 9999, pointerEvents: "none",
               maxWidth: "calc(100vw - 48px)", textAlign: "center",
               background: "rgba(6,15,30,0.62)",
@@ -426,14 +419,12 @@ export function ScratchVoucher() {
               boxShadow: "0 0 16px rgba(0,229,245,0.10)",
               letterSpacing: "0.02em",
               display: "flex", alignItems: "center", gap: 6,
-              animation: "badgeFloat 3.2s cubic-bezier(0.22,1,0.36,1) forwards",
             }}
           >
             <span style={{ opacity: 0.6, fontSize: 10 }}>⚡</span>
             {halfwayMsg}
             <span style={{ opacity: 0.6, fontSize: 10 }}>⚡</span>
-          </div>
-        </>
+          </motion.div>
         )}
 
     </div>
