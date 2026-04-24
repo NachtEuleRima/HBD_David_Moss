@@ -671,7 +671,14 @@ export default function Home() {
               {isSummaryLoading ? (
                 <Skeleton className="h-4 w-full rounded-full bg-secondary my-6" />
               ) : (
-                <div className="relative h-4 bg-secondary rounded-full overflow-hidden my-6">
+                <div
+                  role="progressbar"
+                  aria-valuenow={summary?.total || 0}
+                  aria-valuemin={0}
+                  aria-valuemax={summary?.goalAmount || 1500}
+                  aria-label={`Fundraising progress: $${summary?.total || 0} raised out of $${summary?.goalAmount || 1500} goal`}
+                  className="relative h-4 bg-secondary rounded-full overflow-hidden my-6"
+                >
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progressPercentage}%` }}
@@ -1104,10 +1111,14 @@ export default function Home() {
           {videoOpen && (
             <motion.div
               key="video-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-label="David Moss FSD video — swipe down or press Escape to close"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setVideoOpen(false)}
+              onKeyDown={(e) => { if (e.key === "Escape") setVideoOpen(false); }}
               style={{
                 position: "fixed", inset: 0, zIndex: 9999,
                 background: "rgba(0,0,0,0.88)",
@@ -1142,9 +1153,20 @@ export default function Home() {
                   width: 36, height: 4, borderRadius: 2,
                   background: "rgba(255,255,255,0.35)", zIndex: 10, pointerEvents: "none",
                 }} />
+                {/* VoiceOver-accessible close button — visually hidden */}
+                <button
+                  onClick={() => setVideoOpen(false)}
+                  aria-label="Close video"
+                  style={{
+                    position: "absolute", top: 0, right: 0, width: 1, height: 1,
+                    overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap",
+                    zIndex: 20,
+                  }}
+                />
                 <video
                   src="/david-fsd-video.mp4"
                   autoPlay controls playsInline
+                  aria-label="David Moss Tesla FSD coast-to-coast drive video"
                   style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                 />
               </motion.div>
