@@ -172,6 +172,7 @@ export function ScratchVoucher() {
   const [badgeKey,      setBadgeKey]      = useState(0);
   const [badgeY,        setBadgeY]        = useState(0);
   const [showHint,      setShowHint]      = useState(true);
+  const [liveMsg,       setLiveMsg]       = useState("");
 
   const ALL_QUIPS = [
     "Almost there, Mossman! ⚡",
@@ -289,13 +290,14 @@ export function ScratchVoucher() {
           }
           setBadgeKey(Date.now());
           setHalfwayMsg(quip);
+          setLiveMsg(quip);
           if (badgeTimer.current) clearTimeout(badgeTimer.current);
           badgeTimer.current = setTimeout(() => setHalfwayMsg(null), 3200);
           break;
         }
       }
 
-      if (pct > 0.75) setIsRevealed(true);
+      if (pct > 0.75) { setIsRevealed(true); setLiveMsg("Surprise revealed! David Moss is getting a custom UGREEN NAS — a birthday gift from the FSD community!"); }
     }
   }, [isRevealed]);
 
@@ -338,9 +340,23 @@ export function ScratchVoucher() {
         <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.07)" }} />
       </div>
 
+      {/* VoiceOver live region — visually hidden, announces milestones & reveal */}
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap" }}
+      >
+        {liveMsg}
+      </div>
+
       <div
         ref={wrapRef}
-        style={{ position: "relative", borderRadius: 16, overflow: "hidden", boxShadow: "0 25px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,245,0.08)" }}
+        role={isRevealed ? undefined : "button"}
+        tabIndex={isRevealed ? undefined : 0}
+        aria-label={isRevealed ? undefined : "Scratch card — double-tap to reveal the birthday surprise"}
+        onKeyDown={(e) => { if (!isRevealed && (e.key === "Enter" || e.key === " ")) setIsRevealed(true); }}
+        onClick={() => { if (!isRevealed) setIsRevealed(true); }}
+        style={{ position: "relative", borderRadius: 16, overflow: "hidden", boxShadow: "0 25px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,245,0.08)", outline: "none" }}
       >
         <VoucherContent />
 
@@ -385,6 +401,7 @@ export function ScratchVoucher() {
               onTouchStart={onTS}
               onTouchMove={onTM}
               onTouchEnd={onMU}
+              onClick={(e) => e.stopPropagation()}
             />
           )}
         </AnimatePresence>
