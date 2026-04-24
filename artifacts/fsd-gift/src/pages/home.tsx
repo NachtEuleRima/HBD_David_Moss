@@ -1167,6 +1167,7 @@ export default function Home() {
                   src="/david-fsd-video.mp4"
                   autoPlay controls playsInline
                   aria-label="David Moss Tesla FSD coast-to-coast drive video"
+                  onEnded={() => setVideoOpen(false)}
                   style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                 />
               </motion.div>
