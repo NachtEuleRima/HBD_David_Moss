@@ -7,16 +7,23 @@ type CacheEntry = {
   data: Buffer;
   contentType: string;
   fetchedAt: number;
-  notFound?: boolean;
+  source: "live" | "stored" | "none";
 };
 
 const cache = new Map<string, CacheEntry>();
 const inflight = new Map<string, Promise<CacheEntry>>();
 
-const SUCCESS_TTL_MS = 6 * 60 * 60 * 1000;
+const LIVE_TTL_MS = 6 * 60 * 60 * 1000;
+const STORED_TTL_MS = 15 * 60 * 1000;
 const NEGATIVE_TTL_MS = 5 * 60 * 1000;
 const MAX_CACHE_ENTRIES = 500;
 const FETCH_TIMEOUT_MS = 8000;
+
+function ttlFor(entry: CacheEntry): number {
+  if (entry.source === "live") return LIVE_TTL_MS;
+  if (entry.source === "stored") return STORED_TTL_MS;
+  return NEGATIVE_TTL_MS;
+}
 
 function pruneCache(): void {
   if (cache.size <= MAX_CACHE_ENTRIES) return;
@@ -26,7 +33,7 @@ function pruneCache(): void {
   for (const [k] of oldest) cache.delete(k);
 }
 
-async function fetchFromUnavatar(username: string): Promise<CacheEntry> {
+async function fetchFromUnavatar(username: string): Promise<CacheEntry | null> {
   const url = `https://unavatar.io/x/${encodeURIComponent(username)}?fallback=false`;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
@@ -35,36 +42,17 @@ async function fetchFromUnavatar(username: string): Promise<CacheEntry> {
       signal: controller.signal,
       redirect: "follow",
     });
-    if (!res.ok) {
-      return {
-        data: Buffer.alloc(0),
-        contentType: "application/octet-stream",
-        fetchedAt: Date.now(),
-        notFound: true,
-      };
-    }
-    const arrayBuffer = await res.arrayBuffer();
-    const buf = Buffer.from(arrayBuffer);
-    if (buf.length === 0) {
-      return {
-        data: Buffer.alloc(0),
-        contentType: "application/octet-stream",
-        fetchedAt: Date.now(),
-        notFound: true,
-      };
-    }
+    if (!res.ok) return null;
+    const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length === 0) return null;
     return {
       data: buf,
       contentType: res.headers.get("content-type") || "image/jpeg",
       fetchedAt: Date.now(),
+      source: "live",
     };
-  } catch (err) {
-    return {
-      data: Buffer.alloc(0),
-      contentType: "application/octet-stream",
-      fetchedAt: Date.now(),
-      notFound: true,
-    };
+  } catch {
+    return null;
   } finally {
     clearTimeout(timer);
   }
@@ -81,6 +69,7 @@ async function tryStoredFallback(username: string): Promise<CacheEntry | null> {
       data: buf,
       contentType: (metadata.contentType as string) || "image/jpeg",
       fetchedAt: Date.now(),
+      source: "stored",
     };
   } catch {
     return null;
@@ -91,18 +80,25 @@ async function getAvatar(username: string): Promise<CacheEntry> {
   const cached = cache.get(username);
   if (cached) {
     const age = Date.now() - cached.fetchedAt;
-    const ttl = cached.notFound ? NEGATIVE_TTL_MS : SUCCESS_TTL_MS;
-    if (age < ttl) return cached;
+    if (age < ttlFor(cached)) return cached;
   }
 
   const existing = inflight.get(username);
   if (existing) return existing;
 
   const promise = (async () => {
-    let entry = await fetchFromUnavatar(username);
-    if (entry.notFound) {
+    const live = await fetchFromUnavatar(username);
+    let entry: CacheEntry;
+    if (live) {
+      entry = live;
+    } else {
       const stored = await tryStoredFallback(username);
-      if (stored) entry = stored;
+      entry = stored ?? {
+        data: Buffer.alloc(0),
+        contentType: "application/octet-stream",
+        fetchedAt: Date.now(),
+        source: "none",
+      };
     }
     cache.set(username, entry);
     pruneCache();
@@ -124,15 +120,17 @@ router.get("/avatar/x/:username", async (req: Request, res: Response) => {
     }
 
     const entry = await getAvatar(username);
-    if (entry.notFound) {
-      res.setHeader("Cache-Control", "public, max-age=300");
+    if (entry.source === "none") {
+      res.setHeader("Cache-Control", "no-store");
       res.status(404).end();
       return;
     }
 
+    const browserMaxAge = entry.source === "live" ? 21600 : 900;
     res.setHeader("Content-Type", entry.contentType);
     res.setHeader("Content-Length", String(entry.data.length));
-    res.setHeader("Cache-Control", "public, max-age=21600, stale-while-revalidate=86400");
+    res.setHeader("Cache-Control", `public, max-age=${browserMaxAge}, stale-while-revalidate=86400`);
+    res.setHeader("X-Avatar-Source", entry.source);
     res.status(200).send(entry.data);
   } catch (error) {
     req.log?.error({ err: error }, "Error serving avatar");
