@@ -37,7 +37,6 @@ router.get("/video/:filename", async (req: Request, res: Response) => {
       let start: number;
       let end: number;
       if (match[1] === "") {
-        // Suffix range: last N bytes (RFC 7233)
         const suffixLen = parseInt(match[2], 10);
         if (!Number.isFinite(suffixLen) || suffixLen <= 0) {
           res.status(416).setHeader("Content-Range", `bytes */${totalSize}`).end();
