@@ -1075,7 +1075,7 @@ export default function Home() {
               background: "radial-gradient(ellipse at 60% 55%, #0d2a3a 0%, #071628 55%, #020c18 100%)",
             }} />
             <video
-              src={`${baseUrl}/api/video/david-fsd-video.mp4?v=3`}
+              src={`${baseUrl}/api/video/david-fsd-video.mp4?v=4`}
               poster="/nas-cover-clean.png"
               muted playsInline preload="metadata"
               style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 53%", display: "block", pointerEvents: "none", position: "relative" }}
@@ -1164,7 +1164,7 @@ export default function Home() {
                   }}
                 />
                 <video
-                  src={`${baseUrl}/api/video/david-fsd-video.mp4?v=3`}
+                  src={`${baseUrl}/api/video/david-fsd-video.mp4?v=4`}
                   autoPlay controls playsInline
                   aria-label="David Moss Tesla FSD coast-to-coast drive video"
                   onEnded={() => setVideoOpen(false)}
