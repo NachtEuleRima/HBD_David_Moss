@@ -237,7 +237,7 @@ function SmartAvatarImage({
 }) {
   const candidates = useMemo(() => {
     const list: string[] = [];
-    if (username) list.push(`https://unavatar.io/x/${username}?fallback=false`);
+    if (username) list.push(`${import.meta.env.BASE_URL}api/avatar/x/${encodeURIComponent(username)}`);
     if (storedUrl) list.push(storedUrl);
     return list;
   }, [username, storedUrl]);

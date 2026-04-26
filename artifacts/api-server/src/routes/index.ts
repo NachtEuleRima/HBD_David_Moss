@@ -4,6 +4,7 @@ import pledgesRouter from "./pledges";
 import authRouter from "./auth";
 import stripeRouter from "./stripe";
 import videoRouter from "./video";
+import avatarRouter from "./avatar";
 
 const router: IRouter = Router();
 
@@ -12,5 +13,6 @@ router.use("/pledges", pledgesRouter);
 router.use("/auth", authRouter);
 router.use("/stripe", stripeRouter);
 router.use(videoRouter);
+router.use(avatarRouter);
 
 export default router;
