@@ -226,6 +226,40 @@ function StripePaymentForm({ amount, name, baseUrl, onSuccess, onBack }: StripeP
 
 let confettiFired = false;
 
+function SmartAvatarImage({
+  username,
+  storedUrl,
+  alt,
+}: {
+  username?: string | null;
+  storedUrl?: string | null;
+  alt: string;
+}) {
+  const candidates = useMemo(() => {
+    const list: string[] = [];
+    if (username) list.push(`https://unavatar.io/x/${username}?fallback=false`);
+    if (storedUrl) list.push(storedUrl);
+    return list;
+  }, [username, storedUrl]);
+
+  const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    setIdx(0);
+  }, [username, storedUrl]);
+
+  if (candidates.length === 0 || idx >= candidates.length) return null;
+
+  return (
+    <AvatarImage
+      key={candidates[idx]}
+      src={candidates[idx]}
+      alt={alt}
+      onError={() => setIdx((i) => i + 1)}
+    />
+  );
+}
+
 export default function Home() {
   const [formStep, setFormStep] = useState<"form" | "payment" | "success">("form");
   const [isAnonymous, setIsAnonymous] = useState(false);
@@ -763,23 +797,11 @@ export default function Home() {
                         {visible.map((pledge) => (
                           <div key={pledge.id} className="flex items-center gap-4 p-3 rounded-2xl hover:bg-secondary/50 transition-colors border border-transparent hover:border-card-border">
                             <Avatar className="h-12 w-12 border border-card-border shadow-sm flex-shrink-0">
-                              {((pledge as any).xAvatarUrl || (pledge as any).xUsername) && (() => {
-                                const stored = (pledge as any).xAvatarUrl as string | undefined;
-                                const username = (pledge as any).xUsername as string | undefined;
-                                const livePrimary = username
-                                  ? `https://unavatar.io/x/${username}?fallback=false`
-                                  : stored;
-                                return (
-                                  <AvatarImage
-                                    src={livePrimary}
-                                    alt={username || pledge.name}
-                                    onError={(e) => {
-                                      const img = e.currentTarget as HTMLImageElement;
-                                      if (stored && img.src !== stored) img.src = stored;
-                                    }}
-                                  />
-                                );
-                              })()}
+                              <SmartAvatarImage
+                                username={(pledge as any).xUsername}
+                                storedUrl={(pledge as any).xAvatarUrl}
+                                alt={(pledge as any).xUsername || pledge.name}
+                              />
                               <AvatarFallback className="bg-secondary text-secondary-foreground font-mono font-bold">
                                 {pledge.name.substring(0, 2).toUpperCase()}
                               </AvatarFallback>
