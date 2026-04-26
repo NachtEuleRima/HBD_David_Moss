@@ -24,7 +24,7 @@ router.get("/video/:filename", async (req: Request, res: Response) => {
 
     res.setHeader("Content-Type", contentType);
     res.setHeader("Accept-Ranges", "bytes");
-    res.setHeader("Cache-Control", "public, max-age=86400");
+    res.setHeader("Cache-Control", "no-cache, must-revalidate");
 
     const range = req.headers.range;
     if (range) {

@@ -247,6 +247,7 @@ export default function Home() {
   const [showParty, setShowParty] = useState(!confettiFired);
   const [showGiftNudge, setShowGiftNudge] = useState(false);
   const [videoOpen, setVideoOpen] = useState(false);
+  const [videoError, setVideoError] = useState<string | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -1075,7 +1076,7 @@ export default function Home() {
               background: "radial-gradient(ellipse at 60% 55%, #0d2a3a 0%, #071628 55%, #020c18 100%)",
             }} />
             <video
-              src={`${baseUrl}/api/video/david-fsd-video.mp4?v=2`}
+              src={`${baseUrl}/api/video/david-fsd-video.mp4?v=3`}
               poster="/nas-cover-clean.png"
               muted playsInline preload="metadata"
               style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 53%", display: "block", pointerEvents: "none", position: "relative" }}
@@ -1164,12 +1165,33 @@ export default function Home() {
                   }}
                 />
                 <video
-                  src={`${baseUrl}/api/video/david-fsd-video.mp4?v=2`}
+                  src={`${baseUrl}/api/video/david-fsd-video.mp4?v=3`}
                   autoPlay controls playsInline
                   aria-label="David Moss Tesla FSD coast-to-coast drive video"
                   onEnded={() => setVideoOpen(false)}
+                  onError={(e) => {
+                    const v = e.currentTarget;
+                    const codes: Record<number, string> = {
+                      1: "MEDIA_ERR_ABORTED",
+                      2: "MEDIA_ERR_NETWORK",
+                      3: "MEDIA_ERR_DECODE",
+                      4: "MEDIA_ERR_SRC_NOT_SUPPORTED",
+                    };
+                    const code = v.error?.code ?? 0;
+                    setVideoError(`${codes[code] || "UNKNOWN"} (${code}): ${v.error?.message || "no message"}`);
+                  }}
                   style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                 />
+                {videoError && (
+                  <div style={{
+                    position: "absolute", bottom: 0, left: 0, right: 0,
+                    background: "rgba(220,40,40,0.95)", color: "#fff",
+                    padding: "10px 14px", fontSize: 13, fontWeight: 600,
+                    fontFamily: "monospace", textAlign: "center", zIndex: 30,
+                  }}>
+                    {videoError}
+                  </div>
+                )}
               </motion.div>
             </motion.div>
           )}
