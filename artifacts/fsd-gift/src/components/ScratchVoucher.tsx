@@ -112,7 +112,7 @@ function VoucherContent() {
             <span style={{ color: C.cyan, fontSize: 8, opacity: 0.6 }}>✦</span>
             <div style={{ width: 28, height: 1, background: `linear-gradient(to right, ${C.cyan}88, transparent)` }} />
           </div>
-          <div style={{ color: C.muted, fontSize: 8, letterSpacing: "0.3em", textTransform: "uppercase" }}>April 26 · 2025</div>
+          <div style={{ color: C.muted, fontSize: 8, letterSpacing: "0.3em", textTransform: "uppercase" }}>April 26 · 2026</div>
         </div>
 
         {/* Vertical divider */}
